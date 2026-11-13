@@ -1,1 +1,1 @@
-{"dependencies":{"@solana/web3.js":"^1.95.3","bs58":"^6.0.0"},"name":"grok-bot","private":true,"type":"module","version":"1.0.0"}
+{"dependencies":{"@solana/web3.js":"^1.95.3","bs58":"^6.0.0"},"name":"grok-bot","overrides":{"uuid":"9.0.1"},"private":true,"type":"module","version":"1.0.0"}
