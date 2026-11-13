@@ -5,9 +5,12 @@ export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ ok: false, error: 'method_not_allowed' });
   // Fail-closed: without a key, report unavailable instead of inventing data.
   const hasKey = Boolean(process.env.TRUESOTA_API_KEY);
+  const mode = process.env.TRADING_MODE
+    ? String(process.env.TRADING_MODE).toLowerCase()
+    : (process.env.LIVE_TRADING === 'true' ? 'live' : 'paper');
   return res.status(200).json({
     ok: true,
-    mode: process.env.LIVE_TRADING === 'true' ? 'live' : 'paper',
+    mode,
     scanned_at: new Date().toISOString(),
     wallet: process.env.SOLANA_WALLET_ADDRESS || null,
     truesota_configured: hasKey,
