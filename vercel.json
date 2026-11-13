@@ -1,1 +1,1 @@
-{"$schema":"https://openapi.vercel.sh/vercel.json","crons":[{"path":"/api/cron/scan","schedule":"0 0 * * *"}]}
+{"$schema":"https://openapi.vercel.sh/vercel.json","crons":[{"path":"/api/cron/scan","schedule":"0 0 * * *"}],"functions":{"api/cron/scan.js":{"maxDuration":60},"api/jupiter/price.js":{"maxDuration":15},"api/llm/models.js":{"maxDuration":30},"api/solana/rpc.js":{"maxDuration":15},"api/trade/execute.js":{"maxDuration":60}}}
