@@ -120,6 +120,13 @@ export default async function handler(req, res) {
   if (mode !== 'live') {
     return res.status(403).json({ error: 'TRADING_MODE bukan "live" (sekarang: ' + mode + ') — executor menolak semua trade. Bot tetap Paper.' });
   }
+  const execToken = process.env.EXECUTOR_TOKEN || '';
+  if (!execToken) {
+    return res.status(500).json({ error: 'EXECUTOR_TOKEN belum terisi di env Vercel — executor menolak semua trade (fail-closed)' });
+  }
+  if (req.headers['x-grokbot-token'] !== execToken) {
+    return res.status(401).json({ error: 'token executor tidak valid — trade live wajib membawa token EXECUTOR_TOKEN yang sama dengan env server' });
+  }
   if (req.headers['x-grokbot-confirm'] !== 'live-confirmed') {
     return res.status(428).json({ error: 'konfirmasi eksplisit tidak ada — trade live wajib dikonfirmasi user di UI (ringkasan chain · wallet · jumlah · slippage · TP/SL)' });
   }
