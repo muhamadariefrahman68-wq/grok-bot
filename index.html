@@ -1850,9 +1850,7 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
           if(AC && AC.state === 'running'){ try{ AC.suspend(); }catch(e){} }
         } else {
           detailLoaded = true; /* Muat Penuh = detail ikut tampil penuh */
-          if(st && (liteWasRunning || opts.resume)){
-            st.running = true; $('btnRun').textContent = '⏸ Pause'; $('liveDot').className = 'dot'; $('liveTxt').textContent = 'Replay · Paper';
-          }
+          /* Jangan auto-jalan saat kembali ke Mode Penuh — user tekan Jalankan sendiri */
           if(AC && AC.state === 'suspended' && S.soundOn){ try{ AC.resume(); }catch(e){} }
           if(st) drawChart();
         }
@@ -1879,7 +1877,12 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
       }catch(e){}
       if(autoLite) S.lite = true;
       resetState();
-      st.running = true;
+      /* Selalu mulai dalam keadaan DIJEDA — tidak ada auto trade saat refresh.
+         User harus tekan tombol Jalankan secara manual setiap kali buka/refresh. */
+      st.running = false;
+      $('btnRun').textContent = '▶ Jalankan';
+      $('liveDot').className = 'dot off';
+      $('liveTxt').textContent = 'Paused · tekan Jalankan untuk mulai';
       renderTicker();
       if(S.lite){ setLite(true); } else { startTimers(); }
       setInterval(function(){ $('toastTime').textContent = fmtClock(); }, 15000);
