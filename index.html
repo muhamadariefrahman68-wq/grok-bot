@@ -916,7 +916,7 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         document.addEventListener(ev, function(){ audioUnlocked = true; ensureAudio(); }, { passive:true });
       });
       function tone(freq, delay, dur, type, volScale){
-        if(S.lite || !S.soundOn || !audioUnlocked) return;
+        if(S.lite || !S.soundOn || !audioUnlocked || document.hidden) return;
         var ctx = ensureAudio(); if(!ctx) return;
         try{
           var t0 = ctx.currentTime + (delay||0);
@@ -943,6 +943,23 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         var now = Date.now(); if(now - lastClickAt < 300) return; lastClickAt = now;
         tone(2100, 0, 0.035, 'square', 0.28);
       }
+      /* Suara mati saat keluar Chrome / tab tidak terlihat:
+         suspend AudioContext + jeda bot. Saat kembali, tetap dijeda
+         sampai user tekan Jalankan lagi — tidak auto bunyi / auto trade. */
+      function silenceOnLeave(){
+        try{ if(AC && AC.state === 'running') AC.suspend(); }catch(e){}
+        try{
+          if(typeof st !== 'undefined' && st && st.running){
+            st.running = false;
+            var b = $('btnRun'); if(b) b.textContent = '▶ Jalankan';
+            var d = $('liveDot'); if(d) d.className = 'dot off';
+            var t = $('liveTxt'); if(t) t.textContent = 'Paused · tekan Jalankan untuk mulai';
+          }
+        }catch(e){}
+      }
+      document.addEventListener('visibilitychange', function(){ if(document.hidden) silenceOnLeave(); });
+      window.addEventListener('pagehide', silenceOnLeave);
+      window.addEventListener('blur', function(){ silenceOnLeave(); });
       function paintSoundUI(){
         var b = $('btnSound');
         if(b){ b.textContent = S.soundOn ? '🔊 Suara ON' : '🔇 Suara OFF'; b.className = 'snd-chip' + (S.soundOn ? '' : ' off'); }
