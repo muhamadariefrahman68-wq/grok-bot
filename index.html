@@ -1470,9 +1470,9 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         if(t) t.textContent = text;
       }
       function rpcCall(method, params){
-        return fetch('https://api.mainnet-beta.solana.com', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ jsonrpc:'2.0', id:1, method:method, params:params }) })
+        return fetch('/api/solana/rpc', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ method:method, params:params }) })
           .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
-          .then(function(j){ if(j.error) throw new Error(j.error.message||'RPC error'); return j.result; });
+          .then(function(j){ if(!j.ok) throw new Error(j.error||'RPC error'); return j.result; });
       }
       var liveOk = { dex:false, jup:false, rpc:false };
       function paintLiveVerdict(){
@@ -1487,8 +1487,8 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         fetch('https://api.dexscreener.com/token-profiles/latest/v1').then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
           .then(function(j){ var n = Array.isArray(j)? j.length : 0; liveOk.dex = n>0; srcSet('dex', n>0?'ok':'err', n>0 ? ('OK · '+n+' profil token diterima · Sumber: DexScreener · '+wibNow()) : 'Respons kosong — data belum tersedia · '+wibNow()); paintLiveVerdict(); })
           .catch(function(e){ liveOk.dex=false; srcSet('dex','err','GAGAL ('+e.message+') — data belum tersedia, tidak ditebak · '+wibNow()); paintLiveVerdict(); });
-        fetch('https://api.jup.ag/price/v2?ids=So11111111111111111111111111111111111111112').then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
-          .then(function(j){ var d = j && j.data && j.data['So11111111111111111111111111111111111111112']; var px = d && parseFloat(d.price); liveOk.jup = !!px; srcSet('jup', px?'ok':'err', px ? ('OK · SOL = $'+px.toFixed(2)+' · Sumber: Jupiter Price API · '+wibNow()) : 'Harga tidak ada di respons — data belum tersedia · '+wibNow()); paintLiveVerdict(); })
+        fetch('/api/jupiter/price').then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+          .then(function(j){ var px = j && j.ok && parseFloat(j.price); liveOk.jup = !!px; srcSet('jup', px?'ok':'err', px ? ('OK · SOL = $'+px.toFixed(2)+' · Sumber: Jupiter Price API v3 · '+wibNow()) : 'Harga tidak ada di respons — data belum tersedia · '+wibNow()); paintLiveVerdict(); })
           .catch(function(e){ liveOk.jup=false; srcSet('jup','err','GAGAL ('+e.message+') — data belum tersedia, tidak ditebak · '+wibNow()); paintLiveVerdict(); });
         var addr = (S.walletAddress||DEFAULT_WALLET_ADDR).trim();
         if(!isSolanaAddress(addr)){ liveOk.rpc=false; srcSet('rpc','err','Alamat wallet tidak valid — RPC tidak dipanggil · '+wibNow()); paintLiveVerdict(); return; }
