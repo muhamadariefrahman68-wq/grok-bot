@@ -130,7 +130,7 @@
       .set-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
       @media (max-width:520px){ .set-grid{ grid-template-columns:1fr; } }
       label.f{ display:block; font-size:13px; color:var(--dim); margin-bottom:6px; font-weight:600; }
-      input[type=text], input[type=password], input[type=number], select{
+      input[type=text], input[type=password], input[type=number], input[type=time], select{
         width:100%; background:#0a120d; border:1px solid var(--line2); color:var(--txt); border-radius:11px;
         padding:10px 12px; font-size:15px; font-family:inherit; min-height:44px; }
       input:focus, select:focus{ outline:2px solid var(--green); outline-offset:1px; }
@@ -279,7 +279,7 @@
         border-radius:12px; padding:11px 8px; font-size:13.5px; font-weight:700; cursor:pointer; min-height:48px; line-height:1.35; }
       .menu-hint button span{ display:block; font-size:11px; color:var(--dim); font-weight:600; margin-top:2px; }
       .bottom-nav{ position:fixed; left:50%; transform:translateX(-50%); bottom:0; z-index:60; width:100%; max-width:680px;
-        display:grid; grid-template-columns:repeat(6,1fr); gap:2px; background:rgba(9,15,12,.97); border-top:1px solid var(--line2);
+        display:grid; grid-template-columns:repeat(7,1fr); gap:2px; background:rgba(9,15,12,.97); border-top:1px solid var(--line2);
         padding:6px 4px calc(6px + env(safe-area-inset-bottom)); }
       .bottom-nav button{ background:transparent; border:none; color:var(--dim); border-radius:12px; padding:7px 1px 6px;
         font-size:10.5px; font-weight:700; cursor:pointer; min-height:56px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; line-height:1.2; font-family:inherit; }
@@ -288,6 +288,15 @@
       .sheet-tabs button.on{ background:var(--green); border-color:var(--green); color:#04140a; }
       .active-capital{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:10px; background:var(--green-soft); border:1px solid rgba(47,224,124,.35); border-radius:12px; padding:9px 12px; font-size:14px; }
       .active-capital b{ color:var(--green); }
+      .mode-switch{ margin-top:12px; background:var(--panel); border:1px solid var(--line2); border-radius:16px; padding:13px; }
+      .mode-big{ font-size:24px; font-weight:900; letter-spacing:.01em; margin-top:11px; line-height:1.2; color:var(--green); }
+      .mode-big.live{ color:var(--red); }
+      .mode-big small{ display:block; font-size:13px; font-weight:600; color:var(--dim); margin-top:3px; letter-spacing:0; }
+      .seg button.on.live-on{ background:var(--red); color:#fff; }
+      .live-confirm{ border:1px solid rgba(255,107,107,.6); background:var(--red-soft); border-radius:12px; padding:12px; margin-top:10px; font-size:14px; line-height:1.6; }
+      .live-confirm[hidden]{ display:none !important; }
+      .gate-msg{ font-size:13.5px; line-height:1.55; margin-top:9px; color:var(--dim); }
+      .gate-msg.err{ color:#ffc9c9; } .gate-msg.ok{ color:var(--green); }
       .active-capital .ac-note{ color:var(--dim); font-size:13px; }
       .custom-chips{ display:flex; gap:8px; flex-wrap:wrap; margin-top:9px; }
       .custom-chip{ background:#0a120d; border:1px solid var(--line2); color:var(--txt); border-radius:999px; padding:9px 16px; font-size:14px; font-weight:800; cursor:pointer; min-height:44px; font-family:inherit; }
@@ -349,7 +358,7 @@
           <h1>Grok Bot</h1>
           <div class="sub">Solana memes · strict RM · paper → live</div>
         </div>
-        <div class="live"><span class="dot" id="liveDot"></span><span id="liveTxt">Replay · Paper</span></div>
+        <div class="live"><span class="dot off" id="liveDot"></span><span id="liveTxt">Paused · tekan Jalankan untuk mulai</span></div>
         <button class="lite-chip" id="btnLite" aria-label="Aktifkan Mode Lite hemat data" title="Mode Lite: matikan animasi, grafik, replay otomatis & suara, polling lebih jarang">⚡ Lite</button>
         <button class="snd-chip" id="btnSound" aria-label="Suara notifikasi on atau off" title="Suara TP / SL / Logger">🔊 Suara ON</button>
       </div>
@@ -371,6 +380,23 @@
         <span class="mult" id="mult">1.00×</span>
       </div>
       <div class="active-capital" role="status" aria-label="Modal aktif"><span>💰 Modal aktif:</span><b id="activeCapital">Mode Video · $280</b><span class="ac-note" id="activeCapitalNote">8% per posisi · ganti lewat menu bawah → tab Pengaturan &amp; Modal di dalam panel</span></div>
+      <div class="mode-switch" aria-label="Mode trading Live atau Paper">
+        <label class="f" style="margin-bottom:7px">Mode trading — tekan untuk pindah</label>
+        <div class="seg" role="group" aria-label="Saklar mode Paper atau Live">
+          <button type="button" id="modePaper" class="on">📄 Paper · Simulasi</button>
+          <button type="button" id="modeLive">🔴 Live · Sungguhan</button>
+        </div>
+        <div class="mode-big" id="modeBig">MODE PAPER<small>Simulasi — aman, tanpa uang sungguhan. Ini mode default.</small></div>
+        <div class="gate-msg" id="liveGateMsg">Live hanya bisa aktif kalau: wallet terdanai SOL + modal · Data Live segar (≤ 5 menit) · kamu konfirmasi ringkasan trade-nya dulu.</div>
+        <div class="live-confirm" id="liveConfirm" hidden>
+          <b>⚠ Konfirmasi pindah ke LIVE — trade sungguhan dengan uang asli:</b>
+          <div class="sum-row" id="liveSummary" style="margin-top:8px"></div>
+          <div class="controls" style="margin-top:10px">
+            <button type="button" class="btn danger" id="btnLiveYes" style="border-color:var(--red)">Ya, Aktifkan Live</button>
+            <button type="button" class="btn" id="btnLiveNo">Batal — tetap Paper</button>
+          </div>
+        </div>
+      </div>
       <div class="eq-big"><span id="eqBig">$280</span><span class="cents" id="eqCents">.00</span></div>
       <div class="eq-row">
         <span class="pnl" id="pnl">+$0.00 (0%)</span>
@@ -391,7 +417,7 @@
         </svg>
       </div>
       <div class="controls">
-        <button class="btn primary" id="btnRun">⏸ Pause</button>
+        <button class="btn primary" id="btnRun">▶ Jalankan</button>
         <button class="btn" id="btnReset">↺ Reset sesi</button>
         <button class="btn" id="btnPdf">⬇ Laporan PDF</button>
       </div>
@@ -401,6 +427,7 @@
         <span class="pro-badge"><b>Safety Rails</b> · simulasi + slip ≤5%</span>
         <span class="pro-badge warn" id="proFailClosed">FAIL-CLOSED · ON</span>
         <span class="pro-badge ok">↻ ROTASI 1 POSISI · $1 / COIN</span>
+        <span class="pro-badge"><b>Pencarian 2 jalur</b> · Coin Baru + Coin Lama Potensial</span>
       </div>
 
       <!-- desk -->
@@ -456,7 +483,13 @@
             <div style="color:var(--dim);font-size:13.5px;line-height:1.5" id="smartWhy">Scout sedang memindai pair baru. Kandidat yang lolos Filter akan muncul di sini lengkap dengan rincian faktornya.</div>
           </div>
           <span class="pill purple" id="smartGrok">Grok —</span>
+          <span class="pill blue" id="smartCat">Kategori —</span>
         </div>
+        <div class="detail-grid" style="margin-top:12px">
+          <div class="dcell"><div class="dl2">🆕 Jalur 1 · Coin Baru</div><div class="dv" style="font-size:15px">Umur pool ≤ 7 hari</div><div class="ds">Yang dinilai: likuiditas awal, volume 1 jam, distribusi holder, dev wallet, umur pool (baru), bonding curve, sosial/buzz. Fokus: lolos fase snipe &amp; migrasi tanpa kena rug awal.</div></div>
+          <div class="dcell"><div class="dl2">🏛️ Jalur 2 · Coin Lama Potensial</div><div class="dv" style="font-size:15px">Umur pool &gt; 7 hari · survive</div><div class="ds">Yang dinilai: <b>likuiditas bertahan</b>, <b>konsistensi volume</b> antar-window, <b>pertumbuhan holder</b>, dev wallet, <b>umur = survival terbukti</b>, dan <b>harga vs ATH</b> (diskon sehat 40–70%; −90% = mati, bukan murah). Coin lama <b>tidak dihukum karena tuanya</b> — yang dihukum hanya volume/holder/likuiditas yang mati.</div></div>
+        </div>
+        <p class="hint">Scout memindai <b>kedua jalur sekaligus</b> tiap siklus. Kategori hanya menentukan <b>faktor mana yang dipakai</b> (tetap 7 faktor, bobot total 100%, semua tampil per faktor) — audit hard-kill 8 kelas tetap jalan <b>sebelum</b> scoring di kedua jalur, dan ambang lolos Executor tetap sama: <b>Smart Score ≥ 0,72</b>.</p>
         <div id="buzzBox" style="margin-top:10px"></div>
         <p class="hint">Keterlacakan skor: setiap faktor di bawah memuat nilai + <b>kontribusinya (nilai × bobot)</b>, dan baris <b>Jumlah Terbobot</b> di bawah tabel menjumlahkan semua kontribusi itu — hasilnya harus sama persis dengan angka hero dan itulah angka yang dipakai vonis <b>LOLOS / WATCHLIST / DIBUANG</b> serta keputusan Executor. Untuk kandidat <b>replay</b>, sumbernya adalah <b>REPLAY contoh video</b> (bukan live) — faktor live hanya berasal dari bagian Detail Coin / Data Live. Sub-skor <b>Influencer Buzz</b> ditampilkan terpisah di atas rincian faktor; pengaruhnya sudah termasuk di dalam nilai faktor Sosial/Buzz, tidak pernah sebagai angka tambahan di luar tabel.</p>
         <div id="factors"></div>
@@ -632,9 +665,35 @@
           </div>
         </div>
 
+        <div class="sum-row" id="dailyMini" style="margin-top:14px">📅 <b>Batas Harian:</b> memuat progres hari ini…</div>
+        <div class="controls">
+          <button type="button" class="btn" data-open-panel="daily">📅 Buka Pengaturan Harian Trading</button>
+        </div>
+
         <div class="controls">
           <button class="btn primary" id="btnApply">Terapkan &amp; reset sesi</button>
         </div>
+      </section>
+
+      <!-- pengaturan harian trading -->
+      <section class="card" id="sec-daily" aria-label="Pengaturan harian trading">
+        <div class="card-head"><h2>Pengaturan Harian Trading</h2><div class="r">money management · tersimpan</div></div>
+        <p class="hint" style="margin-top:0">Batas-batas ini menjaga satu hari trading. <b>Kalau SATU saja batas kena, bot otomatis berhenti trade untuk sisa hari itu</b> dan status berubah jadi <b>“Batas harian tercapai — bot berhenti”</b>. Bot baru bisa jalan lagi <b>besok (tanggal WIB berganti, progres otomatis reset)</b> atau setelah kamu <b>reset manual</b> di bawah — menekan Jalankan saja tidak membatalkan batas yang sudah kena. Semua angka bisa kamu ubah dan <b>tersimpan di browser ini</b>. Batas berlaku untuk sesi trading free-run paper (dan live nanti); replay contoh video tidak dihitung sebagai trade harian.</p>
+        <div class="set-grid">
+          <div><label class="f" for="inDailyLoss">Batas rugi harian ($)</label><input type="number" id="inDailyLoss" min="0.5" max="100000" step="0.5" value="5" /><p class="hint">Contoh: 5 = bot berhenti kalau P&amp;L hari ini menyentuh <b>−$5</b>.</p></div>
+          <div><label class="f" for="inDailyProfit">Target profit harian ($)</label><input type="number" id="inDailyProfit" min="0.5" max="100000" step="0.5" value="10" /><p class="hint">Contoh: 10 = bot berhenti (mengunci profit) kalau P&amp;L hari ini menyentuh <b>+$10</b>.</p></div>
+          <div><label class="f" for="inDailyMaxTrades">Maks jumlah trade per hari</label><input type="number" id="inDailyMaxTrades" min="1" max="500" step="1" value="20" /><p class="hint">Jumlah pembelian (buy) yang dihitung per hari WIB.</p></div>
+          <div><label class="f" for="inDailyMaxStreak">Maks rugi beruntun (× SL)</label><input type="number" id="inDailyMaxStreak" min="1" max="20" step="1" value="3" /><p class="hint">Contoh: 3 = tiga kali SL berturut-turut tanpa TP di antaranya → berhenti seharian. TP mereset hitungan beruntun.</p></div>
+          <div><label class="f" for="inDayStart">Jam trading aktif — mulai (WIB)</label><input type="time" id="inDayStart" value="00:00" /></div>
+          <div><label class="f" for="inDayEnd">Jam trading aktif — selesai (WIB)</label><input type="time" id="inDayEnd" value="23:59" /><p class="hint">Di luar jam ini bot tidak membuka trade baru; posisi yang sudah terbuka tetap dipantau Risk sampai TP/SL. Jam selesai lebih kecil dari jam mulai = lewat tengah malam.</p></div>
+        </div>
+        <h3 style="margin:18px 0 4px;font-size:16px">Progres Hari Ini</h3>
+        <div id="dailyProgress"><div class="empty">Memuat progres harian…</div></div>
+        <div class="controls">
+          <button type="button" class="btn primary" id="btnDailyApply">Terapkan Batas Harian</button>
+          <button type="button" class="btn danger" id="btnDailyReset">↺ Reset Manual Batas Harian</button>
+        </div>
+        <p class="hint">Reset manual meng-nol-kan P&amp;L hari ini, jumlah trade, dan hitungan rugi beruntun, serta membuka kunci “Batas harian tercapai”. Setelah reset, bot <b>tetap dijeda</b> — tekan <b>▶ Jalankan</b> sendiri untuk mulai lagi. Mengubah angka batas lalu menekan Terapkan juga <b>tidak</b> membuka kunci yang sudah kena; hanya reset manual atau ganti hari yang membukanya.</p>
       </section>
 
       <!-- deploy -->
@@ -678,6 +737,7 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
       <button type="button" data-nav="skills"><span class="bn-ico">🧩</span>Skills</button>
       <button type="button" data-nav="safety"><span class="bn-ico">🛡️</span>Safety</button>
       <button type="button" data-nav="deploy"><span class="bn-ico">🚀</span>Deploy</button>
+      <button type="button" data-nav="daily"><span class="bn-ico">📅</span>Harian</button>
     </nav>
 
     <div class="sheet-backdrop" id="sheetBackdrop" hidden></div>
@@ -696,6 +756,7 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         <button type="button" data-open-panel="audit">🔍 Audit Rug</button>
         <button type="button" data-open-panel="died">💀 Why They Died</button>
         <button type="button" data-open-panel="settings">⚙️ Pengaturan &amp; Modal</button>
+        <button type="button" data-open-panel="daily">📅 Pengaturan Harian</button>
       </div>
       <div class="sheet-body" id="sheetBody">
         <div class="panel-page" data-panel="detail"><div class="panel-slot" id="slot-detail"></div></div>
@@ -707,6 +768,7 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         <div class="panel-page" data-panel="audit"><div class="panel-slot" id="slot-audit"></div></div>
         <div class="panel-page" data-panel="died"><div class="panel-slot" id="slot-died"></div></div>
         <div class="panel-page" data-panel="settings"><div class="panel-slot" id="slot-settings"></div></div>
+        <div class="panel-page" data-panel="daily"><div class="panel-slot" id="slot-daily"></div></div>
       </div>
     </div>
 
@@ -719,7 +781,8 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
       move('sec-detail','slot-detail'); move('sec-live','slot-live'); move('sec-skills','slot-skills');
       move('sec-safety','slot-safety'); move('sec-deploy','slot-deploy'); move('sec-smart','slot-smart');
       move('sec-audit','slot-audit'); move('sec-died','slot-died'); move('pengaturan','slot-settings');
-      var TITLES = { detail:['Detail Coin','Mint address → data asli per faktor + Influencer Buzz'], live:['Data Live & Sumber','Angka hanya dari API asli + sumber + waktu cek (WIB)'], skills:['Skills di Dalam Bot','4 skill profesional yang selalu aktif di bot'], safety:['Safety Rails & Checklist','On-Chain Safety Rails + checklist keamanan'], deploy:['Deploy · Vercel','onlinejob.web.id · cron, env, dan file route'], smart:['Smart Coin Scoring','Skor 7 faktor — hero = jumlah terbobot rincian faktor'], audit:['Audit Rug · 8 Kelas','Satu hard-kill saja = coin dibuang sebelum scoring'], died:['Why They Died','Alasan coin gugur, diringkas dari Logger'], settings:['Pengaturan & Modal','Mode Video $280 · Modal $1 · Modal Kustom — tersimpan di browser ini'] };
+      move('sec-daily','slot-daily');
+      var TITLES = { detail:['Detail Coin','Mint address → data asli per faktor + Influencer Buzz'], live:['Data Live & Sumber','Angka hanya dari API asli + sumber + waktu cek (WIB)'], skills:['Skills di Dalam Bot','4 skill profesional yang selalu aktif di bot'], safety:['Safety Rails & Checklist','On-Chain Safety Rails + checklist keamanan'], deploy:['Deploy · Vercel','onlinejob.web.id · cron, env, dan file route'], smart:['Smart Coin Scoring','Skor 7 faktor — hero = jumlah terbobot rincian faktor'], audit:['Audit Rug · 8 Kelas','Satu hard-kill saja = coin dibuang sebelum scoring'], died:['Why They Died','Alasan coin gugur, diringkas dari Logger'], settings:['Pengaturan & Modal','Mode Video $280 · Modal $1 · Modal Kustom — tersimpan di browser ini'], daily:['Pengaturan Harian Trading','Batas rugi / target profit / maks trade / rugi beruntun / jam aktif — money management harian'] };
       var sheet=document.getElementById('sheet'), bd=document.getElementById('sheetBackdrop'), bodyEl=document.getElementById('sheetBody');
       var current=null;
       function paintNav(){
@@ -802,16 +865,35 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         { id:'renounce', t:'7 · Fake renounce', d:'Klaim “renounced” tapi authority dipindah ke wallet lain / multisig semu = kill.' },
         { id:'sandwich', t:'8 · Sandwich / MEV', d:'Likuiditas tipis + tanpa proteksi slippage = mangsa sandwich. Pool < $15k = kill.' }
       ];
-      /* ---------- PRO: Smart Scoring 7 faktor (bobot transparan, total 100%) ---------- */
-      var FACTORS = [
+      /* ---------- PRO: Smart Scoring 7 faktor (bobot transparan, total 100%) ----------
+         PENCARIAN 2 JALUR — bot tidak hanya berburu coin baru:
+         BARU (umur pool ≤ 7 hari): faktor klasik — bonding curve, fase awal.
+         LAMA POTENSIAL (umur pool > 7 hari): coin yang sudah survive TIDAK
+         dihukum karena tuanya. Umur dibaca sebagai bukti survival, dan yang
+         dinilai adalah konsistensi volume, pertumbuhan holder, likuiditas
+         yang bertahan, dan harga vs ATH (diskon sehat ≠ coin mati).
+         Kedua jalur: audit hard-kill 8 kelas jalan DULU, ambang sama 0,72,
+         dan total tetap jumlah terbobot persis dari faktor yang tampil. */
+      var FACTORS_NEW = [
         { id:'liq',   name:'Likuiditas pool',      w:20 },
         { id:'vol',   name:'Volume 1 jam',         w:15 },
         { id:'holder',name:'Distribusi holder',    w:15 },
         { id:'dev',   name:'Riwayat dev wallet',   w:15 },
-        { id:'age',   name:'Umur pool',            w:10 },
+        { id:'age',   name:'Umur pool (baru)',     w:10 },
         { id:'curve', name:'Bonding curve stage',  w:10 },
         { id:'social',name:'Sosial / Influencer Buzz', w:15 }
       ];
+      var FACTORS_OLD = [
+        { id:'liqPersist', name:'Likuiditas bertahan',        w:20 },
+        { id:'volConsist', name:'Konsistensi volume',         w:15 },
+        { id:'holderGrowth',name:'Pertumbuhan holder',        w:15 },
+        { id:'dev',         name:'Riwayat dev wallet',        w:10 },
+        { id:'survival',    name:'Umur pool · survival terbukti', w:15 },
+        { id:'ath',         name:'Harga vs ATH (diskon sehat)',   w:10 },
+        { id:'social',      name:'Sosial / Influencer Buzz',  w:15 }
+      ];
+      var FACTORS = FACTORS_NEW; /* placeholder saat belum ada kandidat */
+      var OLD_AGE_DAYS = 7; /* batas kategori: > 7 hari = Coin Lama Potensial */
       /* SUMBER KEBENARAN TUNGGAL untuk Smart Score.
          total SELALU = Σ (nilai faktor × bobot faktor) dari rincian yang
          ditampilkan — tidak ada bonus, penalti, atau penyesuaian apa pun
@@ -821,14 +903,30 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
       function weightedTotal(detail){
         return detail.reduce(function(s,d){ return s + d.v * d.w/100; }, 0);
       }
-      /* skor satu kandidat: hasilkan rincian per faktor + alasan teks */
-      function scoreCandidate(sym, grokScore){
+      /* skor satu kandidat: hasilkan rincian per faktor + alasan teks.
+         cat: 'new' | 'old' — kalau tidak diberikan, dipilih dari umur pool
+         simulasi kandidat itu sendiri (bukan koin lemparan terpisah). */
+      function scoreCandidate(sym, grokScore, cat){
+        var ageDays = (cat==='old') ? rnd(OLD_AGE_DAYS+1, 240) : (cat==='new' ? rnd(0.05, OLD_AGE_DAYS) : (Math.random()<0.45 ? rnd(OLD_AGE_DAYS+1, 240) : rnd(0.05, OLD_AGE_DAYS)));
+        cat = ageDays > OLD_AGE_DAYS ? 'old' : 'new';
         var f = {};
         f.liq = Math.min(1, rnd(0.35,1)); f.vol = Math.min(1, rnd(0.3,1));
         f.holder = rnd(0.3,0.98); f.dev = rnd(0.35,0.97); f.age = rnd(0.25,0.95);
         f.curve = rnd(0.3,0.95); f.social = rnd(0.2,0.95);
+        /* --- bahan khusus Coin Lama Potensial (pola REPLAY; live: dari
+           riwayat DexScreener/RPC yang sama, bukan tebakan) --- */
+        f.liqPersist = Math.min(1, rnd(0.35,1));   /* likuiditas tidak kabur setelah fase awal */
+        f.volConsist = rnd(0.3,0.98);              /* volume stabil antar-window, bukan 1 spike */
+        f.holderGrowth = rnd(0.3,0.98);            /* holder bertumbuh / bertahan, bukan menyusut */
+        /* survival: makin lama bertahan makin terbukti — naik lalu CAP,
+           umur saja tidak pernah cukup kalau faktor lain mati */
+        f.survival = Math.min(1, 0.45 + Math.log10(Math.max(1,ageDays))*0.28 + rnd(-0.06,0.08));
+        /* harga vs ATH: diskon 40–70% dari ATH = zona potensial; dekat ATH =
+           kejar harga; −90%+ dengan volume mati = coin mati, skor rendah */
+        var athDrop = Math.floor(rnd(18,94));
+        f.ath = (athDrop>=40 && athDrop<=70) ? rnd(0.72,0.95) : ((athDrop>70 && athDrop<=85) || (athDrop>=25 && athDrop<40)) ? rnd(0.48,0.7) : (athDrop>85 ? rnd(0.08,0.32) : rnd(0.38,0.58));
         /* kadang kandidat memang jelek di 1-2 faktor biar realistis */
-        if(Math.random()<0.35){ var weak = pick(['liq','holder','social','age']); f[weak] = rnd(0.1,0.45); }
+        if(Math.random()<0.35){ var weak = pick(cat==='old' ? ['liqPersist','volConsist','holderGrowth','social'] : ['liq','holder','social','age']); f[weak] = rnd(0.1,0.45); }
         /* --- Influencer Buzz ditentukan DULU (REPLAY pattern; live mode: dari API X/Telegram asli) ---
            Buzz tidak pernah mengubah total dari luar. Ia masuk sebagai bahan
            faktor Sosial/Buzz: shill menekan NILAI FAKTOR itu ke sub-skor buzz,
@@ -846,7 +944,8 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
           buzz = { mode:'quiet', mentions: Math.floor(rnd(0,45)), velocityX: rnd(0.6,1.3), unique: Math.floor(rnd(1,14)), sentiment: rnd(0.35,0.6),
             who:'Pola replay: sepi — belum ada perhatian influencer berarti', score: rnd(0.3,0.5) };
         }
-        var detail = FACTORS.map(function(fc){
+        var factorSet = (cat==='old') ? FACTORS_OLD : FACTORS_NEW;
+        var detail = factorSet.map(function(fc){
           var v, note = '';
           if(fc.id==='social'){
             var base = f.social*0.5 + grokScore*0.5;
@@ -861,14 +960,21 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
           if(fc.id==='liq') note = v>=0.7 ? 'Likuiditas dalam, slippage aman di slip ≤'+S.slip+'%.' : (v>=0.45 ? 'Likuiditas sedang — ukuran posisi ditahan kecil.' : 'Likuiditas tipis, rawan sandwich & LP drain.');
           if(fc.id==='vol') note = v>=0.7 ? 'Volume 1 jam kuat dan organik (bukan wash spike).' : (v>=0.45 ? 'Volume cukup, tapi belum konsisten 3 candle.' : 'Volume di bawah ambang $'+Math.round(S.minVol/1000)+'k / jam.');
           if(fc.id==='holder') note = v>=0.7 ? 'Top 10 holder di bawah 20%, tidak ada dompet bundel dominan.' : (v>=0.45 ? 'Top 10 agak pekat — dipantau Risk tiap tick.' : 'Top 10 terlalu pekat, risiko dump terkoordinasi.');
-          if(fc.id==='dev') note = v>=0.7 ? 'Dev wallet bersih: tidak ada riwayat rug / deploy serial.' : (v>=0.45 ? 'Dev baru, riwayat pendek — skor ditahan.' : 'Dev terkait wallet rug sebelumnya.');
-          if(fc.id==='age') note = v>=0.7 ? 'Pool cukup umur, sudah lewat fase snipe menit pertama.' : (v>=0.45 ? 'Pool muda — volatilitas awal masih tinggi.' : 'Pool terlalu baru, data belum bisa dipercaya.');
+          if(fc.id==='dev') note = (v>=0.7 ? 'Dev wallet bersih: tidak ada riwayat rug / deploy serial.' : (v>=0.45 ? (cat==='old' ? 'Dev masih aktif & tidak ada insiden, tapi riwayatnya campuran — skor ditahan.' : 'Dev baru, riwayat pendek — skor ditahan.') : 'Dev terkait wallet rug sebelumnya.'));
+          if(fc.id==='age') note = 'Umur pool (replay): '+ageDays.toFixed(1)+' hari — kategori Coin Baru. '+(v>=0.7 ? 'Sudah lewat fase snipe menit pertama.' : (v>=0.45 ? 'Pool muda — volatilitas awal masih tinggi.' : 'Pool terlalu baru, data belum bisa dipercaya.'));
           if(fc.id==='curve') note = v>=0.7 ? 'Bonding curve sehat, progres migrasi wajar.' : (v>=0.45 ? 'Kurva di tengah — tunggu konfirmasi migrasi.' : 'Kurva janggal: bundler / snipe terdeteksi.');
+          if(fc.id==='liqPersist') note = 'Umur pool (replay): '+Math.round(ageDays)+' hari. '+(v>=0.7 ? 'Likuiditas BERTAHAN sejak fase awal — bukan pool sekali pump lalu kering.' : (v>=0.45 ? 'Likuiditas masih ada tapi menipis dari puncaknya — dipantau.' : 'Likuiditas sudah banyak kabur — coin lama tanpa pool sehat = skip.'));
+          if(fc.id==='volConsist') note = v>=0.7 ? 'Volume konsisten antar-window (1 jam vs 24 jam vs 7 hari seimbang) — aktivitas asli, bukan satu spike.' : (v>=0.45 ? 'Volume ada tapi tidak rata — sebagian besar dari spike sesaat.' : 'Volume 24 jam / 7 hari mati atau cuma spike lama — bukan potensial, itu coin ditinggalkan.');
+          if(fc.id==='holderGrowth') note = v>=0.7 ? 'Jumlah holder bertumbuh / bertahan stabil — distribusi membaik seiring umur coin.' : (v>=0.45 ? 'Holder datar — belum menyusut, tapi belum ada pertumbuhan baru.' : 'Holder menyusut terus — komunitas pergi, coin lama ini kehilangan alasannya.');
+          if(fc.id==='survival') note = 'Coin ini sudah bertahan '+Math.round(ageDays)+' hari melewati fase di mana mayoritas meme coin mati. Umur di sini adalah BUKTI survival (skor naik lalu dibatasi/cap) — BUKAN hukuman karena tua, dan tidak pernah cukup sendirian kalau volume / holder / likuiditasnya mati.';
+          if(fc.id==='ath') note = 'Harga sekarang (replay) −'+athDrop+'% dari ATH. '+(athDrop>=40 && athDrop<=70 ? 'Zona diskon sehat: jauh dari puncak, tapi coin-nya terbukti masih hidup — ruang pulih ada tanpa harus mengejar ATH.' : (athDrop>85 ? 'Sudah −'+athDrop+'% dari ATH — itu bukan diskon, itu coin yang ditinggalkan; skor rendah kecuali volume & holder hidup lagi.' : (athDrop<25 ? 'Masih dekat ATH — membeli di sini = mengejar puncak, ruang naik tipis.' : 'Diskon sedang dari ATH — dinilai bersama konsistensi volume & holder, bukan dari murahnya saja.')));
           return { id:fc.id, name:fc.name, w:fc.w, v:v, contrib:v * fc.w/100, note:note };
         });
         /* total = jumlah terbobot rincian di atas. Titik. Tidak diubah lagi. */
         var total = weightedTotal(detail);
-        return { sym:sym, grok:grokScore, total:total, detail:detail, buzz:buzz };
+        return { sym:sym, grok:grokScore, total:total, detail:detail, buzz:buzz,
+          cat:cat, catLabel:(cat==='old' ? 'Coin Lama Potensial' : 'Coin Baru'),
+          ageDays:ageDays, athDrop:athDrop };
       }
       var SKILLS = [
         { bg:'rgba(255,107,107,.14)', ico:'🛡️', t:'meme_coin_audit — Audit Rug 8 Kelas', d:'Hidden mint · honeypot/blacklist · fee manipulation · LP drain · bonding curve · authority Solana (mint/freeze = None) · fake renounce · sandwich. Satu kena = HARD KILL sebelum scoring.' },
@@ -890,7 +996,9 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         ['Konfirmasi untuk aksi destruktif','Live pertama, ganti wallet & matikan stop butuh OK eksplisit + ringkasan 1 baris.'],
         ['Paper-first','Mode paper adalah default. Live hanya aktif setelah OK eksplisit, wallet khusus $1–5.'],
         ['Influencer Buzz = sinyal waspada dua arah','Shill terkoordinasi / akun baru / riwayat rug → nilai faktor Sosial/Buzz ditekan ke sub-skor buzz + tahan beli. Buzz ramai + fundamental kotor = tetap KILL.'],
-        ['Akurasi: sumber + waktu di setiap angka live','Harga/liq/vol/holder/authority/buzz wajib dari DexScreener/Jupiter/Solscan/RPC/TrueSOTA/X. Kosong/basi/error = “Data belum tersedia” + fail-closed. Replay selalu berlabel REPLAY.']
+        ['Akurasi: sumber + waktu di setiap angka live','Harga/liq/vol/holder/authority/buzz wajib dari DexScreener/Jupiter/Solscan/RPC/TrueSOTA/X. Kosong/basi/error = “Data belum tersedia” + fail-closed. Replay selalu berlabel REPLAY.'],
+        ['Pencarian 2 jalur: Coin Baru + Coin Lama Potensial','Coin lama (>7 hari) dinilai dari likuiditas bertahan, konsistensi volume, pertumbuhan holder, survival, dan harga vs ATH — tidak dihukum karena tuanya. Audit hard-kill + ambang 0,72 sama untuk kedua jalur.'],
+        ['Batas harian trading (money management)','Batas rugi harian, target profit harian, maks trade/hari, maks rugi beruntun, dan jam trading aktif tersimpan & ditegakkan: satu batas kena = bot berhenti seharian, status “Batas harian tercapai — bot berhenti”, sampai besok atau reset manual.']
       ];
 
       /* ---------- settings ---------- */
@@ -898,25 +1006,124 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         mode:'std', customEquity:10, equity:280, size:8, stop:6, trail:12, tp1:50, tp2:100,
         minVol:50000, minScore:0.72, slip:5, minLiq:15000, model:'grok-4.6', domain:'onlinejob.web.id', key:'', wallet:'jupiter',
         walletAddress:'EJrjGUTe2qNok3GRHDcQi8kR56tn7Q7ymHgx2eBcyeMY',
-        soundOn:true, sndVol:70, lite:false
+        soundOn:true, sndVol:70, lite:false,
+        dailyLoss:5, dailyProfit:10, dailyMaxTrades:20, dailyMaxStreak:3, dayStart:'00:00', dayEnd:'23:59',
+        tradeMode:'paper'
       };
+
+      /* ---------- BATAS HARIAN TRADING (money management) ----------
+         Progres harian disimpan TERPISAH dari sesi (grokbot-daily-v1):
+         tanggal WIB + P&L tertutup hari ini + jumlah buy hari ini +
+         rugi beruntun + status terkunci. Refresh / tutup tab TIDAK
+         menghapusnya — kunci hanya lepas saat tanggal WIB berganti
+         (besok) atau user menekan Reset Manual Batas Harian. */
+      var DAILY_LS = 'grokbot-daily-v1';
+      function todayWIB(){ try{ return new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Jakarta'}); }catch(e){ var d=new Date(); return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); } }
+      function nowMinWIB(){ try{ var s=new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Jakarta',hour:'2-digit',minute:'2-digit'}); var p=s.split(':'); return parseInt(p[0],10)*60+parseInt(p[1],10); }catch(e){ var d=new Date(); return d.getHours()*60+d.getMinutes(); } }
+      function hhmmToMin(v, fb){ var m=/^(\d{1,2}):(\d{2})$/.exec(String(v||'')); if(!m) return fb; var n=parseInt(m[1],10)*60+parseInt(m[2],10); return (n>=0 && n<=1439) ? n : fb; }
+      function inTradingHours(){
+        var a = hhmmToMin(S.dayStart, 0), b = hhmmToMin(S.dayEnd, 1439), n = nowMinWIB();
+        if(a<=b) return n>=a && n<=b;
+        return n>=a || n<=b; /* jendela lewat tengah malam */
+      }
+      var day = { date:todayWIB(), pnl:0, trades:0, streak:0, stopped:false, reason:'' };
+      try{ var dSaved = JSON.parse(localStorage.getItem(DAILY_LS)||'null'); if(dSaved && dSaved.date===day.date){ day.pnl=+dSaved.pnl||0; day.trades=dSaved.trades|0; day.streak=dSaved.streak|0; day.stopped=!!dSaved.stopped; day.reason=String(dSaved.reason||''); } }catch(e){}
+      function saveDay(){ try{ localStorage.setItem(DAILY_LS, JSON.stringify(day)); }catch(e){} }
+      function rollDayIfNeeded(){ var t=todayWIB(); if(day.date!==t){ day={ date:t, pnl:0, trades:0, streak:0, stopped:false, reason:'' }; saveDay(); if(typeof st!=='undefined' && st) st.hourBlock=false; } }
+      function paintDaily(){
+        rollDayIfNeeded();
+        var lossUsed = Math.max(0, -day.pnl), profUsed = Math.max(0, day.pnl);
+        var status = day.stopped ? '<span class="status-err">🛑 Batas harian tercapai — bot berhenti</span><br/><span style="color:var(--dim)">'+escHtml(day.reason||'')+' · Baru bisa jalan lagi besok atau setelah Reset Manual Batas Harian.</span>'
+          : (!inTradingHours() ? '<span class="status-err">🕐 Di luar jam trading aktif ('+escHtml(S.dayStart)+'–'+escHtml(S.dayEnd)+' WIB) — bot tidak membuka trade baru</span>'
+          : '<span class="status-ok">✓ Di dalam batas harian &amp; jam trading aktif</span>');
+        var html =
+          '<div class="detail-grid">'+
+          '<div class="dcell"><div class="dl2">P&amp;L hari ini (tertutup)</div><div class="dv" style="color:'+(day.pnl<0?'var(--red)':(day.pnl>0?'var(--green)':'var(--txt)'))+'">'+(day.pnl>=0?'+':'−')+'$'+Math.abs(day.pnl).toFixed(2)+'</div><div class="ds">Tanggal WIB: '+escHtml(day.date)+' · dihitung dari posisi yang sudah ditutup (TP/SL) di sesi free-run</div></div>'+
+          '<div class="dcell"><div class="dl2">Rugi hari ini / batas</div><div class="dv">−$'+lossUsed.toFixed(2)+' <span style="color:var(--dim2);font-size:13px">/ −$'+Math.abs(S.dailyLoss).toFixed(2)+'</span></div><div class="ds">Sisa ruang rugi: $'+Math.max(0, Math.abs(S.dailyLoss)-lossUsed).toFixed(2)+'</div></div>'+
+          '<div class="dcell"><div class="dl2">Profit hari ini / target</div><div class="dv">+$'+profUsed.toFixed(2)+' <span style="color:var(--dim2);font-size:13px">/ +$'+Math.abs(S.dailyProfit).toFixed(2)+'</span></div><div class="ds">Kena target = berhenti &amp; mengunci profit hari itu</div></div>'+
+          '<div class="dcell"><div class="dl2">Trade hari ini / maks</div><div class="dv">'+day.trades+' <span style="color:var(--dim2);font-size:13px">/ '+S.dailyMaxTrades+'</span></div><div class="ds">Yang dihitung: setiap pembelian (buy) free-run</div></div>'+
+          '<div class="dcell"><div class="dl2">Rugi beruntun / maks</div><div class="dv">'+day.streak+'× <span style="color:var(--dim2);font-size:13px">/ '+S.dailyMaxStreak+'×</span></div><div class="ds">SL berturut-turut tanpa TP di antaranya</div></div>'+
+          '<div class="dcell"><div class="dl2">Jam trading aktif</div><div class="dv" style="font-size:15px">'+escHtml(S.dayStart)+' – '+escHtml(S.dayEnd)+' WIB</div><div class="ds">Di luar jam ini: tidak ada buy baru</div></div>'+
+          '</div><div class="sum-row">Status: '+status+'</div>';
+        var el=$('dailyProgress'); if(el) el.innerHTML = html;
+        var mini=$('dailyMini'); if(mini) mini.innerHTML = '📅 <b>Batas Harian:</b> P&amp;L hari ini <b>'+(day.pnl>=0?'+':'−')+'$'+Math.abs(day.pnl).toFixed(2)+'</b> (rugi maks −$'+Math.abs(S.dailyLoss).toFixed(2)+' · target +$'+Math.abs(S.dailyProfit).toFixed(2)+') · trade <b>'+day.trades+'/'+S.dailyMaxTrades+'</b> · rugi beruntun <b>'+day.streak+'/'+S.dailyMaxStreak+'×</b> · jam '+escHtml(S.dayStart)+'–'+escHtml(S.dayEnd)+' WIB'+(day.stopped ? ' · <b style="color:var(--red)">🛑 Batas harian tercapai — bot berhenti</b>' : '');
+      }
+      function tripDaily(reason){
+        if(day.stopped) return;
+        day.stopped = true; day.reason = reason; saveDay();
+        if(typeof st!=='undefined' && st && !st.hold){ st.running = false; }
+        if(typeof st!=='undefined' && st && typeof paintRunUI==='function') paintRunUI();
+        paintDaily();
+        if(typeof addLog==='function' && typeof st!=='undefined' && st){ try{ addLog('RISK', '#ffb454', 'BATAS HARIAN · '+reason+' — bot berhenti seharian'); }catch(e){} }
+        if(typeof toast==='function' && typeof st!=='undefined' && st){ try{ toast('🛑 Batas harian tercapai — bot berhenti', reason+' · jalan lagi besok atau setelah Reset Manual Batas Harian', '', 'var(--red)'); }catch(e){} }
+      }
+      function noteTradeOpen(){
+        rollDayIfNeeded(); day.trades++; saveDay(); paintDaily();
+      }
+      function noteTradeClosed(pnl){
+        rollDayIfNeeded();
+        day.pnl += pnl;
+        if(pnl < 0) day.streak++; else if(pnl > 0) day.streak = 0;
+        saveDay(); paintDaily();
+        var why = null;
+        if(day.pnl <= -Math.abs(S.dailyLoss)) why = 'Batas rugi harian tercapai (P&L hari ini '+money(day.pnl)+' ≤ −$'+Math.abs(S.dailyLoss).toFixed(2)+')';
+        else if(day.pnl >= Math.abs(S.dailyProfit)) why = 'Target profit harian tercapai (P&L hari ini '+money(day.pnl)+' ≥ +$'+Math.abs(S.dailyProfit).toFixed(2)+')';
+        else if(day.streak >= S.dailyMaxStreak) why = 'Maks rugi beruntun tercapai ('+day.streak+'× SL berturut-turut)';
+        else if(day.trades >= S.dailyMaxTrades) why = 'Maks jumlah trade harian tercapai ('+day.trades+'/'+S.dailyMaxTrades+' trade)';
+        if(why) tripDaily(why);
+      }
+      function resetDailyManual(){
+        day = { date:todayWIB(), pnl:0, trades:0, streak:0, stopped:false, reason:'' };
+        saveDay();
+        if(typeof st!=='undefined' && st) st.hourBlock = false;
+        if(typeof st!=='undefined' && st && typeof paintRunUI==='function') paintRunUI();
+        paintDaily();
+      }
 
       /* ---------- SUARA: Web Audio API, tanpa file eksternal ----------
          Aturan autoplay browser: AudioContext hanya boleh bunyi setelah
          user berinteraksi dengan halaman. Context dibuat/dilanjutkan pada
          sentuhan/klik/ketik pertama; sebelum itu semua bunyi dilewati diam-diam. */
-      var AC = null, audioUnlocked = false, lastClickAt = 0;
+      var AC = null, audioUnlocked = false, lastClickAt = 0, pageGone = false;
       function ensureAudio(){
         if(!S.soundOn) return null;
+        /* Halaman tidak terlihat / user sudah keluar: JANGAN PERNAH resume audio */
+        if(pageGone || document.hidden) return null;
         if(!AC){ try{ AC = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){ return null; } }
         if(AC.state === 'suspended'){ AC.resume(); }
         return AC;
       }
+      /* ---------- KELUAR DARI HALAMAN = SENYAP + DIJEDA TOTAL ----------
+         visibilitychange (tab disembunyikan / pindah aplikasi / Chrome
+         ditinggal), pagehide (halaman ditutup / dinavigasi pergi), dan blur
+         (jendela kehilangan fokus) semuanya memanggil ini: AudioContext
+         langsung di-suspend, bot dijeda, dan TIDAK ADA jalur auto-resume.
+         Saat user kembali (visible / focus / pageshow) tidak ada apa pun
+         yang menjalankan bot atau audio lagi — pageGone hanya dibersihkan
+         oleh klik manual pada tombol Jalankan (lihat handler btnRun). */
+      function silenceAndPause(){
+        pageGone = true;
+        audioUnlocked = false;
+        if(AC && AC.state === 'running'){ try{ AC.suspend(); }catch(e){} }
+        if(typeof st !== 'undefined' && st && !st.hold && st.running){ st.running = false; }
+        if(typeof st !== 'undefined' && st && typeof paintRunUI === 'function'){ paintRunUI(); }
+      }
+      document.addEventListener('visibilitychange', function(){
+        if(document.hidden || document.visibilityState === 'hidden'){ silenceAndPause(); }
+        /* kembali terlihat: sengaja TIDAK resume apa pun — tetap dijeda & senyap */
+      });
+      window.addEventListener('pagehide', silenceAndPause);
+      window.addEventListener('blur', silenceAndPause);
+      window.addEventListener('focus', function(){ /* kembali fokus ≠ izin jalan: tetap dijeda sampai Jalankan ditekan */ });
+      window.addEventListener('pageshow', function(){ /* kembali dari bfcache: tetap dijeda & senyap */ });
       ['pointerdown','keydown','touchstart'].forEach(function(ev){
-        document.addEventListener(ev, function(){ audioUnlocked = true; ensureAudio(); }, { passive:true });
+        document.addEventListener(ev, function(){
+          if(pageGone || document.hidden) return; /* sentuhan setelah kembali tidak membuka audio diam-diam */
+          audioUnlocked = true; ensureAudio();
+        }, { passive:true });
       });
       function tone(freq, delay, dur, type, volScale){
-        if(S.lite || !S.soundOn || !audioUnlocked || document.hidden) return;
+        if(pageGone || document.hidden || S.lite || !S.soundOn || !audioUnlocked) return;
         var ctx = ensureAudio(); if(!ctx) return;
         try{
           var t0 = ctx.currentTime + (delay||0);
@@ -943,23 +1150,6 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         var now = Date.now(); if(now - lastClickAt < 300) return; lastClickAt = now;
         tone(2100, 0, 0.035, 'square', 0.28);
       }
-      /* Suara mati saat keluar Chrome / tab tidak terlihat:
-         suspend AudioContext + jeda bot. Saat kembali, tetap dijeda
-         sampai user tekan Jalankan lagi — tidak auto bunyi / auto trade. */
-      function silenceOnLeave(){
-        try{ if(AC && AC.state === 'running') AC.suspend(); }catch(e){}
-        try{
-          if(typeof st !== 'undefined' && st && st.running){
-            st.running = false;
-            var b = $('btnRun'); if(b) b.textContent = '▶ Jalankan';
-            var d = $('liveDot'); if(d) d.className = 'dot off';
-            var t = $('liveTxt'); if(t) t.textContent = 'Paused · tekan Jalankan untuk mulai';
-          }
-        }catch(e){}
-      }
-      document.addEventListener('visibilitychange', function(){ if(document.hidden) silenceOnLeave(); });
-      window.addEventListener('pagehide', silenceOnLeave);
-      window.addEventListener('blur', function(){ silenceOnLeave(); });
       function paintSoundUI(){
         var b = $('btnSound');
         if(b){ b.textContent = S.soundOn ? '🔊 Suara ON' : '🔇 Suara OFF'; b.className = 'snd-chip' + (S.soundOn ? '' : ' off'); }
@@ -978,13 +1168,38 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
       /* ---------- state ---------- */
       var st;
       function seedHistory(v){ var h=[], i; for(i=0;i<37;i++){ h.push(v); } return h; }
+      /* Status jalan/dijeda hanya berubah lewat tombol Jalankan/Pause.
+         Setiap load, refresh, reset sesi, terapkan pengaturan, ganti mode
+         modal, dan pindah Lite ↔ Muat Penuh SELALU berakhir DIJEDA. */
+      function paintRunUI(){
+        if(!st) return;
+        var btn = $('btnRun'); if(!btn) return;
+        if(st.hold){
+          btn.textContent = '▶ Lanjut free-run';
+          $('liveTxt').textContent = 'Replay · Selesai';
+          $('liveDot').className = 'dot off';
+        } else if(typeof day !== 'undefined' && day.stopped){
+          btn.textContent = '▶ Jalankan';
+          $('liveTxt').textContent = 'Batas harian tercapai — bot berhenti';
+          $('liveDot').className = 'dot off';
+        } else if(st.hourBlock){
+          btn.textContent = '▶ Jalankan';
+          $('liveTxt').textContent = 'Di luar jam trading aktif — bot berhenti';
+          $('liveDot').className = 'dot off';
+        } else if(st.running){
+          btn.textContent = '⏸ Pause';
+          $('liveTxt').textContent = 'Replay · Paper';
+          $('liveDot').className = 'dot';
+        } else {
+          btn.textContent = '▶ Jalankan';
+          $('liveTxt').textContent = 'Paused · tekan Jalankan untuk mulai';
+          $('liveDot').className = 'dot off';
+        }
+      }
       function resetState(){
         dispEq = null;
-        $('btnRun').textContent = '⏸ Pause';
-        $('liveTxt').textContent = 'Replay · Paper';
-        $('liveDot').className = 'dot';
         st = {
-          running:true, startEquity:S.equity, equity:S.equity, cash:S.equity,
+          running:false, startEquity:S.equity, equity:S.equity, cash:S.equity,
           scanned:1146, traded:0, killed:1123, scored:42, passed:23,
           kills:{ mint:296, lp:271, top10:247, vol:214, dev:76, score:19 },
           wins:0, losses:0, best:null, worst:null, lastStopTxt:'',
@@ -997,6 +1212,7 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         };
         seedLogs();
         syncToast();
+        paintRunUI();
         renderAll();
       }
       function seedLogs(){
@@ -1053,7 +1269,7 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
 
       /* ---------- agents desk ---------- */
       var AGENTS = [
-        { id:'scout',    name:'Scout',    sub:'new pairs',        color:'#57a8ff', bg:'rgba(87,168,255,.16)',
+        { id:'scout',    name:'Scout',    sub:'baru + lama potensial',        color:'#57a8ff', bg:'rgba(87,168,255,.16)',
           icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#57a8ff" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>' },
         { id:'filter',   name:'Filter',   sub:'kills 98%',        color:'#ffb454', bg:'rgba(255,180,84,.16)',
           icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="#ffb454"><path d="M3 5h18l-7 8v5l-4 2v-7L3 5z"/></svg>' },
@@ -1073,7 +1289,7 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         var riskPill = S.mode!=='std' ? ('-'+S.stop+'% · TP +'+S.tp1+'%') : ('-'+S.stop+'% · trail +'+S.trail+'%');
         var openRisk = st.positions.length ? st.positions.map(function(p){ return '<span class="coin">'+p.sym+'</span> '+(p.pnlPct>=0?'<span class="good">+':'<span class="bad">')+p.pnlPct.toFixed(0)+'%</span>'; }).join(' · ') : 'no open risk';
         var rows = {
-          scout:    { status:'<span class="coin">'+(st.lastScout||'$MICRODUCK')+'</span> new pair · Pump.fun + Raydium…', pill:'<span class="pill blue">'+(st.scanned>=1000?(st.scanned/1000).toFixed(1)+'k':st.scanned)+' pairs</span>' },
+          scout:    { status:'<span class="coin">'+(st.lastScout||'$MICRODUCK')+'</span> 2 jalur · pair baru + coin lama potensial…', pill:'<span class="pill blue">'+(st.scanned>=1000?(st.scanned/1000).toFixed(1)+'k':st.scanned)+' pairs</span>' },
           filter:   { status: st.lastKill ? '<span class="coin">'+st.lastKill.coin+'</span> <span class="bad">✕ '+st.lastKill.txt+'</span>' : '—', pill:'<span class="pill red">'+fmt(filterKills)+' · '+filterPct+'%</span>' },
           analyst:  { status: st.lastScore ? '<span class="coin">'+st.lastScore.coin+'</span> '+(st.lastScore.score>=S.minScore? '<span class="good">score '+st.lastScore.score.toFixed(2)+' ✓</span>' : '<span class="bad">✕ '+st.lastScore.score.toFixed(2)+' &lt; '+S.minScore+'</span>') : '<span class="coin">$SIGMA</span> <span class="bad">✕ 0.41 &lt; 0.6</span>', pill:'<span class="pill purple">'+fmt(st.scored)+' scored</span>' },
           executor: { status: st.lastBuy ? 'bought <span class="coin">'+st.lastBuy.coin+'</span> · '+money(st.lastBuy.amt) : (st.passed>0 ? '<span class="good">'+st.passed+' passed</span> · waiting entry' : 'nothing passed yet'), pill:'<span class="pill green">'+sizeLbl+'</span>' },
@@ -1187,7 +1403,8 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         var pass = sum>=S.minScore && !shill;
         $('smartNum').textContent = sum.toFixed(2);
         $('smartNum').style.color = pass ? 'var(--green)' : (sum>=S.minScore ? 'var(--red)' : (sum>=0.6 ? 'var(--amber)' : 'var(--red)'));
-        $('smartCoin').textContent = sm.sym+' · kandidat terakhir dinilai';
+        $('smartCoin').textContent = sm.sym+' · '+(sm.catLabel||'Coin Baru')+' · umur pool '+(sm.ageDays!=null ? (sm.ageDays<1 ? (sm.ageDays*24).toFixed(1)+' jam' : sm.ageDays.toFixed(sm.ageDays<10?1:0)+' hari') : '—')+' · kandidat terakhir dinilai';
+        var scEl = $('smartCat'); if(scEl) scEl.textContent = (sm.cat==='old' ? '🏛️ ' : '🆕 ')+(sm.catLabel||'Coin Baru')+(sm.cat==='old' && sm.athDrop!=null ? ' · −'+sm.athDrop+'% dari ATH' : '');
         $('smartGrok').textContent = 'Grok '+sm.grok.toFixed(2)+' · bahan faktor Sosial/Buzz';
         $('smartVerdict').textContent = pass ? '✓ LOLOS — layak masuk Executor' : (shill && sum>=S.minScore ? '✕ DITAHAN — jumlah terbobot lolos ambang, tapi gerbang anti-shill menahan beli' : (sum>=0.6 ? '◐ WATCHLIST — belum dibeli' : '✕ DIBUANG — skor terlalu rendah'));
         $('smartWhy').textContent = pass ? 'Jumlah terbobot '+sum.toFixed(2)+' ≥ ambang '+S.minScore.toFixed(2)+' dan audit 8 kelas lolos. Angka ini persis jumlah kontribusi faktor-faktor di bawah.' : (shill && sum>=S.minScore ? 'Jumlah terbobotnya '+sum.toFixed(2)+' memang ≥ ambang '+S.minScore.toFixed(2)+', tetapi buzz terdeteksi shill terkoordinasi — gerbang keamanan menahan coin ini. Skornya tidak diubah-ubah untuk memaksakan vonis.' : 'Jumlah terbobot '+sum.toFixed(2)+' belum mencapai ambang '+S.minScore.toFixed(2)+'. Lihat kontribusi faktor di bawah — itulah penjumlahan pastinya, bukan tebakan.');
@@ -1251,7 +1468,7 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
           }).join('');
         }
       }
-      function renderAll(){ if(st.arc && st.tickN - (st.toastTick||-99) > 6) syncToast(); renderEquity(); renderAgents(); renderLog(); renderDied(); renderPositions(); renderRotation(); renderSmart(); }
+      function renderAll(){ if(st.arc && st.tickN - (st.toastTick||-99) > 6) syncToast(); renderEquity(); renderAgents(); renderLog(); renderDied(); renderPositions(); renderRotation(); renderSmart(); paintDaily(); }
 
       /* ---------- simulation engine (paper) ---------- */
       /* ---------- replay engine: night run contoh dari video ----------
@@ -1363,10 +1580,9 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
               else { st.losses++; if(st.worst===null||(pl.pnl||0)<st.worst) st.worst=pl.pnl||0; }
             }
           });
-          st.arc = false; st.hold = true; st.cash = st.equity; st.nextMile = st.scanned + 2500;
+          st.arc = false; st.hold = true; st.running = false; st.cash = st.equity; st.nextMile = st.scanned + 2500;
           st.positions = st.positions.filter(function(pp){ return !pp.plan; });
-          $('btnRun').textContent = '▶ Lanjut free-run';
-          $('liveTxt').textContent = 'Replay · Selesai';
+          paintRunUI();
           toast('Night run selesai · $3,412.00', '10,214 scanned · 38 traded · 26W / 12L · 12.19× · lanjut free-run paper', '+$3,132', 'var(--green)');
         }
         renderAll();
@@ -1376,6 +1592,23 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         if(st.arc) arcTick(); else { st.clockMin += Math.floor(rnd(3,8)); scanTick(); }
       }
       function scanTick(){
+        /* ---------- GERBANG BATAS HARIAN (sebelum aktivitas apa pun) ---------- */
+        rollDayIfNeeded();
+        if(day.stopped){ st.running = false; paintRunUI(); renderAll(); return; }
+        if(!inTradingHours()){
+          if(st.positions.length){
+            /* posisi terbuka tetap dipantau Risk sampai TP/SL — tanpa buy baru */
+            movePositions();
+            st.history.push(st.equity); if(st.history.length>90) st.history.shift();
+            renderAll(); return;
+          }
+          st.hourBlock = true; st.running = false; paintRunUI(); renderAll(); return;
+        }
+        st.hourBlock = false;
+        if(!st.positions.length && day.trades >= S.dailyMaxTrades){
+          tripDaily('Maks jumlah trade harian tercapai ('+day.trades+'/'+S.dailyMaxTrades+' trade)');
+          renderAll(); return;
+        }
         /* ROTASI langkah 3: eksekusi pembelian pending dari scan sebelumnya.
            Tepat $1 per coin (mode $1: all-in sisa modal kalau kas < $1). */
         if(st.rotPending && !st.positions.length){
@@ -1383,12 +1616,13 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
           var amt = Math.min(1, st.cash);
           if(amt >= 0.10){
             st.cash -= amt; st.traded++;
-            var npos = { sym:pb.sym, entry:tickerPrice(), amt:amt, peak:0, pnlPct:0, pnl:0, tp1Done:false, age:0 };
+            noteTradeOpen(); /* buy ini dihitung ke trade harian */
+            var npos = { sym:pb.sym, entry:tickerPrice(), amt:amt, peak:0, pnlPct:0, pnl:0, tp1Done:false, age:0, cat:(pb.smart && pb.smart.catLabel) || '' };
             npos.price = npos.entry;
             st.positions.push(npos);
             st.lastBuy = { coin:pb.sym, amt:amt };
             st.rotState = 'holding';
-            addLog('EXECUTOR', '#2fe07c', 'ROTASI · bought '+pb.sym+' · '+money(amt)+' · smart '+pb.smart.total.toFixed(2)+' · buzz '+pb.smart.buzz.score.toFixed(2)+' · audit 8/8 · simulasi OK · slip ≤'+S.slip+'% · sekarang menunggu TP/SL');
+            addLog('EXECUTOR', '#2fe07c', 'ROTASI · bought '+pb.sym+' · '+(pb.smart.catLabel||'Coin Baru')+' · '+money(amt)+' · smart '+pb.smart.total.toFixed(2)+' · buzz '+pb.smart.buzz.score.toFixed(2)+' · audit 8/8 · simulasi OK · slip ≤'+S.slip+'% · trade harian #'+day.trades+' · sekarang menunggu TP/SL');
             toast('Beli coin baru '+pb.sym+' · '+money(amt), 'rotasi ronde #'+st.rotRound+' · smart '+pb.smart.total.toFixed(2)+' · menunggu TP/SL', '', 'var(--green)');
             sndBuy();
           } else {
@@ -1447,7 +1681,7 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
             if(!st.positions.length && !st.rotPending && st.rotState==='scanning'){
               st.rotPending = { sym:c2, smart:smart };
               st.rotState = 'buying';
-              addLog('SCOUT', '#57a8ff', 'ROTASI · kandidat '+c2+' lolos semua filter · smart '+smart.total.toFixed(2)+' · buzz '+smart.buzz.score.toFixed(2)+' → beli $1');
+              addLog('SCOUT', '#57a8ff', 'ROTASI · kandidat '+c2+' · '+smart.catLabel+' · lolos semua filter · smart '+smart.total.toFixed(2)+' · buzz '+smart.buzz.score.toFixed(2)+' → beli $1');
               sndScan(); /* scan selesai: kandidat ditemukan */
             }
           }
@@ -1487,6 +1721,7 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
           if(exit){
             var pnlAtExit = p.pnl, pctAtExit = p.pnlPct;
             closePosition(p, exit);
+            noteTradeClosed(pnlAtExit); /* P&L tertutup masuk progres harian; bisa memicu kunci batas harian */
             st.rotHistory.unshift({ sym:p.sym, res:exit, pnl:pnlAtExit, pct:pctAtExit, t:fmtClock(), round:st.rotRound });
             if(st.rotHistory.length>12) st.rotHistory.length = 12;
             st.rotRound++;
@@ -1533,6 +1768,9 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         lines.push('');
         lines.push('ATURAN RISIKO');
         lines.push('Hard stop: -'+S.stop+'%   Trailing: +'+S.trail+'%   TP1: +'+S.tp1+'%   TP2: +'+S.tp2+'%');
+        lines.push('Mode trade  : '+(S.tradeMode==='live'?'LIVE (sungguhan)':'PAPER (simulasi)'));
+        lines.push('Batas harian: rugi -$'+Math.abs(S.dailyLoss).toFixed(2)+'   target +$'+Math.abs(S.dailyProfit).toFixed(2)+'   maks '+S.dailyMaxTrades+' trade   streak '+S.dailyMaxStreak+'x   jam '+S.dayStart+'-'+S.dayEnd+' WIB');
+        lines.push('Progres ini : P&L '+money(day.pnl)+'   trade '+day.trades+'   streak '+day.streak+'x'+(day.stopped?'   STATUS: BATAS HARIAN TERCAPAI - BOT BERHENTI':''));
         lines.push('Min volume 1j: $'+fmt(S.minVol)+'   Skor analis min: '+S.minScore);
         lines.push('LLM: TrueSOTA https://true-sota.com/v1 (model: '+S.model+')');
         lines.push('Wallet live: '+(S.wallet==='jupiter'?'Jupiter Wallet':S.wallet)+' (swap via Jupiter API, wallet khusus $1-5)');
@@ -1617,7 +1855,13 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         $('modeStd').className = S.mode==='std' ? 'on':''; $('modeOne').className = S.mode==='one' ? 'on':'';
         if($('modeCustom')) $('modeCustom').className = S.mode==='custom' ? 'on':'';
         if($('inCustomEquity')) $('inCustomEquity').value = S.customEquity;
-        paintSoundUI(); paintCapital();
+        if($('inDailyLoss')) $('inDailyLoss').value = S.dailyLoss;
+        if($('inDailyProfit')) $('inDailyProfit').value = S.dailyProfit;
+        if($('inDailyMaxTrades')) $('inDailyMaxTrades').value = S.dailyMaxTrades;
+        if($('inDailyMaxStreak')) $('inDailyMaxStreak').value = S.dailyMaxStreak;
+        if($('inDayStart')) $('inDayStart').value = S.dayStart;
+        if($('inDayEnd')) $('inDayEnd').value = S.dayEnd;
+        paintSoundUI(); paintCapital(); paintDaily();
       }
       function readForm(){
         /* HARDENING: semua input angka divalidasi & di-clamp ke rentang aman */
@@ -1645,7 +1889,14 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         }
         if($('inCustomEquity')) S.customEquity = clampCustom($('inCustomEquity').value);
         if(S.mode==='custom'){ S.equity = S.customEquity; }
-        paintCapital();
+        /* batas harian: clamp ke rentang aman; jam harus format HH:MM */
+        if($('inDailyLoss')) S.dailyLoss = Math.min(100000, Math.max(0.5, parseFloat($('inDailyLoss').value)||5));
+        if($('inDailyProfit')) S.dailyProfit = Math.min(100000, Math.max(0.5, parseFloat($('inDailyProfit').value)||10));
+        if($('inDailyMaxTrades')) S.dailyMaxTrades = Math.min(500, Math.max(1, parseInt($('inDailyMaxTrades').value,10)||20));
+        if($('inDailyMaxStreak')) S.dailyMaxStreak = Math.min(20, Math.max(1, parseInt($('inDailyMaxStreak').value,10)||3));
+        if($('inDayStart') && /^\d{2}:\d{2}$/.test($('inDayStart').value)) S.dayStart = $('inDayStart').value;
+        if($('inDayEnd') && /^\d{2}:\d{2}$/.test($('inDayEnd').value)) S.dayEnd = $('inDayEnd').value;
+        paintCapital(); paintDaily();
       }
       function setMode(m, customAmt){
         if(m==='custom'){
@@ -1667,18 +1918,104 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
       $('btnReset').addEventListener('click', function(){ resetState(); });
       $('btnPdf').addEventListener('click', makePdf);
       $('toastClose').addEventListener('click', function(){ $('toast').style.display='none'; });
+      /* ---------- SAKLAR MODE LIVE / PAPER ----------
+         Paper = default & aman. Live TIDAK pernah aktif diam-diam:
+         gerbangnya (liveBlockReason) memeriksa alamat wallet, saldo SOL
+         hasil cek live asli, dan kesegaran Data Live (≤5 menit). Lolos
+         gerbang pun masih wajib konfirmasi eksplisit dengan ringkasan
+         chain · wallet · jumlah · slippage · TP/SL (panel #liveConfirm). */
+      function liveBlockReason(){
+        var reasons = [];
+        var addr = (S.walletAddress||'').trim();
+        if(!isSolanaAddress(addr)) reasons.push('alamat wallet trading tidak valid');
+        if(liveSolBalance === null) reasons.push('saldo wallet belum pernah dicek — buka menu bawah → Data Live, tekan “Cek Data Live Sekarang” dulu');
+        else if(liveSolBalance <= 0) reasons.push('wallet belum terdanai (SOL 0) — isi SOL untuk gas + modal dulu');
+        else if(liveSolPrice && liveSolBalance * liveSolPrice < 2) reasons.push('saldo terlalu kecil: '+liveSolBalance.toFixed(4)+' SOL ≈ $'+(liveSolBalance*liveSolPrice).toFixed(2)+' — butuh gas + modal $1 (disarankan total $2–5)');
+        if(!(liveOk.dex && liveOk.jup && liveOk.rpc)) reasons.push('Data Live belum OK semua (DexScreener + Jupiter + Solana RPC harus hijau) — cek di panel Data Live');
+        else if(!liveCheckedAt || Date.now() - liveCheckedAt > 5*60*1000) reasons.push('Data Live sudah basi (> 5 menit) — tekan “Cek Data Live Sekarang” lagi');
+        return reasons.length ? reasons.join(' · ') : null;
+      }
+      function paintModeUI(){
+        var isLive = S.tradeMode === 'live';
+        var bp = $('modePaper'), bl = $('modeLive'), big = $('modeBig');
+        if(bp) bp.className = isLive ? '' : 'on';
+        if(bl) bl.className = isLive ? 'on live-on' : '';
+        if(big){
+          big.className = 'mode-big' + (isLive ? ' live' : '');
+          big.innerHTML = isLive ? 'MODE LIVE<small>Trade SUNGGUHAN dengan uang asli di wallet trading — bot tetap hanya jalan setelah kamu tekan ▶ Jalankan.</small>' : 'MODE PAPER<small>Simulasi — aman, tanpa uang sungguhan. Ini mode default.</small>';
+        }
+      }
+      function setPaperMode(silent){
+        S.tradeMode = 'paper'; saveSettings(); paintModeUI();
+        var c = $('liveConfirm'); if(c) c.hidden = true;
+        if(!silent) toast('Mode PAPER aktif', 'simulasi aman — tidak ada uang sungguhan yang bergerak', '', 'var(--green)');
+      }
+      function requestLiveMode(){
+        readForm(); saveSettings();
+        var gm = $('liveGateMsg');
+        var why = liveBlockReason();
+        if(why){
+          /* DITOLAK dengan alasan jelas — mode TIDAK berubah */
+          S.tradeMode = 'paper'; paintModeUI();
+          if(gm){ gm.className = 'gate-msg err'; gm.innerHTML = '🔴 <b>Live DITOLAK — tetap di Paper.</b> Alasan: '+escHtml(why)+'.'; }
+          toast('🔴 Live ditolak — tetap Paper', why, '', 'var(--red)');
+          return;
+        }
+        var addr = (S.walletAddress||'').trim();
+        $('liveSummary').innerHTML = '<b>chain</b> Solana · <b>wallet</b> '+escHtml(addr.slice(0,6)+'…'+addr.slice(-4))+' ('+escHtml(S.wallet==='jupiter'?'Jupiter Wallet':S.wallet)+') · <b>jumlah</b> $1 per coin · rotasi 1 posisi · <b>slippage</b> maks '+S.slip+'% · <b>TP</b> +'+S.tp1+'% / +'+S.tp2+'% · <b>SL</b> −'+rotSL()+'% · saldo tercek: '+liveSolBalance.toFixed(4)+' SOL'+(liveSolPrice ? ' ≈ $'+(liveSolBalance*liveSolPrice).toFixed(2) : '')+' · Data Live segar ✓';
+        var cf = $('liveConfirm'); if(cf) cf.hidden = false;
+        if(gm){ gm.className = 'gate-msg ok'; gm.textContent = '✓ Syarat Live terpenuhi (wallet terdanai + Data Live segar). Baca ringkasan di bawah, lalu konfirmasi — belum ada yang berubah sampai kamu menekan “Ya, Aktifkan Live”.'; }
+        if(cf) cf.scrollIntoView({ behavior:'smooth', block:'center' });
+      }
+      if($('modePaper')) $('modePaper').addEventListener('click', function(){ setPaperMode(false); var gm=$('liveGateMsg'); if(gm){ gm.className='gate-msg'; gm.textContent='Paper aktif. Live hanya bisa aktif kalau: wallet terdanai SOL + modal · Data Live segar (≤ 5 menit) · kamu konfirmasi ringkasan trade-nya dulu.'; } });
+      if($('modeLive')) $('modeLive').addEventListener('click', requestLiveMode);
+      if($('btnLiveNo')) $('btnLiveNo').addEventListener('click', function(){ $('liveConfirm').hidden = true; var gm=$('liveGateMsg'); if(gm){ gm.className='gate-msg'; gm.textContent='Dibatalkan — tetap di Mode Paper.'; } });
+      if($('btnLiveYes')) $('btnLiveYes').addEventListener('click', function(){
+        var why = liveBlockReason(); /* cek ulang tepat sebelum mengaktifkan */
+        if(why){ $('liveConfirm').hidden = true; requestLiveMode(); return; }
+        S.tradeMode = 'live'; saveSettings(); paintModeUI();
+        $('liveConfirm').hidden = true;
+        var gm = $('liveGateMsg'); if(gm){ gm.className = 'gate-msg err'; gm.innerHTML = '🔴 <b>MODE LIVE AKTIF</b> — trade berikutnya (setelah kamu tekan ▶ Jalankan) adalah trade sungguhan. Bot tetap dijeda sekarang; tidak ada trade yang jalan sendiri.'; }
+        toast('🔴 MODE LIVE AKTIF', 'bot tetap dijeda — tekan ▶ Jalankan sendiri untuk mulai · Jalankan akan memeriksa ulang saldo & kesegaran data', '', 'var(--red)');
+      });
+      if($('btnDailyApply')) $('btnDailyApply').addEventListener('click', function(){ readForm(); saveSettings(); applySettingsToForm(); paintDaily(); toast('Batas Harian diterapkan & tersimpan', 'rugi −$'+Math.abs(S.dailyLoss).toFixed(2)+' · target +$'+Math.abs(S.dailyProfit).toFixed(2)+' · maks '+S.dailyMaxTrades+' trade · rugi beruntun '+S.dailyMaxStreak+'× · jam '+S.dayStart+'–'+S.dayEnd+' WIB', '', 'var(--green)'); });
+      if($('btnDailyReset')) $('btnDailyReset').addEventListener('click', function(){ resetDailyManual(); toast('Batas Harian di-reset manual', 'progres hari ini di-nol-kan & kunci dibuka · bot tetap dijeda — tekan ▶ Jalankan untuk mulai lagi', '', 'var(--green)'); });
       $('btnRun').addEventListener('click', function(){
+        rollDayIfNeeded();
+        if(day.stopped){
+          toast('🛑 Batas harian tercapai — bot berhenti', (day.reason||'Batas harian tercapai')+' · Jalan lagi besok, atau Reset Manual Batas Harian di panel Harian.', '', 'var(--red)');
+          paintRunUI(); return;
+        }
+        if(!st.running && !inTradingHours()){
+          st.hourBlock = true; paintRunUI();
+          toast('Di luar jam trading aktif — bot berhenti', 'Jam aktif '+S.dayStart+'–'+S.dayEnd+' WIB · ubah di panel Pengaturan Harian', '', 'var(--red)');
+          return;
+        }
+        if(!st.running && S.tradeMode === 'live'){
+          var lWhy = liveBlockReason();
+          if(lWhy){
+            toast('🔴 Live tidak bisa jalan — tetap dijeda', lWhy+' · Mode tetap Live, tapi tidak ada trade sebelum syarat ini beres (atau pindah ke Paper).', '', 'var(--red)');
+            return;
+          }
+        }
+        st.hourBlock = false;
         if(st.hold){
+          /* Lanjut free-run hanya karena user menekannya manual di sini */
           st.hold = false;
-          $('btnRun').textContent = '⏸ Pause';
-          $('liveTxt').textContent = 'Replay · Paper';
+          st.running = true;
+          pageGone = false; audioUnlocked = true; ensureAudio();
+          paintRunUI();
           toast('Free-run paper lanjut', 'dari equity $3,412 · aturan yang sama', '', 'var(--green)');
           return;
         }
         st.running = !st.running;
-        $('btnRun').textContent = st.running ? '⏸ Pause' : '▶ Jalankan';
-        $('liveDot').className = 'dot' + (st.running?'':' off');
-        $('liveTxt').textContent = st.running ? 'Replay · Paper' : 'Replay · Paused';
+        if(st.running){
+          /* Satu-satunya jalur yang membersihkan pageGone & membuka audio
+             lagi setelah user keluar dari Chrome / pindah aplikasi:
+             tekan Jalankan secara manual. */
+          pageGone = false; audioUnlocked = true; ensureAudio();
+        }
+        paintRunUI();
       });
       $('btnTest').addEventListener('click', function(){
         readForm(); saveSettings();
@@ -1717,8 +2054,11 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
           .then(function(j){ if(j.error) throw new Error(typeof j.error==='string' ? j.error : (j.error.message||'RPC error')); return j.result; });
       }
       var liveOk = { dex:false, jup:false, rpc:false };
+      /* Hasil cek live terakhir untuk gerbang mode Live: saldo + harga SOL + waktu cek */
+      var liveSolBalance = null, liveSolPrice = null, liveCheckedAt = 0;
       function paintLiveVerdict(){
         var all = liveOk.dex && liveOk.jup && liveOk.rpc;
+        if(all) liveCheckedAt = Date.now();
         $('liveMeta').textContent = 'cek terakhir: '+wibNow();
         $('liveVerdict').innerHTML = all
           ? 'Status: <b style="color:var(--green)">Sumber inti segar</b> — DexScreener + Jupiter + Solana RPC merespons. Live trading tetap butuh: wallet terdanai + OK eksplisit kamu. Data berumur &gt; 5 menit wajib dicek ulang.'
@@ -1734,12 +2074,13 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
            Jupiter Price API v3 (https://api.jup.ag/price/v3) dari server. Parser menerima
            bentuk ternormalisasi route (data[id].price) maupun bentuk mentah v3 (id.usdPrice). */
         fetch('/api/jupiter/price?ids=So11111111111111111111111111111111111111112').then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status+' (route /api/jupiter/price)'); return r.json(); })
-          .then(function(j){ var id='So11111111111111111111111111111111111111112'; var d = (j && j.data && j.data[id]) || (j && j[id]) || null; var px = d ? parseFloat(d.usdPrice != null ? d.usdPrice : d.price) : NaN; if(!isFinite(px)) px = NaN; liveOk.jup = isFinite(px); srcSet('jup', isFinite(px)?'ok':'err', isFinite(px) ? ('OK · SOL = $'+px.toFixed(2)+' · Sumber: Jupiter Price API v3 via route /api/jupiter/price · '+wibNow()) : 'Harga tidak ada di respons route — data belum tersedia · '+wibNow()); paintLiveVerdict(); })
+          .then(function(j){ var id='So11111111111111111111111111111111111111112'; var d = (j && j.data && j.data[id]) || (j && j[id]) || null; var px = d ? parseFloat(d.usdPrice != null ? d.usdPrice : d.price) : NaN; if(!isFinite(px)) px = NaN; liveOk.jup = isFinite(px); if(isFinite(px)) liveSolPrice = px; srcSet('jup', isFinite(px)?'ok':'err', isFinite(px) ? ('OK · SOL = $'+px.toFixed(2)+' · Sumber: Jupiter Price API v3 via route /api/jupiter/price · '+wibNow()) : 'Harga tidak ada di respons route — data belum tersedia · '+wibNow()); paintLiveVerdict(); })
           .catch(function(e){ liveOk.jup=false; srcSet('jup','err','GAGAL ('+e.message+') — data belum tersedia, tidak ditebak · '+wibNow()); paintLiveVerdict(); });
         var addr = (S.walletAddress||DEFAULT_WALLET_ADDR).trim();
         if(!isSolanaAddress(addr)){ liveOk.rpc=false; srcSet('rpc','err','Alamat wallet tidak valid — RPC tidak dipanggil · '+wibNow()); paintLiveVerdict(); return; }
         rpcCall('getBalance',[addr]).then(function(res){
             var sol = (res && typeof res.value==='number') ? res.value/1e9 : null; liveOk.rpc = sol!==null;
+            if(sol!==null) liveSolBalance = sol;
             srcSet('rpc', sol!==null?'ok':'err', sol!==null ? ('OK · Saldo wallet '+addr.slice(0,6)+'…'+addr.slice(-4)+' = '+sol.toFixed(6)+' SOL'+(sol===0?' (masih 0 — akun belum terdanai, sama seperti snapshot Solscan 14 Nov 00:52 WIB)':'')+' · Sumber: Solana RPC via route /api/solana/rpc · '+wibNow()) : 'Respons tidak lengkap — data belum tersedia · '+wibNow());
             var cp = $('walletChainPill'); if(cp && sol!==null){ cp.textContent = sol===0 ? 'On-chain: SOL 0 · belum didanai' : 'On-chain: '+sol.toFixed(4)+' SOL'; cp.className = 'pill '+(sol===0?'pill-amber':'green'); }
             paintLiveVerdict();
@@ -1758,7 +2099,7 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
           var v = document.querySelector('[data-d="verdict"]');
           if(got.authKill){ dSet('verdict','KILL — AUTHORITY AKTIF','Audit kelas 6: mint/freeze authority belum None. Buzz sebesar apa pun tidak mengubah ini. · '+wibNow()); if(v) v.style.color='var(--red)'; }
           else if(got.top10!==null && got.top10>20){ dSet('verdict','KILL — TOP 10 > 20%','Distribusi holder tidak sehat menurut data RPC asli. · '+wibNow()); if(v) v.style.color='var(--red)'; }
-          else { dSet('verdict','DATA LENGKAP — NILAI PER FAKTOR','Semua faktor inti berhasil ditarik segar. Keputusan beli tetap: Smart Score + audit penuh + OK eksplisit (paper dulu). · '+wibNow()); if(v) v.style.color='var(--green)'; }
+          else { var catTxt = got.cat==='old' ? ' Kategori: COIN LAMA POTENSIAL — umur pool bukan hukuman; nilai lanjutannya dari konsistensi volume'+(got.volRatio ? ' (volume 1j×24 vs 24j = '+got.volRatio.toFixed(2)+'; mendekati 1 = stabil, jauh di atas 1 = spike sesaat)' : '')+', likuiditas yang bertahan & distribusi holder di atas. Harga vs ATH dan pertumbuhan holder historis tidak tersedia dari sumber snapshot ini, jadi dua faktor itu TIDAK ditebak — di scoring bot keduanya wajib terisi sebelum beli.' : (got.cat==='new' ? ' Kategori: COIN BARU (≤7 hari) — bonding curve & fase awal wajib lolos audit penuh.' : ''); dSet('verdict','DATA LENGKAP — NILAI PER FAKTOR','Semua faktor inti berhasil ditarik segar.'+catTxt+' Keputusan beli tetap: Smart Score + audit penuh + OK eksplisit (paper dulu). · '+wibNow()); if(v) v.style.color='var(--green)'; }
         }
         fetch('https://api.dexscreener.com/latest/dex/tokens/'+encodeURIComponent(mint)).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
           .then(function(j){
@@ -1770,7 +2111,8 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
             dSet('price', p.priceUsd ? '$'+p.priceUsd : 'Data belum tersedia', 'Sumber: DexScreener · '+T);
             dSet('liq', p.liquidity && p.liquidity.usd!=null ? money(p.liquidity.usd) : 'Data belum tersedia', 'Sumber: DexScreener · '+T);
             dSet('vol', (p.volume ? (money(p.volume.h1||0)+' / '+money(p.volume.h24||0)) : 'Data belum tersedia'), 'Sumber: DexScreener (h1 / h24) · '+T);
-            dSet('age', p.pairCreatedAt ? (Math.max(0,(Date.now()-p.pairCreatedAt)/36e5).toFixed(1)+' jam') : 'Data belum tersedia', 'Sumber: DexScreener (pairCreatedAt) · '+T);
+            if(p.pairCreatedAt){ var ageH = Math.max(0,(Date.now()-p.pairCreatedAt)/36e5); got.cat = ageH <= 24*OLD_AGE_DAYS ? 'new' : 'old'; if(got.cat==='old' && p.volume && p.volume.h1>0 && p.volume.h24>0){ got.volRatio = (p.volume.h1*24)/p.volume.h24; } dSet('age', (ageH<48 ? ageH.toFixed(1)+' jam' : (ageH/24).toFixed(1)+' hari'), 'Sumber: DexScreener (pairCreatedAt) · Kategori: '+(got.cat==='old' ? 'Coin Lama Potensial (>7 hari — dinilai dari konsistensi volume, likuiditas bertahan, holder & harga vs ATH; umur bukan hukuman)' : 'Coin Baru (≤7 hari)')+' · '+T); }
+            else dSet('age', 'Data belum tersedia', 'Sumber: DexScreener (pairCreatedAt) · '+T);
             pending.dex = true; verdict();
           }).catch(function(e){ ['pair','price','liq','vol','age'].forEach(function(k){ dSet(k,'Data belum tersedia','DexScreener GAGAL: '+e.message+' · '+T+' — fail-closed'); }); pending.dex = true; verdict(); });
         rpcCall('getAccountInfo',[mint,{encoding:'jsonParsed'}]).then(function(res){
@@ -1854,21 +2196,21 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         var sc = $('btnSound'); if(sc && S.lite){ sc.textContent = '🔇 Lite · Mati'; sc.className = 'snd-chip off'; }
         else if(!S.lite) paintSoundUI();
       }
-      function setLite(on, opts){
-        opts = opts || {};
-        var wasLite = !!S.lite;
+      function setLite(on){
         S.lite = !!on;
-        if(S.lite && !wasLite){ liteWasRunning = !!(st && st.running && !st.hold); }
         document.body.classList.toggle('lite', S.lite);
         if(eqRaf){ cancelAnimationFrame(eqRaf); eqRaf = null; }
+        /* Pindah Lite ↔ Muat Penuh TIDAK PERNAH menjalankan bot.
+           Bot selalu berakhir dijeda di kedua arah — hanya tombol
+           Jalankan yang boleh menjalankannya lagi, secara manual. */
+        if(st && !st.hold){ st.running = false; }
+        if(st) paintRunUI();
         if(S.lite){
-          /* jeda replay otomatis — jangan paksa jalan di koneksi lambat */
-          if(st && st.running){ st.running = false; $('btnRun').textContent = '▶ Jalankan'; $('liveDot').className = 'dot off'; $('liveTxt').textContent = 'Lite · Dijeda'; }
           if(AC && AC.state === 'running'){ try{ AC.suspend(); }catch(e){} }
         } else {
           detailLoaded = true; /* Muat Penuh = detail ikut tampil penuh */
-          /* Jangan auto-jalan saat kembali ke Mode Penuh — user tekan Jalankan sendiri */
-          if(AC && AC.state === 'suspended' && S.soundOn){ try{ AC.resume(); }catch(e){} }
+          /* Audio TIDAK di-resume di sini — Muat Penuh bukan izin bunyi.
+             AudioContext hanya jalan lagi lewat tekan Jalankan manual. */
           if(st) drawChart();
         }
         paintLiteUI();
@@ -1877,7 +2219,7 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         saveSettings();
       }
       if($('btnLite')) $('btnLite').addEventListener('click', function(){ setLite(!S.lite); });
-      if($('btnFull')) $('btnFull').addEventListener('click', function(){ setLite(false, { resume:true }); toast('Mode Penuh aktif', 'animasi, grafik, replay & suara jalan lagi · polling kembali cepat', '', 'var(--green)'); });
+      if($('btnFull')) $('btnFull').addEventListener('click', function(){ setLite(false); toast('Mode Penuh aktif · bot tetap dijeda', 'animasi & grafik kembali — tekan ▶ Jalankan sendiri untuk mulai trade lagi', '', 'var(--green)'); });
       if($('btnLoadDetail')) $('btnLoadDetail').addEventListener('click', function(){ detailLoaded = true; paintLiteUI(); var inp = $('inMint'); if(inp) inp.focus(); });
 
       /* ---------- boot ---------- */
@@ -1893,13 +2235,9 @@ MAX_SLIPPAGE_BPS   = 500        # Safety Rails: slippage maks 5%
         if(neverChose && (conn.saveData || /^(slow-)?2g$|^3g$/.test(conn.effectiveType||'') || (navigator.deviceMemory && navigator.deviceMemory <= 2))) autoLite = true;
       }catch(e){}
       if(autoLite) S.lite = true;
-      resetState();
-      /* Selalu mulai dalam keadaan DIJEDA — tidak ada auto trade saat refresh.
-         User harus tekan tombol Jalankan secara manual setiap kali buka/refresh. */
-      st.running = false;
-      $('btnRun').textContent = '▶ Jalankan';
-      $('liveDot').className = 'dot off';
-      $('liveTxt').textContent = 'Paused · tekan Jalankan untuk mulai';
+      resetState(); /* selalu mulai DIJEDA — tidak ada auto trade saat load / refresh */
+      paintModeUI(); /* mode Live/Paper tersimpan tampil besar di hero; bot tetap dijeda */
+      paintDaily();
       renderTicker();
       if(S.lite){ setLite(true); } else { startTimers(); }
       setInterval(function(){ $('toastTime').textContent = fmtClock(); }, 15000);
