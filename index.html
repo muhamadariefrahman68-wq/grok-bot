@@ -2507,20 +2507,21 @@ SOLANA_WALLET_SECRET = (isi SENDIRI di Vercel — private key wallet trading khu
         readForm(); saveSettings();
         var out = $('testStatus');
         if(!S.key){ out.innerHTML = '<span class="status-err">Isi API Key TrueSOTA dulu</span> — key kamu masukkan sendiri di kolom di atas, bukan lewat chat.'; return; }
-        out.textContent = 'Menghubungi https://true-sota.com/v1/models …';
-        fetch('https://true-sota.com/v1/models', { headers:{ 'Authorization':'Bearer '+S.key } })
+        out.textContent = 'Menghubungi /api/llm/models …';
+        fetch('/api/llm/models')
           .then(function(res){ if(!res.ok) throw new Error('HTTP '+res.status); return res.json(); })
           .then(function(json){
-            var ids = (json.data||[]).map(function(m){ return m.id; }).filter(Boolean);
+            if(!json.ok) throw new Error(json.error||'route /api/llm/models belum aktif');
+            var ids = (json.models||[]).filter(Boolean);
             if(!ids.length) throw new Error('daftar model kosong');
             var sel = $('inModel'); sel.innerHTML='';
             ids.forEach(function(id){ var o=document.createElement('option'); o.value=id; o.textContent=id; sel.appendChild(o); });
-            var chosen = ids.indexOf('grok-4.6')>=0 ? 'grok-4.6' : (ids.indexOf('qwen3.8-max')>=0 ? 'qwen3.8-max' : ids[0]);
+            var chosen = json.active || (ids.indexOf('grok-4.6')>=0 ? 'grok-4.6' : ids[0]);
             sel.value = chosen; S.model = chosen; saveSettings();
-            out.innerHTML = '<span class="status-ok">Koneksi OK.</span> Model tersedia di akunmu: <b>'+escHtml(ids.join(', '))+'</b>. Model aktif: <b>'+escHtml(chosen)+'</b>'+(ids.indexOf('grok-4.6')<0 ? ' (grok-4.6 belum tersedia di TrueSOTA — fallback otomatis dipakai)' : '');
+            out.innerHTML = '<span class="status-ok">Koneksi OK.</span> Model tersedia di akunmu: <b>'+escHtml(ids.join(', '))+'</b>. Model aktif: <b>'+escHtml(chosen)+'</b>';
           })
           .catch(function(err){
-            out.innerHTML = '<span class="status-err">Test gagal: '+escHtml(err.message)+'.</span> Cek key-nya, atau browser memblokir panggilan lintas-domain (CORS) — di deploy Vercel, test jalan lewat route <code class="k">/api/llm/models</code> jadi tidak kena CORS.';
+            out.innerHTML = '<span class="status-err">Test gagal: '+escHtml(err.message)+'.</span> Pastikan TRUESOTA_API_KEY sudah diisi di Vercel lalu Redeploy — test ini jalan lewat route <code class="k">/api/llm/models</code> di server, bukan langsung dari browser, jadi tidak kena CORS.';
           });
       });
 

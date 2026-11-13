@@ -7,6 +7,7 @@ export default async function handler(req, res) {
     const r = await fetch('https://true-sota.com/v1/models', {
       headers: { Authorization: `Bearer ${key}` }
     });
+    if (!r.ok) return res.status(200).json({ ok: false, error: 'TrueSOTA HTTP ' + r.status, models: [] });
     const data = await r.json();
     const ids = (data.data || []).map((m) => m.id);
     const active = ids.includes('grok-4.6') ? 'grok-4.6' : (ids.includes('qwen3.8-max') ? 'qwen3.8-max' : ids[0] || null);
