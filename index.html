@@ -1875,13 +1875,15 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
       function liveScanBatch(){
         liveBusy = true;
         autoLiveCheck();
-        /* 3 jalur penemuan SEKALIGUS tiap siklus: token baru DexScreener
+        /* 4 jalur penemuan SEKALIGUS tiap siklus: token baru DexScreener
            (token-profiles/latest/v1) + coin lama potensial (token-boosts/
-           top/v1) + pool terbaru GeckoTerminal (new_pools). Dulu bergantian
-           tiap siklus (baru ketemu tiap 40 detik) dan sering kosong;
-           sekarang ketiganya tiap siklus. Kandidat dievaluasi PARALEL
-           (maks 4) — dulu berurutan, satu siklus bisa 9 detik; sekarang
-           ~3 detik. Audit & ambang TIDAK berubah. */
+           top/v1) + pool terbaru GeckoTerminal (new_pools) + coin pump.fun
+           yang sudah lulus bonding curve (frontend-api.pump.fun, hanya
+           complete=true). Dulu bergantian tiap siklus (baru ketemu tiap
+           40 detik) dan sering kosong; sekarang keempatnya tiap siklus.
+           Kandidat dievaluasi PARALEL (maks 4) — dulu berurutan, satu
+           siklus bisa 9 detik; sekarang ~3 detik. Audit & ambang TIDAK
+           berubah. */
         liveScanCycle++;
         /* Sumber ke-3: GeckoTerminal new_pools (gratis, tanpa key, 20 pool
            Solana terbaru per halaman, diperbarui tiap menit). DexScreener
@@ -1892,12 +1894,28 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         Promise.all([
           fetchJson('https://api.dexscreener.com/token-profiles/latest/v1').catch(function(){ return []; }),
           fetchJson('https://api.dexscreener.com/token-boosts/top/v1').catch(function(){ return []; }),
-          fetchJson('https://api.geckoterminal.com/api/v2/networks/solana/new_pools?page=1').catch(function(){ return null; })
+          fetchJson('https://api.geckoterminal.com/api/v2/networks/solana/new_pools?page=1').catch(function(){ return null; }),
+          fetchJson('https://frontend-api.pump.fun/coins?offset=0&limit=50&sort=created_timestamp&order=DESC&includeNsfw=false').catch(function(){ return null; })
         ])
         .then(function(results){
           var seenAddr = {};
           var list = [];
           results.forEach(function(j, idx){
+            if(idx === 3){
+              /* pump.fun: hanya coin yang SUDAH lulus bonding curve
+                 (complete=true) — yang masih di kurva belum punya pair di
+                 DexScreener dan akan di-skip sia-sia di evaluasi. Coin yang
+                 lulus kurva sudah pindah ke Raydium dan punya pair.
+                 Catatan: endpoint ini kadang diblokir Cloudflare di jaringan
+                 tertentu (403 dari VM kami 07:37 WIB) — kalau gagal, sumber
+                 ini dilewati diam-diam, 3 sumber lain tetap jalan. */
+              var coins = Array.isArray(j) ? j : [];
+              coins.forEach(function(c){
+                var mint = c && c.mint;
+                if(c && c.complete === true && mint && isSolanaAddress(mint) && !seenAddr[mint]){ seenAddr[mint] = true; list.push({ tokenAddress: mint, chainId: 'solana' }); }
+              });
+              return;
+            }
             if(idx === 2){
               /* GeckoTerminal: data[].relationships.base_token.data.id =
                  "solana_<mint>" — jadikan tokenAddress agar jalur evaluasi
@@ -1917,7 +1935,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           var fresh = list.filter(function(p){ return !liveSeen[p.tokenAddress]; }).slice(0, 12);
           fresh.forEach(function(p){ liveSeen[p.tokenAddress] = Date.now(); });
           var keys = Object.keys(liveSeen); if(keys.length > 400){ keys.slice(0, 200).forEach(function(k){ delete liveSeen[k]; }); }
-          if(!fresh.length){ addLog('SCOUT', '#57a8ff', 'SCAN LIVE · tidak ada coin baru dari DexScreener + GeckoTerminal siklus ini · '+wibNow()); return null; }
+          if(!fresh.length){ addLog('SCOUT', '#57a8ff', 'SCAN LIVE · tidak ada coin baru dari DexScreener + GeckoTerminal + pump.fun siklus ini · '+wibNow()); return null; }
           var batch = fresh.slice(0, 4);
           batch.forEach(function(p){ st.scanned++; });
           return Promise.all(batch.map(function(p){
