@@ -1863,33 +1863,47 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           sndScan();
         }
       }
+      /* Data Live di-refresh OTOMATIS tiap siklus selagi bot jalan (paling
+         sering 1×/60 detik) — user tidak perlu lagi menekan "Cek Data Live
+         Sekarang" manual. Refresh gagal = fail-closed, gerbang tetap menahan. */
+      var lastAutoLiveCheck = 0;
+      function autoLiveCheck(){
+        if(Date.now() - lastAutoLiveCheck < 60000) return;
+        lastAutoLiveCheck = Date.now();
+        try { checkLive(); } catch(e){ addLog('RISK', '#ffb454', 'Auto-refresh Data Live gagal ('+(e && e.message ? e.message : 'error')+') — gerbang tetap menahan'); }
+      }
       function liveScanBatch(){
         liveBusy = true;
-        /* 2 jalur penemuan (C4): siklus genap = token baru
-           (token-profiles/latest/v1), siklus ganjil = coin lama potensial
-           (token-boosts/top/v1 — sudah bertahan & ramai, dinilai dari
-           likuiditas bertahan/volume/holder, bukan dihukum karena tuanya). */
+        autoLiveCheck();
+        /* 2 jalur penemuan (C4) SEKALIGUS tiap siklus: token baru
+           (token-profiles/latest/v1) + coin lama potensial
+           (token-boosts/top/v1). Dulu bergantian tiap siklus (baru ketemu
+           tiap 40 detik); sekarang keduanya tiap siklus. Kandidat
+           dievaluasi PARALEL (maks 4) — dulu berurutan, satu siklus bisa
+           9 detik; sekarang ~3 detik. Audit & ambang TIDAK berubah. */
         liveScanCycle++;
-        var srcUrl = (liveScanCycle % 2 === 0)
-          ? 'https://api.dexscreener.com/token-profiles/latest/v1'
-          : 'https://api.dexscreener.com/token-boosts/top/v1';
-        var srcLabel = (liveScanCycle % 2 === 0) ? 'token baru' : 'coin lama potensial';
-        fetchJson(srcUrl)
-        .then(function(j){
-          var list = (Array.isArray(j) ? j : []).filter(function(p){ return p && p.chainId==='solana' && isSolanaAddress(p.tokenAddress || ''); });
-          var fresh = list.filter(function(p){ return !liveSeen[p.tokenAddress]; }).slice(0, 8);
-          fresh.forEach(function(p){ liveSeen[p.tokenAddress] = Date.now(); });
-          var keys = Object.keys(liveSeen); if(keys.length > 400){ keys.slice(0, 200).forEach(function(k){ delete liveSeen[k]; }); }
-          if(!fresh.length){ addLog('SCOUT', '#57a8ff', 'SCAN LIVE · tidak ada '+srcLabel+' baru dari DexScreener siklus ini · '+wibNow()); return null; }
-          var chain = Promise.resolve(), evaluated = 0;
-          fresh.forEach(function(p){
-            chain = chain.then(function(){
-              if(evaluated >= 3 || st.positions.length || st.rotPending || st.pendingLive) return;
-              evaluated++; st.scanned++;
-              return evaluateLiveCandidate(p.tokenAddress).then(function(res){ handleLiveCandidate(res); });
+        Promise.all([
+          fetchJson('https://api.dexscreener.com/token-profiles/latest/v1').catch(function(){ return []; }),
+          fetchJson('https://api.dexscreener.com/token-boosts/top/v1').catch(function(){ return []; })
+        ])
+        .then(function(results){
+          var seenAddr = {};
+          var list = [];
+          results.forEach(function(j){
+            (Array.isArray(j) ? j : []).forEach(function(p){
+              if(p && p.chainId==='solana' && isSolanaAddress(p.tokenAddress || '') && !seenAddr[p.tokenAddress]){ seenAddr[p.tokenAddress] = true; list.push(p); }
             });
           });
-          return chain;
+          var fresh = list.filter(function(p){ return !liveSeen[p.tokenAddress]; }).slice(0, 12);
+          fresh.forEach(function(p){ liveSeen[p.tokenAddress] = Date.now(); });
+          var keys = Object.keys(liveSeen); if(keys.length > 400){ keys.slice(0, 200).forEach(function(k){ delete liveSeen[k]; }); }
+          if(!fresh.length){ addLog('SCOUT', '#57a8ff', 'SCAN LIVE · tidak ada token baru / coin lama baru dari DexScreener siklus ini · '+wibNow()); return null; }
+          var batch = fresh.slice(0, 4);
+          batch.forEach(function(p){ st.scanned++; });
+          return Promise.all(batch.map(function(p){
+            if(st.positions.length || st.rotPending || st.pendingLive) return null;
+            return evaluateLiveCandidate(p.tokenAddress).then(function(res){ handleLiveCandidate(res); return res; });
+          }));
         })
         .catch(function(e){ addLog('RISK', '#ffb454', 'FAIL-CLOSED · DexScreener gagal ('+(e.message || 'error')+') — scan live siklus ini dilewati, tidak ada tebakan'); })
         .then(function(){ liveBusy = false; renderAll(); });
@@ -1942,7 +1956,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         if(st.pendingLive){ renderAll(); return; }
         var now = Date.now();
         if(liveBusy || now < liveNextScanAt){ renderAll(); return; }
-        liveNextScanAt = now + (S.lite ? 45000 : 20000);
+        liveNextScanAt = now + (S.lite ? 45000 : 15000);
         liveScanBatch();
       }
 
@@ -2443,11 +2457,11 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         var reasons = [];
         var addr = (S.walletAddress||'').trim();
         if(!isSolanaAddress(addr)) reasons.push('alamat wallet trading tidak valid');
-        if(liveSolBalance === null) reasons.push('saldo wallet belum pernah dicek — buka menu bawah → Data Live, tekan “Cek Data Live Sekarang” dulu');
+        if(liveSolBalance === null) reasons.push('saldo wallet belum pernah dicek — bot mengecek otomatis tiap siklus selagi jalan; tekan Jalankan, tunggu ~1 menit, lalu tekan Jalankan lagi');
         else if(liveSolBalance <= 0) reasons.push('wallet belum terdanai (SOL 0) — isi SOL untuk gas + modal dulu');
         else if(liveSolPrice && liveSolBalance * liveSolPrice < 2) reasons.push('saldo terlalu kecil: '+liveSolBalance.toFixed(4)+' SOL ≈ $'+(liveSolBalance*liveSolPrice).toFixed(2)+' — butuh gas + modal $1 (disarankan total $2–5)');
         if(!(liveOk.dex && liveOk.jup && liveOk.rpc)) reasons.push('Data Live belum OK semua (DexScreener + Jupiter + Solana RPC harus hijau) — cek di panel Data Live');
-        else if(!liveCheckedAt || Date.now() - liveCheckedAt > 5*60*1000) reasons.push('Data Live sudah basi (> 5 menit) — tekan “Cek Data Live Sekarang” lagi');
+        else if(!liveCheckedAt || Date.now() - liveCheckedAt > 5*60*1000) reasons.push('Data Live sudah basi (> 5 menit) — bot me-refresh otomatis tiap siklus; tekan Jalankan lagi sebentar lagi');
         return reasons.length ? reasons.join(' · ') : null;
       }
       function paintModeUI(){
@@ -2510,6 +2524,25 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         if(!st.running && S.tradeMode === 'live'){
           var lWhy = liveBlockReason();
           if(lWhy){
+            /* Gerbang gagal karena data/saldo belum dicek = bisa diperbaiki
+               otomatis: cek Data Live sekarang, lalu coba jalan lagi 6 detik
+               kemudian. Alasan lain (alamat invalid / saldo 0 / saldo terlalu
+               kecil) tetap berhenti — tidak ada yang dipaksakan. */
+            var fixable = lWhy.indexOf('belum pernah dicek')>=0 || lWhy.indexOf('sudah basi')>=0 || lWhy.indexOf('belum OK semua')>=0;
+            if(fixable && !st._liveAutoRetried){
+              st._liveAutoRetried = true;
+              try { checkLive(); } catch(e){}
+              toast('⏳ Mengecek Data Live otomatis…', 'bot me-refresh DexScreener + Jupiter + Solana RPC, lalu jalan sendiri dalam ~6 detik kalau semua hijau', '', 'var(--amber)');
+              setTimeout(function(){
+                st._liveAutoRetried = false;
+                if(st.running) return;
+                var why2 = liveBlockReason();
+                if(why2){ toast('🔴 Live tidak bisa jalan — tetap dijeda', why2+' · Mode tetap Live, tapi tidak ada trade sebelum syarat ini beres (atau pindah ke Paper).', '', 'var(--red)'); return; }
+                st.running = true; pageGone = false; audioUnlocked = true; ensureAudio(); paintRunUI();
+                toast('▶ Bot jalan — Live', 'Data Live segar ✓ · saldo tercek ✓ · kandidat pertama yang lolos audit + skor akan minta konfirmasi kamu', '', 'var(--green)');
+              }, 6000);
+              return;
+            }
             toast('🔴 Live tidak bisa jalan — tetap dijeda', lWhy+' · Mode tetap Live, tapi tidak ada trade sebelum syarat ini beres (atau pindah ke Paper).', '', 'var(--red)');
             return;
           }
@@ -2595,7 +2628,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         if(all) liveCheckedAt = Date.now();
         $('liveMeta').textContent = 'cek terakhir: '+wibNow();
         $('liveVerdict').innerHTML = all
-          ? 'Status: <b style="color:var(--green)">Sumber inti segar</b> — DexScreener + Jupiter + Solana RPC merespons. Live trading tetap butuh: wallet terdanai + OK eksplisit kamu. Data berumur &gt; 5 menit wajib dicek ulang.'
+          ? 'Status: <b style="color:var(--green)">Sumber inti segar</b> — DexScreener + Jupiter + Solana RPC merespons. Live trading tetap butuh: wallet terdanai + OK eksplisit kamu. Data berumur &gt; 5 menit di-refresh otomatis tiap siklus selagi bot jalan.'
           : 'Status: <b>FAIL-CLOSED untuk live trading</b> — satu atau lebih sumber inti gagal/belum segar. Bot tidak menebak angka dan tidak trade dari data basi. Replay &amp; paper tetap jalan sebagai simulasi berlabel.';
       }
       function checkLive(){
