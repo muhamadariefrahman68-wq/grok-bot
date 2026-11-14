@@ -453,6 +453,25 @@
         <span class="pro-badge"><b>Pencarian 4 jalur</b> · DexScreener + GeckoTerminal + pump.fun</span>
       </div>
 
+      <!-- auto-trade server: pantau + kontrol server (Supabase) dari web -->
+      <section class="card" id="sec-server" aria-label="Auto-Trade Server">
+        <div class="card-head"><h2>🤖 Auto-Trade Server</h2><div class="r" id="srvMeta">belum dicek</div></div>
+        <p class="hint" style="margin-top:0">Bot ini jalan di <b>server Supabase tiap 1 menit</b> — <b>tetap trade walau Chrome ditutup</b> dan walau kamu sedang mengerjakan hal lain. Panel ini memantau servernya langsung: status, posisi, trade hari ini, dan log terakhir. <b>Bot browser di halaman ini</b> (tombol ▶ Jalankan) adalah mode manual dan <b>berhenti kalau Chrome ditutup</b> — jangan jalankan keduanya bersamaan, wallet-nya sama. Mematikan server di sini <b>tidak menjual posisi yang sedang dipegang</b>; posisi tetap dipegang sampai kamu jual manual atau bot dinyalakan lagi.</p>
+        <div class="detail-grid">
+          <div class="dcell"><div class="dl2">Status server</div><div class="dv" id="srvStatus" style="font-size:15px">Belum dicek</div><div class="ds" id="srvStatusDs">Tekan “↻ Perbarui” — membaca langsung dari server Supabase.</div></div>
+          <div class="dcell"><div class="dl2">Posisi aktif (rotasi 1)</div><div class="dv" id="srvPos" style="font-size:15px">Belum dicek</div><div class="ds" id="srvPosDs">—</div></div>
+          <div class="dcell"><div class="dl2">Hari ini (WIB)</div><div class="dv" id="srvDaily" style="font-size:15px">Belum dicek</div><div class="ds" id="srvDailyDs">—</div></div>
+        </div>
+        <div class="controls">
+          <button type="button" class="btn primary" id="btnSrvRefresh">↻ Perbarui</button>
+          <button type="button" class="btn danger" id="btnSrvToggle" style="border-color:var(--red)">⏸ Matikan Auto-Trade</button>
+        </div>
+        <h3 style="margin:16px 0 2px;font-size:16px">Trade Terakhir (server)</h3>
+        <div class="rot-hist" id="srvTrades"><div class="empty">Belum ada trade dari server.</div></div>
+        <h3 style="margin:16px 0 2px;font-size:16px">Log Server Terakhir</h3>
+        <div class="snipe-log" id="srvLogs" style="max-height:220px;overflow:auto"><div class="empty">Belum ada log server.</div></div>
+      </section>
+
       <!-- desk -->
       <section class="card" aria-label="Desk 6 agents">
         <div class="card-head"><h2>Desk · 6 agents</h2><div class="r"><b id="deskScanned">1,146 scanned</b> · <span id="deskTraded">0 traded</span></div></div>
@@ -2112,6 +2131,94 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           if(bd) bd.textContent = 'Saldo hanya bisa dibaca server lewat route executor.';
         });
       }
+      /* ---- Auto-Trade Server (Supabase): pantau + saklar ON/OFF dari web ----
+         Bot server jalan tiap 1 menit di Supabase walau Chrome ditutup.
+         Panel ini membaca ?action=status (posisi, harian, 10 log, 10 trade)
+         dan mengirim ?action=set-enabled. Auth: Token Executor (sama seperti
+         executor Vercel) sebagai Bearer — nilainya tidak pernah ditampilkan. */
+      var AUTO_TRADE_URL = 'https://wuascoktvokqjosprqbp.supabase.co/functions/v1/auto-trade';
+      var srvState = { enabled:null, hasPosition:false };
+      function srvNoToken(){
+        var s=$('srvStatus'), sd=$('srvStatusDs'), meta=$('srvMeta');
+        if(meta) meta.textContent = 'butuh Token Executor';
+        if(s){ s.textContent = 'Token Executor belum diisi'; s.style.color = 'var(--amber)'; }
+        if(sd) sd.textContent = 'Isi Token Executor di Pengaturan & Modal (menu bawah) — token yang sama dipakai untuk trade live. Tanpa token, panel ini tidak bisa membaca server.';
+      }
+      function srvTime(ts){ try{ return new Date(ts).toLocaleString('id-ID', { timeZone:'Asia/Jakarta', hour:'2-digit', minute:'2-digit', second:'2-digit' }); }catch(e){ return String(ts || ''); } }
+      function refreshServerPanel(){
+        var tok = getExecToken();
+        if(!tok){ srvNoToken(); return; }
+        var s=$('srvStatus'), sd=$('srvStatusDs'), meta=$('srvMeta');
+        if(s) s.textContent = 'Memuat status server…';
+        fetch(AUTO_TRADE_URL + '?action=status', { method:'POST', headers:{ 'Authorization':'Bearer '+tok, 'Content-Type':'application/json' }, body:'{}' })
+        .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error || ('HTTP '+r.status)); return j; }); })
+        .then(function(j){
+          srvState.enabled = !!j.enabled;
+          srvState.hasPosition = !!(j.position && j.position.mint);
+          if(meta) meta.textContent = 'server · dicek ' + wibNow();
+          if(s){ s.textContent = j.enabled ? '🟢 AKTIF — scan tiap 1 menit di server' : '🔴 MATI — dimatikan dari web'; s.style.color = j.enabled ? 'var(--green)' : 'var(--red)'; }
+          if(sd) sd.textContent = j.enabled ? 'Bot server jalan walau Chrome ditutup. Log terakhir: ' + (j.logs && j.logs[0] ? srvTime(j.logs[0].created_at) + ' WIB' : '—') : 'Server tidak akan scan/trade sampai kamu nyalakan lagi. Posisi yang sedang dipegang TIDAK otomatis terjual.';
+          var p=$('srvPos'), pd=$('srvPosDs');
+          if(p){
+            if(j.position && j.position.mint){
+              p.textContent = (j.position.symbol || j.position.mint.slice(0,8)+'…') + ' · entry $' + Number(j.position.entryPrice).toFixed(6) + ' · $1';
+              if(pd) pd.textContent = 'Dibuka ' + srvTime(j.position.openedAt) + ' WIB · tx ' + String(j.position.buyTx || '').slice(0,12) + '… · TP +50%/+100% · SL −30%';
+            } else { p.textContent = 'Tidak ada posisi aktif'; if(pd) pd.textContent = 'Bot sedang scan coin berikutnya yang lolos filter.'; }
+          }
+          var d=$('srvDaily'), dd=$('srvDailyDs');
+          if(d){
+            if(j.daily){ d.textContent = (j.daily.trades || 0) + ' buy · P&L ' + (Number(j.daily.pnl) >= 0 ? '+' : '') + '$' + Number(j.daily.pnl || 0).toFixed(2) + ' · SL beruntun ' + (j.daily.streak || 0) + '×';
+              if(dd) dd.textContent = j.daily.stopped ? '⛔ Batas harian kena: ' + (j.daily.stopReason || '') : 'Tanggal ' + (j.daily.date || '') + ' WIB.'; }
+            else { d.textContent = 'Belum ada aktivitas hari ini'; if(dd) dd.textContent = '—'; }
+          }
+          var tb=$('btnSrvToggle');
+          if(tb){ tb.textContent = j.enabled ? '⏸ Matikan Auto-Trade' : '▶ Nyalakan Auto-Trade'; tb.className = 'btn' + (j.enabled ? ' danger' : ' primary'); }
+          var tr=$('srvTrades');
+          if(tr){
+            if(j.trades && j.trades.length){
+              tr.innerHTML = j.trades.map(function(t){
+                return '<div class="rh-row"><div><span class="rh-sym">' + escHtml(t.side === 'buy' ? 'BUY ' : 'SELL ') + escHtml(t.symbol || (t.mint || '').slice(0,8)+'…') + '</span> <span class="rh-meta">' + escHtml(srvTime(t.created_at)) + ' WIB · $' + Number(t.amount_usd || 0).toFixed(2) + '</span></div><span class="rh-meta">' + escHtml(t.reason || '') + '</span></div>';
+              }).join('');
+            } else { tr.innerHTML = '<div class="empty">Belum ada trade dari server.</div>'; }
+          }
+          var lg=$('srvLogs');
+          if(lg){
+            if(j.logs && j.logs.length){
+              lg.innerHTML = j.logs.map(function(l){
+                return '<div class="rh-row"><div><span class="rh-meta">' + escHtml(srvTime(l.created_at)) + ' WIB · [' + escHtml(l.agent || '') + ']</span><br /><span>' + escHtml(l.message || '') + '</span></div></div>';
+              }).join('');
+            } else { lg.innerHTML = '<div class="empty">Belum ada log server.</div>'; }
+          }
+        })
+        .catch(function(e){
+          if(meta) meta.textContent = 'server · gagal dicek ' + wibNow();
+          if(s){ s.textContent = 'Gagal memuat status server'; s.style.color = 'var(--amber)'; }
+          if(sd) sd.textContent = 'Tidak bisa membaca server Supabase (' + (e.message || 'error') + '). Cek Token Executor di Pengaturan & Modal, lalu tekan “↻ Perbarui”.';
+        });
+      }
+      var srvArmOff = false;
+      function setServerEnabled(on){
+        var tok = getExecToken();
+        if(!tok){ toast('Token Executor belum diisi', 'Tempel token EXECUTOR_TOKEN di Pengaturan & Modal dulu — tanpa token yang cocok server menolak perintah ini.', '', 'var(--red)'); return; }
+        if(!on && srvState.hasPosition && !srvArmOff){
+          srvArmOff = true;
+          var b = $('btnSrvToggle');
+          if(b) b.textContent = '⚠ Yakin matikan? Posisi tetap dipegang';
+          setTimeout(function(){ srvArmOff = false; var b2 = $('btnSrvToggle'); if(b2 && srvState.enabled) b2.textContent = '⏸ Matikan Auto-Trade'; }, 5000);
+          toast('Posisi masih dipegang', 'Mematikan server TIDAK menjual posisi aktif. Tekan sekali lagi dalam 5 detik untuk tetap mematikan.', '', 'var(--amber)');
+          return;
+        }
+        srvArmOff = false;
+        var btn = $('btnSrvToggle'); if(btn){ btn.disabled = true; btn.textContent = 'Menghubungi server…'; }
+        fetch(AUTO_TRADE_URL + '?action=set-enabled', { method:'POST', headers:{ 'Authorization':'Bearer '+tok, 'Content-Type':'application/json' }, body: JSON.stringify({ enabled: !!on }) })
+        .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error || ('HTTP '+r.status)); return j; }); })
+        .then(function(j){
+          toast(j.enabled ? '🟢 Auto-Trade Server DINYALAKAN' : '🔴 Auto-Trade Server DIMATIKAN', j.enabled ? 'Bot server mulai scan tiap 1 menit — tetap jalan walau Chrome ditutup.' : 'Server berhenti scan/trade. Posisi yang sedang dipegang tidak otomatis terjual.', '', j.enabled ? 'var(--green)' : 'var(--red)');
+          refreshServerPanel();
+        })
+        .catch(function(e){ toast('Perintah gagal', (e.message || 'error'), '', 'var(--red)'); refreshServerPanel(); })
+        .then(function(){ var b2 = $('btnSrvToggle'); if(b2) b2.disabled = false; });
+      }
       function confirmLiveBuy(){
         var pb = st.pendingLive; if(!pb) return;
         if(!getExecToken()){ toast('Token Executor belum diisi', 'Tempel token EXECUTOR_TOKEN di Pengaturan & Modal dulu — tanpa token yang cocok server menolak trade live.', '', 'var(--red)'); return; }
@@ -2862,6 +2969,11 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
       renderTicker();
       if(S.lite){ setLite(true); } else { startTimers(); }
       setInterval(function(){ $('toastTime').textContent = fmtClock(); }, 15000);
+      /* Auto-Trade Server: pantau tiap 60 detik + tombol Perbarui / ON-OFF. */
+      if($('btnSrvRefresh')) $('btnSrvRefresh').addEventListener('click', function(){ refreshServerPanel(); });
+      if($('btnSrvToggle')) $('btnSrvToggle').addEventListener('click', function(){ setServerEnabled(!(srvState.enabled === true)); });
+      refreshServerPanel();
+      setInterval(refreshServerPanel, 60000);
     })();
     </script>
   </body>
