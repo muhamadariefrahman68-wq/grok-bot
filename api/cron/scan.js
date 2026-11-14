@@ -10,10 +10,10 @@ const DEFAULT_WALLET = 'EJrjGUTe2qNok3GRHDcQi8kR56tn7Q7ymHgx2eBcyeMY';
 const SOL = 'So11111111111111111111111111111111111111112';
 
 const RULES = {
-  minVolume1h: 50000,
-  minLiquidityUsd: 15000,
+  minVolume1h: 30000,
+  minLiquidityUsd: 10000,
   maxTop10Pct: 20,
-  smartThreshold: 0.72,
+  smartThreshold: 0.65,
   maxSlippageBps: 500,
 };
 // Bobot Smart Score faktor TERUKUR (sosial/buzz dikeluarkan karena X/Telegram

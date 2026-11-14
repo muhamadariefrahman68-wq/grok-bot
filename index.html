@@ -446,7 +446,7 @@
       </div>
       <div class="pro-strip" aria-label="Status profesional">
         <span class="pro-badge ok">✓ AUDIT 8 KELAS AKTIF</span>
-        <span class="pro-badge"><b>Smart Score</b> · 7 faktor · lolos ≥ <span id="proThreshold">0.72</span></span>
+        <span class="pro-badge"><b>Smart Score</b> · 7 faktor · lolos ≥ <span id="proThreshold">0.65</span></span>
         <span class="pro-badge"><b>Safety Rails</b> · simulasi + slip ≤5%</span>
         <span class="pro-badge warn" id="proFailClosed">FAIL-CLOSED · ON</span>
         <span class="pro-badge ok">↻ ROTASI 1 POSISI · $1 / COIN</span>
@@ -486,7 +486,7 @@
             <button type="button" id="snipeOn">🎯 ON · Paper</button>
           </div>
         </div>
-        <p class="hint">Snipe = jalur cepat khusus <b>coin baru</b>: begitu pair baru muncul <b>dan likuiditasnya tampil</b> di DexScreener, coin itu langsung dievaluasi — tidak menunggu siklus scan biasa. <b>Tidak ada jalan pintas keamanan:</b> tetap wajib lolos <b>audit hard-kill</b> (authority None · likuiditas ≥ ambang · top 10 ≤ 20%), <b>Smart Score ≥ 0,72</b> dari data live asli, dan <b>batas harian</b>. Beli tetap <b>$1 per coin</b>, <b>rotasi 1 posisi</b>, <b>TP +50% / +100%</b>, <b>SL −30%</b>. Snipe butuh <b>Sumber Scan = Live</b> (mengaktifkan Snipe otomatis memindahkan sumber scan ke Live).</p>
+        <p class="hint">Snipe = jalur cepat khusus <b>coin baru</b>: begitu pair baru muncul <b>dan likuiditasnya tampil</b> di DexScreener, coin itu langsung dievaluasi — tidak menunggu siklus scan biasa. <b>Tidak ada jalan pintas keamanan:</b> tetap wajib lolos <b>audit hard-kill</b> (authority None · likuiditas ≥ ambang · top 10 ≤ 20%), <b>Smart Score ≥ 0,65</b> dari data live asli, dan <b>batas harian</b>. Beli tetap <b>$1 per coin</b>, <b>rotasi 1 posisi</b>, <b>TP +50% / +100%</b>, <b>SL −30%</b>. Snipe butuh <b>Sumber Scan = Live</b> (mengaktifkan Snipe otomatis memindahkan sumber scan ke Live).</p>
         <div class="set-grid">
           <div><label class="f" for="inSnipeAge">Umur pair maks untuk snipe (menit)</label><input type="number" id="inSnipeAge" min="5" max="240" step="5" value="30" /><p class="hint">Hanya pair berumur ≤ angka ini yang boleh di-snipe. Lebih tua dari itu = jalur scan biasa.</p></div>
           <div><label class="f">Status snipe</label><div class="sum-row" id="snipeStatus" style="margin-top:0">Snipe OFF — tidak ada coin yang di-snipe. Semua angka snipe berasal dari data live DexScreener + Solana RPC; data gagal/kosong = coin di-skip, bukan ditebak.</div></div>
@@ -554,12 +554,12 @@
           <div class="dcell"><div class="dl2">🆕 Jalur 1 · Coin Baru</div><div class="dv" style="font-size:15px">Umur pool ≤ 7 hari</div><div class="ds">Yang dinilai: likuiditas awal, volume 1 jam, distribusi holder, dev wallet, umur pool (baru), bonding curve, sosial/buzz. Fokus: lolos fase snipe &amp; migrasi tanpa kena rug awal.</div></div>
           <div class="dcell"><div class="dl2">🏛️ Jalur 2 · Coin Lama Potensial</div><div class="dv" style="font-size:15px">Umur pool &gt; 7 hari · survive</div><div class="ds">Yang dinilai: <b>likuiditas bertahan</b>, <b>konsistensi volume</b> antar-window, <b>pertumbuhan holder</b>, dev wallet, <b>umur = survival terbukti</b>, dan <b>harga vs ATH</b> (diskon sehat 40–70%; −90% = mati, bukan murah). Coin lama <b>tidak dihukum karena tuanya</b> — yang dihukum hanya volume/holder/likuiditas yang mati.</div></div>
         </div>
-        <p class="hint">Scout memindai <b>kedua jalur sekaligus</b> tiap siklus. Kategori hanya menentukan <b>faktor mana yang dipakai</b> (tetap 7 faktor, bobot total 100%, semua tampil per faktor) — audit hard-kill 8 kelas tetap jalan <b>sebelum</b> scoring di kedua jalur, dan ambang lolos Executor tetap sama: <b>Smart Score ≥ 0,72</b>.</p>
+        <p class="hint">Scout memindai <b>kedua jalur sekaligus</b> tiap siklus. Kategori hanya menentukan <b>faktor mana yang dipakai</b> (tetap 7 faktor, bobot total 100%, semua tampil per faktor) — audit hard-kill 8 kelas tetap jalan <b>sebelum</b> scoring di kedua jalur, dan ambang lolos Executor tetap sama: <b>Smart Score ≥ 0,65</b>.</p>
         <div id="buzzBox" style="margin-top:10px"></div>
         <p class="hint">Keterlacakan skor: setiap faktor di bawah memuat nilai + <b>kontribusinya (nilai × bobot)</b>, dan baris <b>Jumlah Terbobot</b> di bawah tabel menjumlahkan semua kontribusi itu — hasilnya harus sama persis dengan angka hero dan itulah angka yang dipakai vonis <b>LOLOS / WATCHLIST / DIBUANG</b> serta keputusan Executor. Untuk kandidat <b>replay</b>, sumbernya adalah <b>REPLAY contoh video</b> (bukan live) — faktor live hanya berasal dari bagian Detail Coin / Data Live. Sub-skor <b>Influencer Buzz</b> ditampilkan terpisah di atas rincian faktor; pengaruhnya sudah termasuk di dalam nilai faktor Sosial/Buzz, tidak pernah sebagai angka tambahan di luar tabel.</p>
         <div id="factors"></div>
         <div class="sum-row" id="smartSum">Smart Score = jumlah terbobot faktor di atas — menunggu kandidat…</div>
-        <p class="hint">Ambang lolos Executor: <b>Smart Score ≥ 0.72</b> <span style="color:var(--dim)">(lebih ketat dari ambang lama 0.60)</span> + likuiditas ≥ $15k + tidak ada hard-kill. Skor 0.60–0.71 = watchlist saja, tidak dibeli. Di bawah 0.60 = dibuang.</p>
+        <p class="hint">Ambang lolos Executor: <b>Smart Score ≥ 0.65</b> + likuiditas ≥ $10k + volume 1 jam ≥ $30k + tidak ada hard-kill. Skor 0.55–0.64 = watchlist saja, tidak dibeli. Di bawah 0.55 = dibuang.</p>
       </section>
 
       <!-- audit 8 -->
@@ -677,10 +677,10 @@
           <div><label class="f" for="inTrail">Trailing aktif di (%)</label><input type="number" id="inTrail" min="1" max="500" step="1" value="12" /></div>
           <div><label class="f" for="inTp1">Take profit 1 (%) — mode $1</label><input type="number" id="inTp1" min="1" max="1000" step="1" value="50" /></div>
           <div><label class="f" for="inTp2">Take profit 2 (%) — mode $1</label><input type="number" id="inTp2" min="1" max="2000" step="1" value="100" /></div>
-          <div><label class="f" for="inMinVol">Min. volume 1 jam ($)</label><input type="number" id="inMinVol" min="0" step="1000" value="50000" /></div>
-          <div><label class="f" for="inMinScore">Ambang Smart Score (0–1)</label><input type="number" id="inMinScore" min="0.5" max="0.95" step="0.01" value="0.72" /></div>
+          <div><label class="f" for="inMinVol">Min. volume 1 jam ($)</label><input type="number" id="inMinVol" min="0" step="1000" value="30000" /></div>
+          <div><label class="f" for="inMinScore">Ambang Smart Score (0–1)</label><input type="number" id="inMinScore" min="0.5" max="0.95" step="0.01" value="0.65" /></div>
           <div><label class="f" for="inSlip">Slippage maks (%) — Safety Rails</label><input type="number" id="inSlip" min="0.5" max="5" step="0.5" value="5" /></div>
-          <div><label class="f" for="inMinLiq">Min. likuiditas pool ($)</label><input type="number" id="inMinLiq" min="0" step="1000" value="15000" /></div>
+          <div><label class="f" for="inMinLiq">Min. likuiditas pool ($)</label><input type="number" id="inMinLiq" min="0" step="1000" value="10000" /></div>
 
           <div class="full"><label class="f" for="inKey">API Key TrueSOTA</label>
             <div class="key-wrap"><input type="password" id="inKey" placeholder="Masukkan API key TrueSOTA kamu di sini" autocomplete="off" /><button type="button" class="key-eye" id="btnEye" aria-label="Tampilkan atau sembunyikan API key">Tampilkan</button></div>
@@ -946,7 +946,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
          dihukum karena tuanya. Umur dibaca sebagai bukti survival, dan yang
          dinilai adalah konsistensi volume, pertumbuhan holder, likuiditas
          yang bertahan, dan harga vs ATH (diskon sehat ≠ coin mati).
-         Kedua jalur: audit hard-kill 8 kelas jalan DULU, ambang sama 0,72,
+         Kedua jalur: audit hard-kill 8 kelas jalan DULU, ambang sama 0,65,
          dan total tetap jumlah terbobot persis dari faktor yang tampil. */
       var FACTORS_NEW = [
         { id:'liq',   name:'Likuiditas pool',      w:20 },
@@ -1071,14 +1071,14 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         ['Paper-first','Mode paper adalah default. Live hanya aktif setelah OK eksplisit, wallet khusus $1–5.'],
         ['Influencer Buzz = sinyal waspada dua arah','Shill terkoordinasi / akun baru / riwayat rug → nilai faktor Sosial/Buzz ditekan ke sub-skor buzz + tahan beli. Buzz ramai + fundamental kotor = tetap KILL.'],
         ['Akurasi: sumber + waktu di setiap angka live','Harga/liq/vol/holder/authority/buzz wajib dari DexScreener/Jupiter/Solscan/RPC/TrueSOTA/X. Kosong/basi/error = “Data belum tersedia” + fail-closed. Replay selalu berlabel REPLAY.'],
-        ['Pencarian 2 jalur: Coin Baru + Coin Lama Potensial','Coin lama (>7 hari) dinilai dari likuiditas bertahan, konsistensi volume, pertumbuhan holder, survival, dan harga vs ATH — tidak dihukum karena tuanya. Audit hard-kill + ambang 0,72 sama untuk kedua jalur.'],
+        ['Pencarian 2 jalur: Coin Baru + Coin Lama Potensial','Coin lama (>7 hari) dinilai dari likuiditas bertahan, konsistensi volume, pertumbuhan holder, survival, dan harga vs ATH — tidak dihukum karena tuanya. Audit hard-kill + ambang 0,65 sama untuk kedua jalur.'],
         ['Batas harian trading (money management)','Batas rugi harian, target profit harian, maks trade/hari, maks rugi beruntun, dan jam trading aktif tersimpan & ditegakkan: satu batas kena = bot berhenti seharian, status “Batas harian tercapai — bot berhenti”, sampai besok atau reset manual.']
       ];
 
       /* ---------- settings ---------- */
       var S = {
         mode:'std', customEquity:10, equity:280, size:8, stop:30, trail:12, tp1:50, tp2:100,
-        minVol:50000, minScore:0.72, slip:5, minLiq:15000, model:'grok-4.6', domain:'onlinejob.web.id', key:'', wallet:'jupiter',
+        minVol:30000, minScore:0.65, slip:5, minLiq:10000, model:'grok-4.6', domain:'onlinejob.web.id', key:'', wallet:'jupiter',
         walletAddress:'EJrjGUTe2qNok3GRHDcQi8kR56tn7Q7ymHgx2eBcyeMY',
         soundOn:true, sndVol:70, lite:false,
         scanSource:'replay', snipe:false, snipeMaxAge:30,
@@ -2382,10 +2382,10 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         S.trail = Math.min(500, Math.max(1, parseFloat($('inTrail').value)||12));
         S.tp1 = Math.min(1000, Math.max(1, parseFloat($('inTp1').value)||50));
         S.tp2 = Math.min(2000, Math.max(1, parseFloat($('inTp2').value)||100));
-        S.minVol = Math.min(10000000, Math.max(0, parseFloat($('inMinVol').value)||50000));
-        S.minScore = Math.min(0.95, Math.max(0.5, parseFloat($('inMinScore').value)||0.72));
+        S.minVol = Math.min(10000000, Math.max(0, parseFloat($('inMinVol').value)||30000));
+        S.minScore = Math.min(0.95, Math.max(0.5, parseFloat($('inMinScore').value)||0.65));
         if($('inSlip')) S.slip = Math.min(5, Math.max(0.5, parseFloat($('inSlip').value)||5));
-        if($('inMinLiq')) S.minLiq = Math.min(10000000, Math.max(0, parseFloat($('inMinLiq').value)||15000));
+        if($('inMinLiq')) S.minLiq = Math.min(10000000, Math.max(0, parseFloat($('inMinLiq').value)||10000));
         S.domain = ($('inDomain').value||'onlinejob.web.id').trim().replace(/[^a-zA-Z0-9.\-]/g,'') || 'onlinejob.web.id';
         /* key: kalau kolom masih berisi masker, jangan timpa key asli */
         var kv = $('inKey').value.trim();
