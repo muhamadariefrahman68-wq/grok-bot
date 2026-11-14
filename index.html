@@ -1168,14 +1168,34 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         if(AC.state === 'suspended'){ AC.resume(); }
         return AC;
       }
-      /* ---------- KELUAR DARI HALAMAN = SENYAP + DIJEDA TOTAL ----------
+      /* ---------- AUTO-RESUME: TUTUP CHROME, BALIK LAGI = TETAP JALAN ------
+         "Sedang jalan" disimpan di localStorage saat user tekan Jalankan
+         (setAutoRun). Kalau Chrome ditutup / tab disembunyikan, bot memang
+         berhenti (halaman web tidak bisa jalan tanpa Chrome) — tapi saat
+         user buka lagi web-nya, tryAutoResume() menjalankannya sendiri
+         tanpa tekan Jalankan. Hanya jeda manual (tekan Jalankan saat jalan)
+         yang mematikan autorun. Batas harian / jam trading / gerbang Live
+         tetap dicek lewat jalur klik Jalankan yang sama. */
+      function getAutoRun(){ try{ return localStorage.getItem('grokbot-autorun-v1') === '1'; }catch(e){ return false; } }
+      function setAutoRun(v){ try{ localStorage.setItem('grokbot-autorun-v1', v ? '1' : '0'); }catch(e){} }
+      var lastAutoResumeAt = 0;
+      function tryAutoResume(){
+        if(!getAutoRun()) return;
+        if(typeof st === 'undefined' || !st || st.running || st.hold) return;
+        var now = Date.now();
+        if(now - lastAutoResumeAt < 3000) return;
+        lastAutoResumeAt = now;
+        var b = $('btnRun');
+        if(b) b.click();
+      }
+      /* ---------- KELUAR DARI HALAMAN = SENYAP + DIJEDA SEMENTARA --------
          visibilitychange (tab disembunyikan / pindah aplikasi / Chrome
          ditinggal), pagehide (halaman ditutup / dinavigasi pergi), dan blur
          (jendela kehilangan fokus) semuanya memanggil ini: AudioContext
-         langsung di-suspend, bot dijeda, dan TIDAK ADA jalur auto-resume.
-         Saat user kembali (visible / focus / pageshow) tidak ada apa pun
-         yang menjalankan bot atau audio lagi — pageGone hanya dibersihkan
-         oleh klik manual pada tombol Jalankan (lihat handler btnRun). */
+         langsung di-suspend dan bot dijeda — tapi status "sedang jalan"
+         TERSIMPAN, jadi saat kembali (visible / pageshow) tryAutoResume()
+         menjalankannya lagi sendiri. Audio tetap tidak bunyi sebelum ada
+         interaksi / klik. */
       function silenceAndPause(){
         pageGone = true;
         audioUnlocked = false;
@@ -1184,13 +1204,14 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         if(typeof st !== 'undefined' && st && typeof paintRunUI === 'function'){ paintRunUI(); }
       }
       document.addEventListener('visibilitychange', function(){
-        if(document.hidden || document.visibilityState === 'hidden'){ silenceAndPause(); }
-        /* kembali terlihat: sengaja TIDAK resume apa pun — tetap dijeda & senyap */
+        if(document.hidden || document.visibilityState === 'hidden'){ silenceAndPause(); return; }
+        /* kembali terlihat: jalankan lagi sendiri kalau memang sedang di-set jalan */
+        setTimeout(tryAutoResume, 400);
       });
       window.addEventListener('pagehide', silenceAndPause);
       window.addEventListener('blur', silenceAndPause);
-      window.addEventListener('focus', function(){ /* kembali fokus ≠ izin jalan: tetap dijeda sampai Jalankan ditekan */ });
-      window.addEventListener('pageshow', function(){ /* kembali dari bfcache: tetap dijeda & senyap */ });
+      window.addEventListener('focus', function(){ setTimeout(tryAutoResume, 400); });
+      window.addEventListener('pageshow', function(){ setTimeout(tryAutoResume, 400); });
       ['pointerdown','keydown','touchstart'].forEach(function(ev){
         document.addEventListener(ev, function(){
           if(pageGone || document.hidden) return; /* sentuhan setelah kembali tidak membuka audio diam-diam */
@@ -2510,7 +2531,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         if(bl) bl.className = isLive ? 'on live-on' : '';
         if(big){
           big.className = 'mode-big' + (isLive ? ' live' : '');
-          big.innerHTML = isLive ? 'MODE LIVE<small>Trade SUNGGUHAN dengan uang asli di wallet trading — bot tetap hanya jalan setelah kamu tekan ▶ Jalankan.</small>' : 'MODE PAPER<small>Simulasi — aman, tanpa uang sungguhan. Ini mode default.</small>';
+          big.innerHTML = isLive ? 'MODE LIVE<small>Trade SUNGGUHAN dengan uang asli di wallet trading — bot jalan sendiri kalau sebelumnya sedang jalan: tutup Chrome lalu buka lagi, dia langsung lanjut tanpa tekan ▶ Jalankan.</small>' : 'MODE PAPER<small>Simulasi — aman, tanpa uang sungguhan. Ini mode default.</small>';
         }
       }
       function setPaperMode(silent){
@@ -2577,7 +2598,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
                 if(st.running) return;
                 var why2 = liveBlockReason();
                 if(why2){ toast('🔴 Live tidak bisa jalan — tetap dijeda', why2+' · Mode tetap Live, tapi tidak ada trade sebelum syarat ini beres (atau pindah ke Paper).', '', 'var(--red)'); return; }
-                st.running = true; pageGone = false; audioUnlocked = true; ensureAudio(); paintRunUI();
+                st.running = true; setAutoRun(true); pageGone = false; audioUnlocked = true; ensureAudio(); paintRunUI();
                 toast('▶ Bot jalan — Live', 'Data Live segar ✓ · saldo tercek ✓ · kandidat pertama yang lolos audit + skor akan minta konfirmasi kamu', '', 'var(--green)');
               }, 6000);
               return;
@@ -2590,17 +2611,18 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         if(st.hold){
           /* Lanjut free-run hanya karena user menekannya manual di sini */
           st.hold = false;
-          st.running = true;
+          st.running = true; setAutoRun(true);
           pageGone = false; audioUnlocked = true; ensureAudio();
           paintRunUI();
           toast('Free-run paper lanjut', 'dari equity $3,412 · aturan yang sama', '', 'var(--green)');
           return;
         }
         st.running = !st.running;
+        setAutoRun(st.running);
         if(st.running){
-          /* Satu-satunya jalur yang membersihkan pageGone & membuka audio
-             lagi setelah user keluar dari Chrome / pindah aplikasi:
-             tekan Jalankan secara manual. */
+          /* Jalur yang membersihkan pageGone & membuka audio lagi setelah
+             user keluar dari Chrome / pindah aplikasi: tekan Jalankan —
+             atau auto-resume saat kembali (klik yang sama, dipicu otomatis). */
           pageGone = false; audioUnlocked = true; ensureAudio();
         }
         paintRunUI();
@@ -2862,6 +2884,9 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
       renderTicker();
       if(S.lite){ setLite(true); } else { startTimers(); }
       setInterval(function(){ $('toastTime').textContent = fmtClock(); }, 15000);
+      /* Auto-resume saat halaman dibuka: kalau bot sedang di-set jalan
+         sebelum Chrome ditutup, langsung jalan sendiri. */
+      setTimeout(tryAutoResume, 900);
     })();
     </script>
   </body>
