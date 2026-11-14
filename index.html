@@ -279,7 +279,7 @@
         border-radius:12px; padding:11px 8px; font-size:13.5px; font-weight:700; cursor:pointer; min-height:48px; line-height:1.35; }
       .menu-hint button span{ display:block; font-size:11px; color:var(--dim); font-weight:600; margin-top:2px; }
       .bottom-nav{ position:fixed; left:50%; transform:translateX(-50%); bottom:0; z-index:60; width:100%; max-width:680px;
-        display:grid; grid-template-columns:repeat(7,1fr); gap:2px; background:rgba(9,15,12,.97); border-top:1px solid var(--line2);
+        display:grid; grid-template-columns:repeat(9,1fr); gap:2px; background:rgba(9,15,12,.97); border-top:1px solid var(--line2);
         padding:6px 4px calc(6px + env(safe-area-inset-bottom)); }
       .bottom-nav button{ background:transparent; border:none; color:var(--dim); border-radius:12px; padding:7px 1px 6px;
         font-size:10.5px; font-weight:700; cursor:pointer; min-height:56px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; line-height:1.2; font-family:inherit; }
@@ -477,7 +477,7 @@
       </section>
 
       <!-- auto snipe (paper) -->
-      <section class="card" aria-label="Auto Snipe paper">
+      <section class="card" id="sec-snipe" aria-label="Auto Snipe paper">
         <div class="card-head"><h2>Auto Snipe · Paper</h2><div class="r" id="snipeMeta">OFF · paper only</div></div>
         <div class="snipe-head">
           <span class="pill dark" id="snipeStatusPill">🎯 SNIPE OFF</span>
@@ -497,7 +497,7 @@
       </section>
 
       <!-- executor live -->
-      <section class="card" aria-label="Executor Live">
+      <section class="card" id="sec-exec" aria-label="Executor Live">
         <div class="card-head"><h2>Executor Live</h2><div class="r" id="execMeta">server · belum dicek</div></div>
         <p class="hint" style="margin-top:0">Eksekusi live sungguhan jalan di <b>server Vercel</b> lewat route <code class="k">/api/trade/execute</code>: <b>Jupiter Quote v6 → Swap → tanda tangan server</b> (key dari env <code class="k">SOLANA_WALLET_SECRET</code> — <b>tidak pernah tampil di halaman ini / log</b>) → <b>simulasi dulu</b> → broadcast hanya bila simulasi bersih. Route <b>menolak semua trade</b> kecuali env server <code class="k">TRADING_MODE=live</code> <b>dan</b> header token <code class="k">EXECUTOR_TOKEN</code> cocok (isi tokennya di Pengaturan &amp; Modal). Beli dibatasi <b>$1 per coin</b>, slippage maks <b>5%</b>. Sampai deposit masuk + server live + kamu konfirmasi, <b>tidak ada trade live yang bisa terjadi</b>.</p>
         <div class="detail-grid">
@@ -814,6 +814,8 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
       <button type="button" data-nav="safety"><span class="bn-ico">🛡️</span>Safety</button>
       <button type="button" data-nav="deploy"><span class="bn-ico">🚀</span>Deploy</button>
       <button type="button" data-nav="daily"><span class="bn-ico">📅</span>Harian</button>
+      <button type="button" data-nav="snipe"><span class="bn-ico">🎯</span>Snipe</button>
+      <button type="button" data-nav="exec"><span class="bn-ico">⚡</span>Executor</button>
     </nav>
 
     <div class="sheet-backdrop" id="sheetBackdrop" hidden></div>
@@ -833,6 +835,8 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         <button type="button" data-open-panel="died">💀 Why They Died</button>
         <button type="button" data-open-panel="settings">⚙️ Pengaturan &amp; Modal</button>
         <button type="button" data-open-panel="daily">📅 Pengaturan Harian</button>
+        <button type="button" data-open-panel="snipe">🎯 Auto Snipe · Paper</button>
+        <button type="button" data-open-panel="exec">⚡ Executor Live</button>
       </div>
       <div class="sheet-body" id="sheetBody">
         <div class="panel-page" data-panel="detail"><div class="panel-slot" id="slot-detail"></div></div>
@@ -845,6 +849,8 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         <div class="panel-page" data-panel="died"><div class="panel-slot" id="slot-died"></div></div>
         <div class="panel-page" data-panel="settings"><div class="panel-slot" id="slot-settings"></div></div>
         <div class="panel-page" data-panel="daily"><div class="panel-slot" id="slot-daily"></div></div>
+        <div class="panel-page" data-panel="snipe"><div class="panel-slot" id="slot-snipe"></div></div>
+        <div class="panel-page" data-panel="exec"><div class="panel-slot" id="slot-exec"></div></div>
       </div>
     </div>
 
@@ -857,8 +863,8 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
       move('sec-detail','slot-detail'); move('sec-live','slot-live'); move('sec-skills','slot-skills');
       move('sec-safety','slot-safety'); move('sec-deploy','slot-deploy'); move('sec-smart','slot-smart');
       move('sec-audit','slot-audit'); move('sec-died','slot-died'); move('pengaturan','slot-settings');
-      move('sec-daily','slot-daily');
-      var TITLES = { detail:['Detail Coin','Mint address → data asli per faktor + Influencer Buzz'], live:['Data Live & Sumber','Angka hanya dari API asli + sumber + waktu cek (WIB)'], skills:['Skills di Dalam Bot','4 skill profesional yang selalu aktif di bot'], safety:['Safety Rails & Checklist','On-Chain Safety Rails + checklist keamanan'], deploy:['Deploy · Vercel','onlinejob.web.id · cron, env, dan file route'], smart:['Smart Coin Scoring','Skor 7 faktor — hero = jumlah terbobot rincian faktor'], audit:['Audit Rug · 8 Kelas','Satu hard-kill saja = coin dibuang sebelum scoring'], died:['Why They Died','Alasan coin gugur, diringkas dari Logger'], settings:['Pengaturan & Modal','Mode Video $280 · Modal $1 · Modal Kustom — tersimpan di browser ini'], daily:['Pengaturan Harian Trading','Batas rugi / target profit / maks trade / rugi beruntun / jam aktif — money management harian'] };
+      move('sec-daily','slot-daily'); move('sec-snipe','slot-snipe'); move('sec-exec','slot-exec');
+      var TITLES = { detail:['Detail Coin','Mint address → data asli per faktor + Influencer Buzz'], live:['Data Live & Sumber','Angka hanya dari API asli + sumber + waktu cek (WIB)'], skills:['Skills di Dalam Bot','4 skill profesional yang selalu aktif di bot'], safety:['Safety Rails & Checklist','On-Chain Safety Rails + checklist keamanan'], deploy:['Deploy · Vercel','onlinejob.web.id · cron, env, dan file route'], smart:['Smart Coin Scoring','Skor 7 faktor — hero = jumlah terbobot rincian faktor'], audit:['Audit Rug · 8 Kelas','Satu hard-kill saja = coin dibuang sebelum scoring'], died:['Why They Died','Alasan coin gugur, diringkas dari Logger'], settings:['Pengaturan & Modal','Mode Video $280 · Modal $1 · Modal Kustom — tersimpan di browser ini'], daily:['Pengaturan Harian Trading','Batas rugi / target profit / maks trade / rugi beruntun / jam aktif — money management harian'], snipe:['Auto Snipe · Paper','Coin baru langsung dievaluasi — paper saja, audit + Smart Score tetap wajib'], exec:['Executor Live','Konfirmasi trade live $1 · status server · riwayat trade'] };
       var sheet=document.getElementById('sheet'), bd=document.getElementById('sheetBackdrop'), bodyEl=document.getElementById('sheetBody');
       var current=null;
       function paintNav(){
