@@ -21,7 +21,7 @@
         -webkit-font-smoothing:antialiased; }
       .wrap{ max-width:680px; margin:0 auto; padding:14px 14px 40px; }
 
-      /* toast banner (like the video's push notifications) */
+      /* toast banner (push notifications) */
       .toast{ display:flex; gap:10px; align-items:flex-start; background:#131c17; border:1px solid var(--line2);
         border-radius:16px; padding:12px 14px; margin-bottom:14px; box-shadow:0 10px 30px rgba(0,0,0,.45); }
       .toast .t-ico{ flex:0 0 auto; width:34px; height:34px; border-radius:10px; background:#fff; display:grid; place-items:center; }
@@ -188,8 +188,6 @@
       .wallet-warn{ border:1px solid rgba(255,180,84,.45); background:rgba(255,180,84,.10); color:#ffd9a0; border-radius:12px; padding:11px 12px; font-size:13.5px; line-height:1.6; margin-top:10px; }
       .wallet-warn b{ color:#fff; }
       .pill-amber{ background:rgba(255,180,84,.16); color:var(--amber); }
-      .replay-banner{ border:1px solid rgba(255,180,84,.55); background:rgba(255,180,84,.12); border-radius:14px; padding:12px 14px; margin-top:14px; font-size:14px; line-height:1.6; color:#ffe1b0; }
-      .replay-banner b{ color:#fff; }
       .src-row{ display:flex; gap:10px; align-items:flex-start; padding:10px 0; border-bottom:1px solid rgba(28,42,34,.55); }
       .src-row:last-child{ border-bottom:none; }
       .src-dot{ width:10px; height:10px; border-radius:50%; margin-top:5px; flex:0 0 auto; background:var(--dim2); }
@@ -288,26 +286,15 @@
       .sheet-tabs button.on{ background:var(--green); border-color:var(--green); color:#04140a; }
       .active-capital{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:10px; background:var(--green-soft); border:1px solid rgba(47,224,124,.35); border-radius:12px; padding:9px 12px; font-size:14px; }
       .active-capital b{ color:var(--green); }
-      .mode-switch{ margin-top:12px; background:var(--panel); border:1px solid var(--line2); border-radius:16px; padding:13px; }
-      .mode-big{ font-size:24px; font-weight:900; letter-spacing:.01em; margin-top:11px; line-height:1.2; color:var(--green); }
-      .mode-big.live{ color:var(--red); }
-      .mode-big small{ display:block; font-size:13px; font-weight:600; color:var(--dim); margin-top:3px; letter-spacing:0; }
-      .seg button.on.live-on{ background:var(--red); color:#fff; }
-      .live-confirm{ border:1px solid rgba(255,107,107,.6); background:var(--red-soft); border-radius:12px; padding:12px; margin-top:10px; font-size:14px; line-height:1.6; }
-      .live-confirm[hidden]{ display:none !important; }
       .gate-msg{ font-size:13.5px; line-height:1.55; margin-top:9px; color:var(--dim); }
       .gate-msg.err{ color:#ffc9c9; } .gate-msg.ok{ color:var(--green); }
       /* ===== SCAN LIVE + SNIPE + EXECUTOR LIVE ===== */
-      .scan-switch{ margin-top:12px; background:var(--panel); border:1px solid var(--line2); border-radius:16px; padding:13px; }
-      .seg button.on.scan-live-on{ background:var(--blue); color:#04101f; }
       .snipe-head{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
       .snipe-log{ margin-top:8px; }
       .snipe-row{ display:flex; justify-content:space-between; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid rgba(28,42,34,.55); flex-wrap:wrap; font-size:13.5px; }
       .snipe-row:last-child{ border-bottom:none; }
       .snipe-row .ss{ font-family:var(--mono); font-weight:800; font-size:14px; }
       .snipe-row .sm{ color:var(--dim); font-size:12.5px; font-family:var(--mono); }
-      .exec-confirm{ border:1px solid rgba(255,107,107,.6); background:var(--red-soft); border-radius:12px; padding:12px; margin-top:10px; font-size:14px; line-height:1.6; }
-      .exec-confirm[hidden]{ display:none !important; }
       .lt-row{ display:flex; justify-content:space-between; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid rgba(28,42,34,.55); flex-wrap:wrap; font-size:13.5px; }
       .lt-row:last-child{ border-bottom:none; }
       .lt-row .lm{ color:var(--dim); font-size:12.5px; font-family:var(--mono); word-break:break-all; }
@@ -358,7 +345,7 @@
         </div>
         <div class="t-body">
           <div class="t-head"><span>Grok Bot · <span id="toastTime">23:45</span></span><span class="t-amt" id="toastAmt"></span></div>
-          <div class="t-title" id="toastTitle">1,112 pairs scanned · 0 traded</div>
+          <div class="t-title" id="toastTitle">0 pairs scanned · 0 traded</div>
           <div class="t-sub" id="toastSub">filter killed everything that failed the rules</div>
         </div>
         <button class="t-x" id="toastClose" aria-label="Tutup notifikasi">✕</button>
@@ -371,61 +358,35 @@
         </div>
         <div>
           <h1>Grok Bot</h1>
-          <div class="sub">Solana memes · strict RM · paper → live</div>
+          <div class="sub">Solana memes · strict RM · LIVE</div>
         </div>
         <div class="live"><span class="dot off" id="liveDot"></span><span id="liveTxt">Paused · tekan Jalankan untuk mulai</span></div>
-        <button class="lite-chip" id="btnLite" aria-label="Aktifkan Mode Lite hemat data" title="Mode Lite: matikan animasi, grafik, replay otomatis & suara, polling lebih jarang">⚡ Lite</button>
+        <button class="lite-chip" id="btnLite" aria-label="Aktifkan Mode Lite hemat data" title="Mode Lite: matikan animasi, grafik & suara, polling lebih jarang">⚡ Lite</button>
         <button class="snd-chip" id="btnSound" aria-label="Suara notifikasi on atau off" title="Suara TP / SL / Logger">🔊 Suara ON</button>
       </div>
 
       <!-- lite banner: muncul hanya saat Mode Lite aktif -->
       <div class="lite-banner" id="liteBanner" role="status">
-        <div style="flex:1;min-width:0"><b>⚡ Mode Lite aktif — halaman ringan untuk koneksi lambat.</b> Animasi ticker, grafik, replay otomatis &amp; suara dimatikan. Pembaruan live diperlambat jadi tiap <b>45 detik</b>. Detail coin dimuat hanya saat kamu minta. Semua fitur tetap ada, hanya tidak jalan otomatis.</div>
+        <div style="flex:1;min-width:0"><b>⚡ Mode Lite aktif — halaman ringan untuk koneksi lambat.</b> Animasi ticker, grafik &amp; suara dimatikan. Pembaruan live diperlambat jadi tiap <b>45 detik</b>. Detail coin dimuat hanya saat kamu minta. Semua fitur tetap ada, hanya tidak jalan otomatis.</div>
         <button class="btn primary" id="btnFull" type="button">Muat Penuh</button>
       </div>
 
       <!-- ticker -->
       <div class="ticker" aria-hidden="true"><div class="ticker-track" id="tickerTrack"></div></div>
 
-      <div class="replay-banner" role="note"><b>🎬 REPLAY CONTOH VIDEO — BUKAN HASIL LIVE.</b> Animasi di bawah ini memutar ulang contoh video: equity <b>$280 → $3.412</b>, 10.214 scanned, 38 traded, 26W/12L. Itu <b>angka replay</b>, bukan hasil live bot ini dan bukan data pasar saat ini. Data pasar asli hanya tampil di bagian <b>Data Live &amp; Sumber</b> dan <b>Detail Coin</b> — buka lewat <b>menu bawah</b> di bagian bawah layar — selalu dengan nama sumber + waktu cek. Kalau sumber gagal / data basi / belum ada, bot menampilkan <b>“Data belum tersedia”</b> dan <b>fail-closed (tidak trade)</b>. Lebih baik skip coin daripada beli dari data melenceng.</div>
 
       <!-- equity -->
       <div class="eq-meta">
-        <span><span class="pill pill-amber" style="margin-right:6px">REPLAY</span>Equity · <b id="eqStart" style="color:var(--txt)">$280</b> at <span id="eqClock">23:00</span> · <span id="eqSizeLbl">8% max size</span></span>
+        <span><span class="pill" style="margin-right:6px;background:rgba(255,107,107,.16);color:var(--red)">LIVE</span>Equity · <b id="eqStart" style="color:var(--txt)">$1</b> at <span id="eqClock">—</span> · <span id="eqSizeLbl">$1 / coin · 1 posisi</span></span>
         <span class="mult" id="mult">1.00×</span>
       </div>
-      <div class="active-capital" role="status" aria-label="Modal aktif"><span>💰 Modal aktif:</span><b id="activeCapital">Mode Video · $280</b><span class="ac-note" id="activeCapitalNote">8% per posisi · ganti lewat menu bawah → tab Pengaturan &amp; Modal di dalam panel</span></div>
-      <div class="mode-switch" aria-label="Mode trading Live atau Paper">
-        <label class="f" style="margin-bottom:7px">Mode trading — tekan untuk pindah</label>
-        <div class="seg" role="group" aria-label="Saklar mode Paper atau Live">
-          <button type="button" id="modePaper" class="on">📄 Paper · Simulasi</button>
-          <button type="button" id="modeLive">🔴 Live · Sungguhan</button>
-        </div>
-        <div class="mode-big" id="modeBig">MODE PAPER<small>Simulasi — aman, tanpa uang sungguhan. Ini mode default.</small></div>
-        <div class="gate-msg" id="liveGateMsg">Live hanya bisa aktif kalau: wallet terdanai SOL + modal · Data Live segar (≤ 5 menit) · kamu konfirmasi ringkasan trade-nya dulu.</div>
-        <div class="live-confirm" id="liveConfirm" hidden>
-          <b>⚠ Konfirmasi pindah ke LIVE — trade sungguhan dengan uang asli:</b>
-          <div class="sum-row" id="liveSummary" style="margin-top:8px"></div>
-          <div class="controls" style="margin-top:10px">
-            <button type="button" class="btn danger" id="btnLiveYes" style="border-color:var(--red)">Ya, Aktifkan Live</button>
-            <button type="button" class="btn" id="btnLiveNo">Batal — tetap Paper</button>
-          </div>
-        </div>
-      </div>
-      <div class="scan-switch" aria-label="Sumber scan: replay atau live">
-        <label class="f" style="margin-bottom:7px">Sumber scan — data yang dipakai bot</label>
-        <div class="seg" role="group" aria-label="Pilih sumber scan">
-          <button type="button" id="scanReplay" class="on">🎬 Replay Video</button>
-          <button type="button" id="scanLive">📡 Live · API Asli</button>
-        </div>
-        <div class="gate-msg" id="scanSrcMsg">🎬 <b>REPLAY</b> aktif — animasi contoh video, semua angka simulasi &amp; berlabel REPLAY. Pindah ke <b>Live</b> untuk scan dari DexScreener + Jupiter + Solana RPC asli.</div>
-      </div>
-      <div class="eq-big"><span id="eqBig">$280</span><span class="cents" id="eqCents">.00</span></div>
+      <div class="active-capital" role="status" aria-label="Modal aktif"><span>💰 Modal aktif:</span><b id="activeCapital">Modal $1 · all-in</b><span class="ac-note" id="activeCapitalNote">$1 per coin · rotasi 1 posisi · TP +50%/+100% · SL −30%</span></div>
+      <div class="eq-big"><span id="eqBig">$1</span><span class="cents" id="eqCents">.00</span></div>
       <div class="eq-row">
         <span class="pnl" id="pnl">+$0.00 (0%)</span>
         <span class="eq-note"><span id="eqNote">filter says no…</span><br /><span class="wl" id="wl"></span> <span class="stop-pill" id="lastStop" style="display:none"></span></span>
       </div>
-      <div class="chart-lite-note">📉 Grafik dimatikan di Mode Lite biar halaman ringan — replay dijeda; kalau kamu tekan <b>Jalankan</b>, angka equity &amp; P&amp;L tetap diperbarui perlahan tiap 45 detik. Tekan <b>Muat Penuh</b> untuk grafik bergerak lagi.</div>
+      <div class="chart-lite-note">📉 Grafik dimatikan di Mode Lite biar halaman ringan — grafik dijeda; kalau kamu tekan <b>Jalankan</b>, angka equity &amp; P&amp;L tetap diperbarui perlahan tiap 45 detik. Tekan <b>Muat Penuh</b> untuk grafik bergerak lagi.</div>
       <div class="chartbox">
         <svg class="chart" id="chart" viewBox="0 0 600 110" preserveAspectRatio="none" role="img" aria-label="Grafik equity">
           <defs>
@@ -446,16 +407,16 @@
       </div>
       <div class="pro-strip" aria-label="Status profesional">
         <span class="pro-badge ok">✓ AUDIT 8 KELAS AKTIF</span>
-        <span class="pro-badge"><b>Smart Score</b> · 7 faktor · lolos ≥ <span id="proThreshold">0.65</span></span>
-        <span class="pro-badge"><b>Safety Rails</b> · simulasi + slip ≤5%</span>
+        <span class="pro-badge"><b>Smart Score</b> · 7 faktor · lolos ≥ <span id="proThreshold">0.55</span></span>
+        <span class="pro-badge"><b>Safety Rails</b> · slip ≤5% · simulasi server</span>
         <span class="pro-badge warn" id="proFailClosed">FAIL-CLOSED · ON</span>
         <span class="pro-badge ok">↻ ROTASI 1 POSISI · $1 / COIN</span>
-        <span class="pro-badge"><b>Pencarian 4 jalur</b> · DexScreener + GeckoTerminal + pump.fun</span>
+        <span class="pro-badge"><b>Pencarian 5 jalur</b> · DexScreener + GeckoTerminal + pump.fun</span>
       </div>
 
       <!-- desk -->
       <section class="card" aria-label="Desk 6 agents">
-        <div class="card-head"><h2>Desk · 6 agents</h2><div class="r"><b id="deskScanned">1,146 scanned</b> · <span id="deskTraded">0 traded</span></div></div>
+        <div class="card-head"><h2>Desk · 6 agents</h2><div class="r"><b id="deskScanned">0 scanned</b> · <span id="deskTraded">0 traded</span></div></div>
         <div id="agents"></div>
       </section>
 
@@ -476,57 +437,49 @@
         <div class="rot-hist" id="rotHistory"><div class="empty">Belum ada rotasi selesai. Riwayat TP/SL tiap coin akan tercatat di sini.</div></div>
       </section>
 
-      <!-- auto snipe (paper) -->
-      <section class="card" id="sec-snipe" aria-label="Auto Snipe paper">
-        <div class="card-head"><h2>Auto Snipe · Paper</h2><div class="r" id="snipeMeta">OFF · paper only</div></div>
+      <!-- auto snipe (live) -->
+      <section class="card" id="sec-snipe" aria-label="Auto Snipe live">
+        <div class="card-head"><h2>Auto Snipe · Live</h2><div class="r" id="snipeMeta">OFF · live</div></div>
         <div class="snipe-head">
           <span class="pill dark" id="snipeStatusPill">🎯 SNIPE OFF</span>
           <div class="seg" role="group" aria-label="Auto Snipe on off" style="min-width:210px">
             <button type="button" id="snipeOff" class="on">OFF</button>
-            <button type="button" id="snipeOn">🎯 ON · Paper</button>
+            <button type="button" id="snipeOn">🎯 ON · Live</button>
           </div>
         </div>
-        <p class="hint">Snipe = jalur cepat khusus <b>coin baru</b>: begitu pair baru muncul <b>dan likuiditasnya tampil</b> di DexScreener, coin itu langsung dievaluasi — tidak menunggu siklus scan biasa. <b>Tidak ada jalan pintas keamanan:</b> tetap wajib lolos <b>audit hard-kill</b> (authority None · likuiditas ≥ ambang · top 10 ≤ 20%), <b>Smart Score ≥ 0,65</b> dari data live asli, dan <b>batas harian</b>. Beli tetap <b>$1 per coin</b>, <b>rotasi 1 posisi</b>, <b>TP +50% / +100%</b>, <b>SL −30%</b>. Snipe butuh <b>Sumber Scan = Live</b> (mengaktifkan Snipe otomatis memindahkan sumber scan ke Live).</p>
+        <p class="hint">Snipe = jalur cepat khusus <b>coin baru</b>: begitu pair baru muncul <b>dan likuiditasnya tampil</b> di DexScreener, coin itu langsung dievaluasi — tidak menunggu siklus scan biasa. <b>Tidak ada jalan pintas keamanan:</b> tetap wajib lolos <b>audit hard-kill</b> (authority None · likuiditas ≥ ambang · top 10 ≤ 20%), <b>Smart Score ≥ 0,55</b> dari data live asli, dan <b>batas harian</b>. Beli tetap <b>$1 per coin</b>, <b>rotasi 1 posisi</b>, <b>TP +50% / +100%</b>, <b>SL −30%</b>. Snipe hanya mengejar pair berumur ≤ batas di bawah; pair lebih tua = jalur scan biasa.</p>
         <div class="set-grid">
           <div><label class="f" for="inSnipeAge">Umur pair maks untuk snipe (menit)</label><input type="number" id="inSnipeAge" min="5" max="240" step="5" value="30" /><p class="hint">Hanya pair berumur ≤ angka ini yang boleh di-snipe. Lebih tua dari itu = jalur scan biasa.</p></div>
           <div><label class="f">Status snipe</label><div class="sum-row" id="snipeStatus" style="margin-top:0">Snipe OFF — tidak ada coin yang di-snipe. Semua angka snipe berasal dari data live DexScreener + Solana RPC; data gagal/kosong = coin di-skip, bukan ditebak.</div></div>
         </div>
         <h3 style="margin:16px 0 2px;font-size:16px">Log Snipe</h3>
         <div class="snipe-log" id="snipeLog"><div class="empty">Belum ada aktivitas snipe sesi ini.</div></div>
-        <div class="buzz-warn" style="margin-top:12px"><b>🎯 SNIPE = PAPER SAJA.</b> <b>Live snipe BELUM diimplementasikan</b> — snipe tidak pernah mengeksekusi trade sungguhan. Mengaktifkan Mode Live akan <b>mematikan Snipe otomatis</b>; trade live hanya lewat jalur scan live biasa + konfirmasi eksplisit per trade di kartu Executor Live.</div>
+        <div class="buzz-warn" style="margin-top:12px"><b>⚠ SNIPE LIVE = BELI OTOMATIS.</b> Kandidat snipe yang lolos langsung dibeli <b>$1</b> oleh executor <b>tanpa konfirmasi per trade</b> — sama seperti kandidat scan live. Matikan Snipe di atas untuk berhenti.</div>
       </section>
 
       <!-- executor live -->
       <section class="card" id="sec-exec" aria-label="Executor Live">
         <div class="card-head"><h2>Executor Live</h2><div class="r" id="execMeta">server · belum dicek</div></div>
-        <p class="hint" style="margin-top:0">Eksekusi live sungguhan jalan di <b>server Vercel</b> lewat route <code class="k">/api/trade/execute</code>: <b>Jupiter Quote v6 → Swap → tanda tangan server</b> (key dari env <code class="k">SOLANA_WALLET_SECRET</code> — <b>tidak pernah tampil di halaman ini / log</b>) → <b>simulasi dulu</b> → broadcast hanya bila simulasi bersih. Route <b>menolak semua trade</b> kecuali env server <code class="k">TRADING_MODE=live</code> <b>dan</b> header token <code class="k">EXECUTOR_TOKEN</code> cocok (isi tokennya di Pengaturan &amp; Modal). Beli dibatasi <b>$1 per coin</b>, slippage maks <b>5%</b>. Sampai deposit masuk + server live + kamu konfirmasi, <b>tidak ada trade live yang bisa terjadi</b>.</p>
+        <p class="hint" style="margin-top:0">Eksekusi live sungguhan jalan di <b>server Vercel</b> lewat route <code class="k">/api/trade/execute</code>: <b>Jupiter Quote v6 → Swap → tanda tangan server</b> (key dari env <code class="k">SOLANA_WALLET_SECRET</code> — <b>tidak pernah tampil di halaman ini / log</b>) → <b>simulasi dulu</b> → broadcast hanya bila simulasi bersih. Route <b>menolak semua trade</b> kecuali env server <code class="k">TRADING_MODE=live</code> <b>dan</b> header token <code class="k">EXECUTOR_TOKEN</code> cocok (isi tokennya di Pengaturan &amp; Modal). Beli dibatasi <b>$1 per coin</b>, slippage maks <b>5%</b>. Sampai deposit masuk + server live + bot jalan, <b>tidak ada trade live yang bisa terjadi</b>. Setiap kandidat lolos langsung dibeli otomatis $1 — tanpa konfirmasi per trade.</p>
         <div class="detail-grid">
           <div class="dcell"><div class="dl2">Status server (TRADING_MODE)</div><div class="dv" id="execMode" style="font-size:15px">Belum dicek</div><div class="ds" id="execModeDs">Tekan “Cek Status Executor” — membaca route server, bukan tebakan.</div></div>
           <div class="dcell"><div class="dl2">Saldo wallet (server)</div><div class="dv" id="execBal" style="font-size:15px">Belum dicek</div><div class="ds" id="execBalDs">Saldo dibaca server dari Solana RPC untuk wallet executor.</div></div>
         </div>
         <div class="controls"><button type="button" class="btn primary" id="btnExecCheck">↻ Cek Status Executor</button></div>
-        <div class="exec-confirm" id="execConfirm" hidden>
-          <b>🔴 Konfirmasi eksekusi LIVE — uang sungguhan:</b>
-          <div class="sum-row" id="execSummary" style="margin-top:8px"></div>
-          <div class="controls" style="margin-top:10px">
-            <button type="button" class="btn danger" id="btnExecYes" style="border-color:var(--red)">Eksekusi Live Sekarang</button>
-            <button type="button" class="btn" id="btnExecNo">Batal — jangan eksekusi</button>
-          </div>
-        </div>
-        <div class="gate-msg" id="execMsg">Alur live: kandidat lolos dari <b>Scan Live</b> (mint asli) → ringkasan konfirmasi muncul di sini → kamu tekan Eksekusi → server quote + simulasi + broadcast. Kandidat <b>Replay tidak punya mint asli</b> dan <b>tidak bisa dieksekusi live</b> (fail-closed). Jual TP/SL untuk posisi live berjalan otomatis sesuai ringkasan yang kamu konfirmasi saat beli (TP +50%/+100% · SL −30%).</div>
+        <div class="gate-msg" id="execMsg">Alur live OTOMATIS: kandidat lolos dari <b>Scan Live / Snipe</b> (mint asli) → executor langsung beli <b>$1</b> (tanpa konfirmasi per trade) → server quote + simulasi + broadcast. Jual TP/SL berjalan otomatis (TP +50%/+100% · SL −30%).</div>
         <h3 style="margin:16px 0 2px;font-size:16px">Riwayat Trade Live</h3>
         <div id="liveTrades"><div class="empty">Belum ada trade live. Trade yang benar-benar terbroadcast akan tercatat di sini lengkap dengan signature-nya.</div></div>
       </section>
 
       <!-- positions -->
       <section class="card" aria-label="Posisi terbuka">
-        <div class="card-head"><h2>Posisi Aktif</h2><div class="r" id="posMeta">paper · maks 1 posisi</div></div>
+        <div class="card-head"><h2>Posisi Aktif</h2><div class="r" id="posMeta">live · maks 1 posisi</div></div>
         <div id="positions"><div class="empty">Belum ada posisi — bot sedang scan coin berikutnya (rotasi 1 posisi · $1/coin).</div></div>
       </section>
 
       <!-- logger -->
       <section class="card" aria-label="Logger">
-        <div class="card-head"><h2>Logger</h2><div class="r"><span class="red" id="logKilled">1,123 killed</span></div></div>
+        <div class="card-head"><h2>Logger</h2><div class="r"><span class="red" id="logKilled">0 killed</span></div></div>
         <div class="log" id="log"></div>
       </section>
 
@@ -534,13 +487,13 @@
       <section class="card" id="sec-died" aria-label="Why they died">
         <div class="card-head"><h2>Why they died</h2><div class="r" id="bestWorst">best — · worst —</div></div>
         <div class="died" id="died"></div>
-        <p class="hint">6 alasan di atas adalah ringkasan video. Di bawahnya bot menjalankan audit penuh 8 kelas rug + Smart Scoring 7 faktor — satu hard-kill saja sudah cukup untuk membuang coin, tidak ada negosiasi skor.</p>
+        <p class="hint">6 alasan kill paling sering di sesi live ini. Di bawahnya bot menjalankan audit penuh 8 kelas rug + Smart Scoring 7 faktor — satu hard-kill saja sudah cukup untuk membuang coin, tidak ada negosiasi skor.</p>
       </section>
 
       <!-- smart scoring -->
       <section class="card" id="sec-smart" aria-label="Smart Coin Scoring">
         <div class="card-head"><h2>Smart Coin Scoring</h2><div class="r">bukan cuma skor Grok</div></div>
-        <p class="hint" style="margin-top:0">Skor akhir = <b>jumlah terbobot persis</b> dari 7 faktor: <b>Smart Score = Σ (nilai faktor × bobot)</b>. Angka besar di hero selalu dihitung dari rincian faktor di bawahnya — kalau faktor-faktornya berjumlah <b>0,65</b> hero menampilkan <b>0,65</b>, kalau <b>0,72</b> menampilkan <b>0,72</b>; tidak ada angka lain. Skor Grok/LLM hanya bahan di dalam faktor Sosial/Buzz (bobot faktor 15%). Pengaruh buzz pun masuk <b>lewat faktor Sosial/Buzz itu sendiri</b>, bukan bonus/penalti tersembunyi di luar tabel. Coin wajib lolos <b>semua hard-kill audit</b> dulu, baru dinilai. <b>Sumber rincian di sesi ini: REPLAY contoh video</b> — untuk penilaian live, faktor yang sama diisi dari DexScreener / Solana RPC / TrueSOTA / X dengan waktu cek, dan faktor yang datanya belum tersedia membuat coin di-skip, bukan ditebak.</p>
+        <p class="hint" style="margin-top:0">Skor akhir = <b>jumlah terbobot persis</b> dari 7 faktor: <b>Smart Score = Σ (nilai faktor × bobot)</b>. Angka besar di hero selalu dihitung dari rincian faktor di bawahnya — kalau faktor-faktornya berjumlah <b>0,65</b> hero menampilkan <b>0,65</b>, kalau <b>0,72</b> menampilkan <b>0,72</b>; tidak ada angka lain. Skor Grok/LLM hanya bahan di dalam faktor Sosial/Buzz (bobot faktor 15%). Pengaruh buzz pun masuk <b>lewat faktor Sosial/Buzz itu sendiri</b>, bukan bonus/penalti tersembunyi di luar tabel. Coin wajib lolos <b>semua hard-kill audit</b> dulu, baru dinilai. Faktor diisi dari DexScreener / Solana RPC / TrueSOTA / X dengan waktu cek, dan faktor yang datanya belum tersedia membuat coin di-skip, bukan ditebak.</p>
         <div class="score-hero">
           <div><div class="score-num" id="smartNum">—</div><div style="color:var(--dim);font-size:13px" id="smartCoin">menunggu kandidat…</div></div>
           <div style="flex:1;min-width:180px">
@@ -556,10 +509,10 @@
         </div>
         <p class="hint">Scout memindai <b>kedua jalur sekaligus</b> tiap siklus. Kategori hanya menentukan <b>faktor mana yang dipakai</b> (tetap 7 faktor, bobot total 100%, semua tampil per faktor) — audit hard-kill 8 kelas tetap jalan <b>sebelum</b> scoring di kedua jalur, dan ambang lolos Executor tetap sama: <b>Smart Score ≥ 0,65</b>.</p>
         <div id="buzzBox" style="margin-top:10px"></div>
-        <p class="hint">Keterlacakan skor: setiap faktor di bawah memuat nilai + <b>kontribusinya (nilai × bobot)</b>, dan baris <b>Jumlah Terbobot</b> di bawah tabel menjumlahkan semua kontribusi itu — hasilnya harus sama persis dengan angka hero dan itulah angka yang dipakai vonis <b>LOLOS / WATCHLIST / DIBUANG</b> serta keputusan Executor. Untuk kandidat <b>replay</b>, sumbernya adalah <b>REPLAY contoh video</b> (bukan live) — faktor live hanya berasal dari bagian Detail Coin / Data Live. Sub-skor <b>Influencer Buzz</b> ditampilkan terpisah di atas rincian faktor; pengaruhnya sudah termasuk di dalam nilai faktor Sosial/Buzz, tidak pernah sebagai angka tambahan di luar tabel.</p>
+        <p class="hint">Keterlacakan skor: setiap faktor di bawah memuat nilai + <b>kontribusinya (nilai × bobot)</b>, dan baris <b>Jumlah Terbobot</b> di bawah tabel menjumlahkan semua kontribusi itu — hasilnya harus sama persis dengan angka hero dan itulah angka yang dipakai vonis <b>LOLOS / WATCHLIST / DIBUANG</b> serta keputusan Executor. Semua faktor berasal dari data live (bagian Detail Coin / Data Live). Sub-skor <b>Influencer Buzz</b> ditampilkan terpisah di atas rincian faktor; pengaruhnya sudah termasuk di dalam nilai faktor Sosial/Buzz, tidak pernah sebagai angka tambahan di luar tabel.</p>
         <div id="factors"></div>
         <div class="sum-row" id="smartSum">Smart Score = jumlah terbobot faktor di atas — menunggu kandidat…</div>
-        <p class="hint">Ambang lolos Executor: <b>Smart Score ≥ 0.65</b> + likuiditas ≥ $10k + volume 1 jam ≥ $30k + tidak ada hard-kill. Skor 0.55–0.64 = watchlist saja, tidak dibeli. Di bawah 0.55 = dibuang.</p>
+        <p class="hint">Ambang lolos Executor: <b>Smart Score ≥ 0.55</b> + likuiditas ≥ $5k + volume 1 jam ≥ $10k + tidak ada hard-kill. Skor 0.45–0.54 = watchlist saja, tidak dibeli. Di bawah 0.45 = dibuang.</p>
       </section>
 
       <!-- audit 8 -->
@@ -578,7 +531,7 @@
       <!-- safety rails + checklist -->
       <section class="card" id="sec-safety" aria-label="Safety Rails dan checklist keamanan">
         <div class="card-head"><h2>Safety Rails &amp; Checklist</h2><div class="r" id="checkMeta">14/14 lolos</div></div>
-        <p class="hint" style="margin-top:0"><b>On-Chain Safety Rails:</b> simulasi sebelum broadcast · approval exact-amount (tidak pernah unlimited) · slippage maks <b>5%</b> · verifikasi kontrak ke sumber resmi · <b>berhenti total (fail-closed)</b> kalau RPC / tool error — tidak ada tebakan, tidak ada retry membabi buta. Aksi destruktif (live trade pertama, ganti wallet, matikan stop) selalu butuh konfirmasi eksplisit + ringkasan 1 baris: chain · wallet · jumlah · slippage · TP/SL.</p>
+        <p class="hint" style="margin-top:0"><b>On-Chain Safety Rails:</b> simulasi sebelum broadcast · approval exact-amount (tidak pernah unlimited) · slippage maks <b>5%</b> · verifikasi kontrak ke sumber resmi · <b>berhenti total (fail-closed)</b> kalau RPC / tool error — tidak ada tebakan, tidak ada retry membabi buta. Aksi destruktif (ganti wallet, matikan stop) selalu butuh konfirmasi eksplisit + ringkasan 1 baris: chain · wallet · jumlah · slippage · TP/SL.</p>
         <ul class="check-list" id="checkList"></ul>
       </section>
 
@@ -594,7 +547,7 @@
           <div class="src-row"><span class="src-dot" data-src-dot="buzz"></span><div style="flex:1"><b>X + Telegram</b> — Influencer Buzz<div style="color:var(--dim);font-size:13px" data-src-txt="buzz">Data belum tersedia — belum ada akses API X/Telegram terhubung di halaman ini. Buzz <b>tidak ditebak</b> dan tidak menaikkan skor selama belum ada data asli.</div></div></div>
         </div>
         <div class="controls"><button class="btn primary" id="btnLiveCheck">↻ Cek Data Live Sekarang</button></div>
-        <p class="hint" id="liveVerdict">Status: <b>FAIL-CLOSED untuk live trading</b> sampai semua sumber inti (DexScreener + Jupiter + Solana RPC) berhasil dicek segar. Replay &amp; paper tetap jalan sebagai simulasi berlabel.</p>
+        <p class="hint" id="liveVerdict">Status: <b>FAIL-CLOSED untuk live trading</b> sampai semua sumber inti (DexScreener + Jupiter + Solana RPC) berhasil dicek segar.</p>
       </section>
 
       <!-- detail coin + buzz -->
@@ -640,26 +593,9 @@
 
         <div class="set-grid">
           <div class="full">
-            <label class="f">Mode modal</label>
-            <div class="seg wrap" role="group" aria-label="Mode modal">
-              <button id="modeStd" class="on">Mode Video · $280 · 8%</button>
-              <button id="modeOne">Modal $1 · all-in</button>
-              <button id="modeCustom">Modal Kustom · $1/coin</button>
-            </div>
-            <p class="hint">Mode <b>Modal $1</b>: equity mulai <b>$1.00</b>, satu posisi <b>$1 all-in (100%)</b>, TP <b>+50% / +100%</b>, SL <b>−30%</b>. Mode Video sama seperti video contoh: $280, max size 8%, stop −6% (replay video), SL rotasi −30%, trailing +12%. <b>Modal Kustom</b>: tulis modalmu sendiri di bawah — rotasinya <b>$1 per coin seperti mode $1</b> (TP +50%/+100% · SL −30%), kecuali kamu ubah sendiri kolom Max size / TP / SL-nya. Di <b>free-run paper</b> (setelah replay), semua mode memakai <b>rotasi 1 posisi</b> — tutup posisi dulu, baru scan &amp; pindah coin.</p>
-            <label class="f" for="inCustomEquity" style="margin-top:12px">Modal kustom ($) — tulis angka bebasmu sendiri</label>
-            <input type="number" id="inCustomEquity" min="1" max="1000000" step="0.01" value="10" inputmode="decimal" placeholder="Contoh: 5, 10, 50, atau angka bebas…" />
-            <div class="custom-chips" role="group" aria-label="Pilihan cepat modal kustom">
-              <button type="button" class="custom-chip" data-custom-amt="5">$5</button>
-              <button type="button" class="custom-chip" data-custom-amt="10">$10</button>
-              <button type="button" class="custom-chip" data-custom-amt="50">$50</button>
-              <button type="button" class="custom-chip" data-custom-amt="100">$100</button>
-            </div>
-            <p class="hint" id="customPreview">Modal $10 → ukuran posisi $1 per coin (10% dari modal) · TP +50%/+100% · SL −30%.</p>
-            <button type="button" class="btn primary" id="btnUseCustom" style="width:100%">Pakai Modal Kustom Ini</button>
-            <p class="hint">Modal kustom <b>tersimpan di Pengaturan ini</b> (di browser perangkat ini) — bisa kamu edit angkanya kapan saja dan dipilih lagi lewat tombol <b>Modal Kustom</b> di atas tanpa mengetik ulang. Modal yang sedang aktif selalu tampil di hero halaman utama.</p>
+            <label class="f">Modal</label>
+            <p class="hint">Bot live-only: <b>Modal $1 · all-in</b> — satu posisi <b>$1 per coin</b>, rotasi 1 posisi, TP <b>+50% / +100%</b>, SL <b>−30%</b>. Modal diambil dari wallet trading Solana (saldo dicek live), bukan angka simulasi.</p>
           </div>
-
           <div class="full">
             <label class="f">Suara notifikasi (Web Audio — tanpa file eksternal)</label>
             <div class="seg" role="group" aria-label="Suara on off">
@@ -671,16 +607,13 @@
             <p class="hint">Setiap bunyi beda: <b>TP</b> = 3 nada naik ceria · <b>SL</b> = 2 nada turun peringatan · <b>Buy</b> = konfirmasi 2 nada · <b>Scan selesai</b> = blip singkat · <b>Logger</b> = klik pendek tiap log baru. Sesuai aturan autoplay browser, suara <b>baru mulai bunyi setelah kamu menyentuh / mengklik halaman ini</b> sekali.</p>
           </div>
 
-          <div><label class="f" for="inEquity">Equity awal ($)</label><input type="number" id="inEquity" min="1" step="0.01" value="280" /></div>
-          <div><label class="f" for="inSize">Max size per posisi (%)</label><input type="number" id="inSize" min="1" max="100" step="1" value="8" /></div>
           <div><label class="f" for="inStop">Hard stop — SL rotasi (%)</label><input type="number" id="inStop" min="1" max="90" step="1" value="30" /></div>
-          <div><label class="f" for="inTrail">Trailing aktif di (%)</label><input type="number" id="inTrail" min="1" max="500" step="1" value="12" /></div>
           <div><label class="f" for="inTp1">Take profit 1 (%) — mode $1</label><input type="number" id="inTp1" min="1" max="1000" step="1" value="50" /></div>
           <div><label class="f" for="inTp2">Take profit 2 (%) — mode $1</label><input type="number" id="inTp2" min="1" max="2000" step="1" value="100" /></div>
-          <div><label class="f" for="inMinVol">Min. volume 1 jam ($)</label><input type="number" id="inMinVol" min="0" step="1000" value="30000" /></div>
-          <div><label class="f" for="inMinScore">Ambang Smart Score (0–1)</label><input type="number" id="inMinScore" min="0.5" max="0.95" step="0.01" value="0.65" /></div>
+          <div><label class="f" for="inMinVol">Min. volume 1 jam ($)</label><input type="number" id="inMinVol" min="0" step="1000" value="10000" /></div>
+          <div><label class="f" for="inMinScore">Ambang Smart Score (0–1)</label><input type="number" id="inMinScore" min="0.5" max="0.95" step="0.01" value="0.55" /></div>
           <div><label class="f" for="inSlip">Slippage maks (%) — Safety Rails</label><input type="number" id="inSlip" min="0.5" max="5" step="0.5" value="5" /></div>
-          <div><label class="f" for="inMinLiq">Min. likuiditas pool ($)</label><input type="number" id="inMinLiq" min="0" step="1000" value="10000" /></div>
+          <div><label class="f" for="inMinLiq">Min. likuiditas pool ($)</label><input type="number" id="inMinLiq" min="0" step="1000" value="5000" /></div>
 
           <div class="full"><label class="f" for="inKey">API Key TrueSOTA</label>
             <div class="key-wrap"><input type="password" id="inKey" placeholder="Masukkan API key TrueSOTA kamu di sini" autocomplete="off" /><button type="button" class="key-eye" id="btnEye" aria-label="Tampilkan atau sembunyikan API key">Tampilkan</button></div>
@@ -728,7 +661,7 @@
                 <a class="btn" href="https://solscan.io/account/EJrjGUTe2qNok3GRHDcQi8kR56tn7Q7ymHgx2eBcyeMY" target="_blank" rel="noopener" style="text-decoration:none;min-height:38px;padding:7px 14px;font-size:13.5px;display:inline-flex;align-items:center">Lihat di Solscan ↗</a>
               </div>
               <p class="hint" id="walletStatusNote" style="margin-bottom:0">Status cek <b>14 Nov 00:52 WIB (Solscan)</b>: alamat <b>terverifikasi format Solana</b> (Base58, on-curve), tapi <b>account does not exist onchain</b> dan <b>SOL Balance 0</b> — artinya wallet ini <b>belum pernah didanai</b>. Itu normal untuk wallet baru: akun Solana baru muncul on-chain setelah menerima SOL pertama kali.</p>
-              <div class="wallet-warn" role="alert"><b>⚠ Sebelum mode Live:</b> isi dulu alamat di atas dengan <b>SOL secukupnya untuk gas + modal $1</b> (disarankan total setara $2–5 saja di wallet khusus ini). Selama saldo masih 0, <b>mode Live tidak bisa jalan</b> — bot akan fail-closed dan menolak broadcast. <b>Mode Paper tetap jalan penuh tanpa dana apa pun.</b></div>
+              <div class="wallet-warn" role="alert"><b>⚠ Sebelum mode Live:</b> isi dulu alamat di atas dengan <b>SOL secukupnya untuk gas + modal $1</b> (disarankan total setara $2–5 saja di wallet khusus ini). Selama saldo masih 0, <b>mode Live tidak bisa jalan</b> — bot akan fail-closed dan menolak broadcast. <b>Tanpa saldo, bot tidak trade sama sekali.</b></div>
               <p class="hint" style="margin-bottom:0">Alamat publik ini aman dibagikan. <b>Web ini TIDAK PERNAH meminta private key / seed phrase</b> — tidak ada kolom untuk itu, dan jangan pernah mengetiknya di web mana pun. Untuk live nanti, tanda tangan dilakukan di aplikasi Jupiter Wallet kamu sendiri / env Vercel yang kamu isi sendiri, bukan lewat halaman ini.</p>
             </div>
           </div>
@@ -747,7 +680,7 @@
       <!-- pengaturan harian trading -->
       <section class="card" id="sec-daily" aria-label="Pengaturan harian trading">
         <div class="card-head"><h2>Pengaturan Harian Trading</h2><div class="r">money management · tersimpan</div></div>
-        <p class="hint" style="margin-top:0">Batas-batas ini menjaga satu hari trading. <b>Kalau SATU saja batas kena, bot otomatis berhenti trade untuk sisa hari itu</b> dan status berubah jadi <b>“Batas harian tercapai — bot berhenti”</b>. Bot baru bisa jalan lagi <b>besok (tanggal WIB berganti, progres otomatis reset)</b> atau setelah kamu <b>reset manual</b> di bawah — menekan Jalankan saja tidak membatalkan batas yang sudah kena. Semua angka bisa kamu ubah dan <b>tersimpan di browser ini</b>. Batas berlaku untuk sesi trading free-run paper (dan live nanti); replay contoh video tidak dihitung sebagai trade harian.</p>
+        <p class="hint" style="margin-top:0">Batas-batas ini menjaga satu hari trading. <b>Kalau SATU saja batas kena, bot otomatis berhenti trade untuk sisa hari itu</b> dan status berubah jadi <b>“Batas harian tercapai — bot berhenti”</b>. Bot baru bisa jalan lagi <b>besok (tanggal WIB berganti, progres otomatis reset)</b> atau setelah kamu <b>reset manual</b> di bawah — menekan Jalankan saja tidak membatalkan batas yang sudah kena. Semua angka bisa kamu ubah dan <b>tersimpan di browser ini</b>. Batas berlaku untuk semua trade live; P&amp;L dihitung dari posisi yang sudah ditutup (TP/SL).</p>
         <div class="set-grid">
           <div><label class="f" for="inDailyLoss">Batas rugi harian ($)</label><input type="number" id="inDailyLoss" min="0.5" max="100000" step="0.5" value="5" /><p class="hint">Contoh: 5 = bot berhenti kalau P&amp;L hari ini menyentuh <b>−$5</b>.</p></div>
           <div><label class="f" for="inDailyProfit">Target profit harian ($)</label><input type="number" id="inDailyProfit" min="0.5" max="100000" step="0.5" value="10" /><p class="hint">Contoh: 10 = bot berhenti (mengunci profit) kalau P&amp;L hari ini menyentuh <b>+$10</b>.</p></div>
@@ -768,10 +701,10 @@
       <!-- deploy -->
       <section class="card" id="sec-deploy" aria-label="Deploy Vercel">
         <div class="card-head"><h2>Deploy · Vercel</h2><div class="r">onlinejob.web.id</div></div>
-        <p class="hint" style="margin-top:0">Web ini di-deploy di <b>Vercel</b> dan domain produksi <b>http://onlinejob.web.id/</b> disambungkan ke proyek Vercel-nya. Karena Vercel itu serverless (bukan proses 24/7), scan jalan lewat <b>Vercel Cron harian (00:00 UTC / 07:00 WIB)</b> yang memanggil route <code class="k">/api/cron/scan</code>: ambil pair baru → filter anti-rug → Smart Score dari faktor terukur (tanpa tebak-tebak skor Grok) → eksekusi paper/live sesuai aturan di atas. Dashboard yang kamu lihat ini adalah tampilannya; file starter route-nya bisa diunduh di bawah.</p>
+        <p class="hint" style="margin-top:0">Web ini di-deploy di <b>Vercel</b> dan domain produksi <b>http://onlinejob.web.id/</b> disambungkan ke proyek Vercel-nya. Karena Vercel itu serverless (bukan proses 24/7), scan jalan lewat <b>Vercel Cron harian (00:00 UTC / 07:00 WIB)</b> yang memanggil route <code class="k">/api/cron/scan</code>: ambil pair baru → filter anti-rug → Smart Score dari faktor terukur (tanpa tebak-tebak skor Grok) → eksekusi live otomatis sesuai aturan di atas. Dashboard yang kamu lihat ini adalah tampilannya; file starter route-nya bisa diunduh di bawah.</p>
         <p class="hint">Environment variable di Vercel (Project → Settings → Environment Variables):</p>
         <pre class="code">TRUESOTA_API_KEY   = (key kamu dari true-sota.com — dipakai server saja, route /api/llm/models)
-TRADING_MODE       = paper      # 'paper' (default aman) atau 'live' HANYA setelah deposit + kamu OK-kan.
+TRADING_MODE       = live       # bot ini live-only — executor membeli otomatis $1/coin.
                                 # Executor MENOLAK semua trade selama bukan 'live'.
 LIVE_TRADING       = false      # fallback lama bila TRADING_MODE tidak di-set
 SOLANA_WALLET_ADDRESS = EJrjGUTe2qNok3GRHDcQi8kR56tn7Q7ymHgx2eBcyeMY
@@ -794,13 +727,13 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           <a href="data:application/javascript;base64,Ly8gRVhFQ1VUT1IgTElWRSBHcm9rIEJvdCAoc2VydmVyLXNpZGUsIFZlcmNlbCkuCi8vIFJvdXRlOiAgR0VUICAvYXBpL3RyYWRlL2V4ZWN1dGU/YWN0aW9uPXN0YXR1cyAgLT4gc3RhdHVzIGFtYW4gKFRBTlBBIHNlY3JldCkKLy8gICAgICAgICBQT1NUIC9hcGkvdHJhZGUvZXhlY3V0ZSAgICAgICAgICAgICAgICAgLT4gZWtzZWt1c2kgMSB0cmFkZSBsaXZlCi8vICAgICAgICAgYm9keTogeyBzaWRlOididXknfCdzZWxsJywgbWludCwgYW1vdW50VXNkLCBzbGlwcGFnZUJwcyB9Ci8vICAgICAgICAgaGVhZGVyIHdhamliOiB4LWdyb2tib3QtY29uZmlybTogbGl2ZS1jb25maXJtZWQKLy8KLy8gQVRVUkFOIE1VVExBSzoKLy8gLSBUcmFkZSBsaXZlIEhBTllBIGphbGFuIGJpbGEgZW52IFRSQURJTkdfTU9ERSA9PSAnbGl2ZScuIFNlbGFpbiBpdHUgcm91dGUKLy8gICBNRU5PTEFLIHNlbXVhIFBPU1QgKDQwMykg4oCUIFBhcGVyIGFkYWxhaCBkZWZhdWx0IGRhbiB0ZXRhcCBhbWFuLgovLyAtIFByaXZhdGUga2V5IGRpYmFjYSBIQU5ZQSBkYXJpIGVudiBWZXJjZWwgU09MQU5BX1dBTExFVF9TRUNSRVQgZGkgc2VydmVyLgovLyAgIEtleSBUSURBSyBQRVJOQUggZGlraXJpbSBrZSBicm93c2VyLCBUSURBSyBQRVJOQUggbWFzdWsgcmVzcG9ucyAvIGxvZy4KLy8gICBGb3JtYXQgeWFuZyBkaXRlcmltYTogSlNPTiBhcnJheSA2NCBieXRlICJbMTIsMzQsLi4uXSIgQVRBVSBzdHJpbmcgYmFzZTU4LgovLyAtIEFsdXIgYmVsaTogSnVwaXRlciBQcmljZSB2MyAoaGFyZ2EgU09MKSAtPiBKdXBpdGVyIFF1b3RlIHY2IC0+IFN3YXAgdjYgLT4KLy8gICB0YW5kYSB0YW5nYW4gc2VydmVyIC0+IFNJTVVMQVNJIChzaW11bGF0ZVRyYW5zYWN0aW9uKSAtPiBicm9hZGNhc3QgSEFOWUEKLy8gICBiaWxhIHNpbXVsYXNpIGJlcnNpaC4gU2xpcHBhZ2UgZGktY2xhbXAgPD0gNTAwIGJwcyAoNSUpLgovLyAtIEJlbGkgZGliYXRhc2kgPD0gJDEuMDEgcGVyIHRyYWRlIChhdHVyYW4gJDEgcGVyIGNvaW4gKyB0b2xlcmFuc2kgcGVtYnVsYXRhbikuCi8vICAgSnVhbCA9IDEwMCUgc2FsZG8gdG9rZW4gbWludCBpdHUgZGkgd2FsbGV0LgovLyAtIEF1ZGl0IGhhcmQta2lsbCArIFNtYXJ0IFNjb3JlICsgYmF0YXMgaGFyaWFuIGRpdGVnYWtrYW4gZGkgZGFzaGJvYXJkCi8vICAgU0VCRUxVTSByb3V0ZSBpbmkgZGlwYW5nZ2lsOyByb3V0ZSBpbmkgYWRhbGFoIGdlcmJhbmcgdGVyYWtoaXIgZGkgc2VydmVyLgovLwovLyBEZXBlbmRlbmN5OiBAc29sYW5hL3dlYjMuanMgKyBiczU4IChsaWhhdCBwYWNrYWdlLmpzb24gZGkgcGFuZWwgRGVwbG95KS4KaW1wb3J0IHsgQ29ubmVjdGlvbiwgS2V5cGFpciwgVmVyc2lvbmVkVHJhbnNhY3Rpb24sIFB1YmxpY0tleSB9IGZyb20gJ0Bzb2xhbmEvd2ViMy5qcyc7CmltcG9ydCBiczU4IGZyb20gJ2JzNTgnOwoKY29uc3QgU09MID0gJ1NvMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTInOwpjb25zdCBCQVNFNTggPSAvXlsxLTlBLUhKLU5QLVphLWttLXpdezMyLDQ0fSQvOwpjb25zdCBSUEMgPSBwcm9jZXNzLmVudi5TT0xBTkFfUlBDX1VSTCB8fCAnaHR0cHM6Ly9hcGkubWFpbm5ldC1iZXRhLnNvbGFuYS5jb20nOwpjb25zdCBNQVhfU0xJUF9CUFMgPSA1MDA7ICAgICAgLy8gU2FmZXR5IFJhaWxzOiBzbGlwcGFnZSBtYWtzIDUlCmNvbnN0IE1BWF9CVVlfVVNEID0gMS4wMTsgICAgICAvLyBhdHVyYW4gJDEgcGVyIGNvaW4gKCsgdG9sZXJhbnNpIHBlbWJ1bGF0YW4pCmNvbnN0IEZFRV9CVUZGRVJfU09MID0gMC4wMDI7ICAvLyBjYWRhbmdhbiBnYXMgbWluaW11bSBkaSBhdGFzIG5pbGFpIGJlbGkKCmZ1bmN0aW9uIGxvYWRLZXlwYWlyKCkgewogIGNvbnN0IHJhdyA9IChwcm9jZXNzLmVudi5TT0xBTkFfV0FMTEVUX1NFQ1JFVCB8fCAnJykudHJpbSgpOwogIGlmICghcmF3KSByZXR1cm4gbnVsbDsKICB0cnkgewogICAgaWYgKHJhdy5zdGFydHNXaXRoKCdbJykpIHsKICAgICAgY29uc3QgYXJyID0gSlNPTi5wYXJzZShyYXcpOwogICAgICBpZiAoQXJyYXkuaXNBcnJheShhcnIpICYmIGFyci5sZW5ndGggPj0gNjQpIHJldHVybiBLZXlwYWlyLmZyb21TZWNyZXRLZXkoVWludDhBcnJheS5mcm9tKGFyci5zbGljZSgwLCA2NCkpKTsKICAgICAgcmV0dXJuIG51bGw7CiAgICB9CiAgICBjb25zdCBieXRlcyA9IGJzNTguZGVjb2RlKHJhdyk7CiAgICBpZiAoYnl0ZXMubGVuZ3RoID09PSA2NCkgcmV0dXJuIEtleXBhaXIuZnJvbVNlY3JldEtleShieXRlcyk7CiAgICBpZiAoYnl0ZXMubGVuZ3RoID09PSAzMikgcmV0dXJuIEtleXBhaXIuZnJvbVNlZWQoYnl0ZXMpOwogICAgcmV0dXJuIG51bGw7CiAgfSBjYXRjaCAoXykgeyByZXR1cm4gbnVsbDsgfQp9Cgphc3luYyBmdW5jdGlvbiBzb2xQcmljZVVzZCgpIHsKICBjb25zdCByID0gYXdhaXQgZmV0Y2goJ2h0dHBzOi8vYXBpLmp1cC5hZy9wcmljZS92Mz9pZHM9JyArIFNPTCwgewogICAgaGVhZGVyczogeyBBY2NlcHQ6ICdhcHBsaWNhdGlvbi9qc29uJywgJ1VzZXItQWdlbnQnOiAnR3Jva0JvdC8xLjAgKCtodHRwczovL29ubGluZWpvYi53ZWIuaWQpJyB9LAogIH0pOwogIGlmICghci5vaykgdGhyb3cgbmV3IEVycm9yKCdKdXBpdGVyIFByaWNlIHYzIEhUVFAgJyArIHIuc3RhdHVzKTsKICBjb25zdCBqID0gYXdhaXQgci5qc29uKCk7CiAgY29uc3QgZSA9IChqICYmIChqW1NPTF0gfHwgKGouZGF0YSAmJiBqLmRhdGFbU09MXSkpKSB8fCBudWxsOwogIGNvbnN0IHB4ID0gZSA/IE51bWJlcihlLnVzZFByaWNlICE9IG51bGwgPyBlLnVzZFByaWNlIDogZS5wcmljZSkgOiBOYU47CiAgaWYgKCFOdW1iZXIuaXNGaW5pdGUocHgpIHx8IHB4IDw9IDApIHRocm93IG5ldyBFcnJvcignaGFyZ2EgU09MIHRpZGFrIHRlcnNlZGlhIGRhcmkgSnVwaXRlciDigJQgZmFpbC1jbG9zZWQnKTsKICByZXR1cm4gcHg7Cn0KCmFzeW5jIGZ1bmN0aW9uIHF1b3RlKGlucHV0TWludCwgb3V0cHV0TWludCwgYW1vdW50UmF3LCBzbGlwcGFnZUJwcykgewogIGNvbnN0IHUgPSAnaHR0cHM6Ly9xdW90ZS1hcGkuanVwLmFnL3Y2L3F1b3RlP2lucHV0TWludD0nICsgaW5wdXRNaW50ICsgJyZvdXRwdXRNaW50PScgKyBvdXRwdXRNaW50CiAgICArICcmYW1vdW50PScgKyBhbW91bnRSYXcgKyAnJnNsaXBwYWdlQnBzPScgKyBzbGlwcGFnZUJwczsKICBjb25zdCByID0gYXdhaXQgZmV0Y2godSwgeyBoZWFkZXJzOiB7IEFjY2VwdDogJ2FwcGxpY2F0aW9uL2pzb24nLCAnVXNlci1BZ2VudCc6ICdHcm9rQm90LzEuMCAoK2h0dHBzOi8vb25saW5lam9iLndlYi5pZCknIH0gfSk7CiAgaWYgKCFyLm9rKSB0aHJvdyBuZXcgRXJyb3IoJ0p1cGl0ZXIgUXVvdGUgdjYgSFRUUCAnICsgci5zdGF0dXMpOwogIGNvbnN0IHEgPSBhd2FpdCByLmpzb24oKTsKICBpZiAoIXEgfHwgIXEub3V0QW1vdW50KSB0aHJvdyBuZXcgRXJyb3IoJ0p1cGl0ZXIgUXVvdGUga29zb25nIOKAlCB0aWRhayBhZGEgcnV0ZSBzd2FwLCBmYWlsLWNsb3NlZCcpOwogIHJldHVybiBxOwp9Cgphc3luYyBmdW5jdGlvbiBidWlsZFN3YXBUeChxdW90ZVJlc3BvbnNlLCB1c2VyUHVibGljS2V5KSB7CiAgY29uc3QgciA9IGF3YWl0IGZldGNoKCdodHRwczovL3F1b3RlLWFwaS5qdXAuYWcvdjYvc3dhcCcsIHsKICAgIG1ldGhvZDogJ1BPU1QnLAogICAgaGVhZGVyczogeyAnQ29udGVudC1UeXBlJzogJ2FwcGxpY2F0aW9uL2pzb24nLCAnVXNlci1BZ2VudCc6ICdHcm9rQm90LzEuMCAoK2h0dHBzOi8vb25saW5lam9iLndlYi5pZCknIH0sCiAgICBib2R5OiBKU09OLnN0cmluZ2lmeSh7IHF1b3RlUmVzcG9uc2UsIHVzZXJQdWJsaWNLZXksIHdyYXBBbmRVbndyYXBTb2w6IHRydWUsIGR5bmFtaWNDb21wdXRlVW5pdExpbWl0OiB0cnVlIH0pLAogIH0pOwogIGlmICghci5vaykgdGhyb3cgbmV3IEVycm9yKCdKdXBpdGVyIFN3YXAgdjYgSFRUUCAnICsgci5zdGF0dXMpOwogIGNvbnN0IGogPSBhd2FpdCByLmpzb24oKTsKICBpZiAoIWogfHwgIWouc3dhcFRyYW5zYWN0aW9uKSB0aHJvdyBuZXcgRXJyb3IoJ0p1cGl0ZXIgU3dhcCB0aWRhayBtZW5nZW1iYWxpa2FuIHRyYW5zYWtzaSDigJQgZmFpbC1jbG9zZWQnKTsKICByZXR1cm4gai5zd2FwVHJhbnNhY3Rpb247Cn0KCmZ1bmN0aW9uIGlzQWxsb3dlZE9yaWdpbihyZXEpIHsKICBjb25zdCBvcmlnaW4gPSByZXEuaGVhZGVycy5vcmlnaW4gfHwgcmVxLmhlYWRlcnMucmVmZXJlciB8fCAnJzsKICBpZiAoIW9yaWdpbikgcmV0dXJuIHRydWU7IC8vIGN1cmwgLyBzZXJ2ZXItdG8tc2VydmVyOiB0aWRhayBhZGEgT3JpZ2luCiAgdHJ5IHsKICAgIGNvbnN0IGhvc3QgPSBuZXcgVVJMKG9yaWdpbikuaG9zdG5hbWU7CiAgICByZXR1cm4gaG9zdCA9PT0gJ29ubGluZWpvYi53ZWIuaWQnIHx8IGhvc3QgPT09ICd3d3cub25saW5lam9iLndlYi5pZCcgfHwgaG9zdC5lbmRzV2l0aCgnLnZlcmNlbC5hcHAnKTsKICB9IGNhdGNoIChfKSB7IHJldHVybiBmYWxzZTsgfQp9CgpleHBvcnQgZGVmYXVsdCBhc3luYyBmdW5jdGlvbiBoYW5kbGVyKHJlcSwgcmVzKSB7CiAgY29uc3QgbW9kZSA9IChwcm9jZXNzLmVudi5UUkFESU5HX01PREUgfHwgJ3BhcGVyJykudG9Mb3dlckNhc2UoKTsKCiAgLyogLS0tLS0tLS0tLSBTVEFUVVMgKEdFVCkg4oCUIHRpZGFrIHBlcm5haCBtZW11YXQgc2VjcmV0IC0tLS0tLS0tLS0gKi8KICBpZiAocmVxLm1ldGhvZCA9PT0gJ0dFVCcpIHsKICAgIGNvbnN0IGtwID0gbG9hZEtleXBhaXIoKTsKICAgIGxldCBzb2xCYWxhbmNlID0gbnVsbDsKICAgIGlmIChrcCkgewogICAgICB0cnkgewogICAgICAgIGNvbnN0IGNvbm4gPSBuZXcgQ29ubmVjdGlvbihSUEMsICdjb25maXJtZWQnKTsKICAgICAgICBzb2xCYWxhbmNlID0gKGF3YWl0IGNvbm4uZ2V0QmFsYW5jZShrcC5wdWJsaWNLZXkpKSAvIDFlOTsKICAgICAgfSBjYXRjaCAoXykgeyBzb2xCYWxhbmNlID0gbnVsbDsgfQogICAgfQogICAgcmV0dXJuIHJlcy5zdGF0dXMoMjAwKS5qc29uKHsKICAgICAgb2s6IHRydWUsCiAgICAgIHRyYWRpbmdNb2RlOiBtb2RlLAogICAgICBsaXZlRW5hYmxlZDogbW9kZSA9PT0gJ2xpdmUnLAogICAgICB3YWxsZXQ6IGtwID8ga3AucHVibGljS2V5LnRvQmFzZTU4KCkgOiBudWxsLAogICAgICBzZWNyZXRDb25maWd1cmVkOiAhIWtwLAogICAgICBzb2xCYWxhbmNlLAogICAgICBtYXhCdXlVc2Q6IE1BWF9CVVlfVVNELAogICAgICBtYXhTbGlwcGFnZUJwczogTUFYX1NMSVBfQlBTLAogICAgICBhdDogbmV3IERhdGUoKS50b0lTT1N0cmluZygpLAogICAgfSk7CiAgfQoKICBpZiAocmVxLm1ldGhvZCAhPT0gJ1BPU1QnKSByZXR1cm4gcmVzLnN0YXR1cyg0MDUpLmpzb24oeyBlcnJvcjogJ21ldGhvZCBub3QgYWxsb3dlZCcgfSk7CgogIC8qIC0tLS0tLS0tLS0gR0VSQkFORyBMSVZFIChiZXJsYXBpcywgZmFpbC1jbG9zZWQpIC0tLS0tLS0tLS0gKi8KICBpZiAobW9kZSAhPT0gJ2xpdmUnKSB7CiAgICByZXR1cm4gcmVzLnN0YXR1cyg0MDMpLmpzb24oeyBlcnJvcjogJ1RSQURJTkdfTU9ERSBidWthbiAibGl2ZSIgKHNla2FyYW5nOiAnICsgbW9kZSArICcpIOKAlCBleGVjdXRvciBtZW5vbGFrIHNlbXVhIHRyYWRlLiBCb3QgdGV0YXAgUGFwZXIuJyB9KTsKICB9CiAgY29uc3QgZXhlY1Rva2VuID0gcHJvY2Vzcy5lbnYuRVhFQ1VUT1JfVE9LRU4gfHwgJyc7CiAgaWYgKCFleGVjVG9rZW4pIHsKICAgIHJldHVybiByZXMuc3RhdHVzKDUwMCkuanNvbih7IGVycm9yOiAnRVhFQ1VUT1JfVE9LRU4gYmVsdW0gdGVyaXNpIGRpIGVudiBWZXJjZWwg4oCUIGV4ZWN1dG9yIG1lbm9sYWsgc2VtdWEgdHJhZGUgKGZhaWwtY2xvc2VkKScgfSk7CiAgfQogIGlmIChyZXEuaGVhZGVyc1sneC1ncm9rYm90LXRva2VuJ10gIT09IGV4ZWNUb2tlbikgewogICAgcmV0dXJuIHJlcy5zdGF0dXMoNDAxKS5qc29uKHsgZXJyb3I6ICd0b2tlbiBleGVjdXRvciB0aWRhayB2YWxpZCDigJQgdHJhZGUgbGl2ZSB3YWppYiBtZW1iYXdhIHRva2VuIEVYRUNVVE9SX1RPS0VOIHlhbmcgc2FtYSBkZW5nYW4gZW52IHNlcnZlcicgfSk7CiAgfQogIGlmIChyZXEuaGVhZGVyc1sneC1ncm9rYm90LWNvbmZpcm0nXSAhPT0gJ2xpdmUtY29uZmlybWVkJykgewogICAgcmV0dXJuIHJlcy5zdGF0dXMoNDI4KS5qc29uKHsgZXJyb3I6ICdrb25maXJtYXNpIGVrc3BsaXNpdCB0aWRhayBhZGEg4oCUIHRyYWRlIGxpdmUgd2FqaWIgZGlrb25maXJtYXNpIHVzZXIgZGkgVUkgKHJpbmdrYXNhbiBjaGFpbiDCtyB3YWxsZXQgwrcganVtbGFoIMK3IHNsaXBwYWdlIMK3IFRQL1NMKScgfSk7CiAgfQogIGlmICghaXNBbGxvd2VkT3JpZ2luKHJlcSkpIHsKICAgIHJldHVybiByZXMuc3RhdHVzKDQwMykuanNvbih7IGVycm9yOiAnb3JpZ2luIHRpZGFrIGRpaXppbmthbicgfSk7CiAgfQogIGNvbnN0IGtwID0gbG9hZEtleXBhaXIoKTsKICBpZiAoIWtwKSByZXR1cm4gcmVzLnN0YXR1cyg1MDApLmpzb24oeyBlcnJvcjogJ1NPTEFOQV9XQUxMRVRfU0VDUkVUIGJlbHVtIHRlcmlzaSAvIHRpZGFrIHZhbGlkIGRpIGVudiBWZXJjZWwg4oCUIGV4ZWN1dG9yIHRpZGFrIGJpc2EgdGFuZGEgdGFuZ2FuJyB9KTsKCiAgbGV0IGJvZHkgPSByZXEuYm9keTsKICBpZiAodHlwZW9mIGJvZHkgPT09ICdzdHJpbmcnKSB7IHRyeSB7IGJvZHkgPSBKU09OLnBhcnNlKGJvZHkpOyB9IGNhdGNoIChfKSB7IGJvZHkgPSBudWxsOyB9IH0KICBjb25zdCBzaWRlID0gYm9keSAmJiBib2R5LnNpZGU7CiAgY29uc3QgbWludCA9IGJvZHkgJiYgU3RyaW5nKGJvZHkubWludCB8fCAnJyk7CiAgY29uc3QgYW1vdW50VXNkID0gYm9keSA/IE51bWJlcihib2R5LmFtb3VudFVzZCkgOiBOYU47CiAgbGV0IHNsaXBwYWdlQnBzID0gYm9keSA/IE1hdGguZmxvb3IoTnVtYmVyKGJvZHkuc2xpcHBhZ2VCcHMpKSA6IE5hTjsKICBpZiAoc2lkZSAhPT0gJ2J1eScgJiYgc2lkZSAhPT0gJ3NlbGwnKSByZXR1cm4gcmVzLnN0YXR1cyg0MDApLmpzb24oeyBlcnJvcjogJ3NpZGUgaGFydXMgImJ1eSIgYXRhdSAic2VsbCInIH0pOwogIGlmICghQkFTRTU4LnRlc3QobWludCkgfHwgbWludCA9PT0gU09MKSByZXR1cm4gcmVzLnN0YXR1cyg0MDApLmpzb24oeyBlcnJvcjogJ21pbnQgdGlkYWsgdmFsaWQnIH0pOwogIGlmICghTnVtYmVyLmlzRmluaXRlKHNsaXBwYWdlQnBzKSkgc2xpcHBhZ2VCcHMgPSBNQVhfU0xJUF9CUFM7CiAgc2xpcHBhZ2VCcHMgPSBNYXRoLm1heCgxMCwgTWF0aC5taW4oTUFYX1NMSVBfQlBTLCBzbGlwcGFnZUJwcykpOyAvLyBjbGFtcCA8PSA1JQogIGlmIChzaWRlID09PSAnYnV5JyAmJiAoIU51bWJlci5pc0Zpbml0ZShhbW91bnRVc2QpIHx8IGFtb3VudFVzZCA8PSAwIHx8IGFtb3VudFVzZCA+IE1BWF9CVVlfVVNEKSkgewogICAgcmV0dXJuIHJlcy5zdGF0dXMoNDAwKS5qc29uKHsgZXJyb3I6ICdhbW91bnRVc2QgYmVsaSB3YWppYiAwIDwgeCA8PSAkJyArIE1BWF9CVVlfVVNEICsgJyAoYXR1cmFuICQxIHBlciBjb2luKScgfSk7CiAgfQoKICBjb25zdCBjb25uID0gbmV3IENvbm5lY3Rpb24oUlBDLCAnY29uZmlybWVkJyk7CiAgdHJ5IHsKICAgIGxldCBpbk1pbnQsIG91dE1pbnQsIGFtb3VudFJhdywgcXVvdGVSZXM7CiAgICBpZiAoc2lkZSA9PT0gJ2J1eScpIHsKICAgICAgY29uc3QgcHggPSBhd2FpdCBzb2xQcmljZVVzZCgpOwogICAgICBjb25zdCBsYW1wb3J0cyA9IE1hdGguZmxvb3IoKGFtb3VudFVzZCAvIHB4KSAqIDFlOSk7CiAgICAgIGlmIChsYW1wb3J0cyA8PSAwKSB0aHJvdyBuZXcgRXJyb3IoJ25pbGFpIGJlbGkgdGVybGFsdSBrZWNpbCB0ZXJoYWRhcCBoYXJnYSBTT0wnKTsKICAgICAgY29uc3QgYmFsID0gYXdhaXQgY29ubi5nZXRCYWxhbmNlKGtwLnB1YmxpY0tleSk7CiAgICAgIGlmIChiYWwgPCBsYW1wb3J0cyArIE1hdGguZmxvb3IoRkVFX0JVRkZFUl9TT0wgKiAxZTkpKSB7CiAgICAgICAgcmV0dXJuIHJlcy5zdGF0dXMoNDIyKS5qc29uKHsgZXJyb3I6ICdzYWxkbyBTT0wgdGlkYWsgY3VrdXAgdW50dWsgYmVsaSAkJyArIGFtb3VudFVzZC50b0ZpeGVkKDIpICsgJyArIGdhcyAoc2FsZG8gJyArIChiYWwgLyAxZTkpLnRvRml4ZWQoNikgKyAnIFNPTCkg4oCUIGZhaWwtY2xvc2VkJyB9KTsKICAgICAgfQogICAgICBpbk1pbnQgPSBTT0w7IG91dE1pbnQgPSBtaW50OyBhbW91bnRSYXcgPSBTdHJpbmcobGFtcG9ydHMpOwogICAgfSBlbHNlIHsKICAgICAgLy8gSlVBTDogMTAwJSBzYWxkbyB0b2tlbiBtaW50IGluaSBkaSB3YWxsZXQgKHJhdyBhbW91bnQsIEJpZ0ludCBhbWFuKQogICAgICBjb25zdCBhY2N0cyA9IGF3YWl0IGNvbm4uZ2V0UGFyc2VkVG9rZW5BY2NvdW50c0J5T3duZXIoa3AucHVibGljS2V5LCB7IG1pbnQ6IG5ldyBQdWJsaWNLZXkobWludCkgfSk7CiAgICAgIGxldCByYXcgPSAwbjsKICAgICAgZm9yIChjb25zdCBhIG9mIGFjY3RzLnZhbHVlKSB7CiAgICAgICAgY29uc3QgYW10ID0gYS5hY2NvdW50ICYmIGEuYWNjb3VudC5kYXRhICYmIGEuYWNjb3VudC5kYXRhLnBhcnNlZCAmJiBhLmFjY291bnQuZGF0YS5wYXJzZWQuaW5mbwogICAgICAgICAgJiYgYS5hY2NvdW50LmRhdGEucGFyc2VkLmluZm8udG9rZW5BbW91bnQgJiYgYS5hY2NvdW50LmRhdGEucGFyc2VkLmluZm8udG9rZW5BbW91bnQuYW1vdW50OwogICAgICAgIGlmIChhbXQpIHJhdyArPSBCaWdJbnQoU3RyaW5nKGFtdCkpOwogICAgICB9CiAgICAgIGlmIChyYXcgPD0gMG4pIHJldHVybiByZXMuc3RhdHVzKDQyMikuanNvbih7IGVycm9yOiAnc2FsZG8gdG9rZW4gbWludCBpbmkgMCBkaSB3YWxsZXQg4oCUIHRpZGFrIGFkYSB5YW5nIGJpc2EgZGlqdWFsJyB9KTsKICAgICAgaW5NaW50ID0gbWludDsgb3V0TWludCA9IFNPTDsgYW1vdW50UmF3ID0gcmF3LnRvU3RyaW5nKCk7CiAgICB9CgogICAgLyogMSkgUVVPVEUgLT4gMikgU1dBUCBUWCAtPiAzKSBTSUdOIC0+IDQpIFNJTVVMQVNJIC0+IDUpIEJST0FEQ0FTVCAqLwogICAgcXVvdGVSZXMgPSBhd2FpdCBxdW90ZShpbk1pbnQsIG91dE1pbnQsIGFtb3VudFJhdywgc2xpcHBhZ2VCcHMpOwogICAgY29uc3Qgc3dhcEI2NCA9IGF3YWl0IGJ1aWxkU3dhcFR4KHF1b3RlUmVzLCBrcC5wdWJsaWNLZXkudG9CYXNlNTgoKSk7CiAgICBjb25zdCB0eCA9IFZlcnNpb25lZFRyYW5zYWN0aW9uLmRlc2VyaWFsaXplKEJ1ZmZlci5mcm9tKHN3YXBCNjQsICdiYXNlNjQnKSk7CiAgICB0eC5zaWduKFtrcF0pOwoKICAgIGNvbnN0IHNpbSA9IGF3YWl0IGNvbm4uc2ltdWxhdGVUcmFuc2FjdGlvbih0eCk7CiAgICBpZiAoc2ltLnZhbHVlICYmIHNpbS52YWx1ZS5lcnIpIHsKICAgICAgcmV0dXJuIHJlcy5zdGF0dXMoNDIyKS5qc29uKHsgZXJyb3I6ICdTSU1VTEFTSSBHQUdBTCDigJQgYnJvYWRjYXN0IGRpYmF0YWxrYW4gKGZhaWwtY2xvc2VkKTogJyArIEpTT04uc3RyaW5naWZ5KHNpbS52YWx1ZS5lcnIpIH0pOwogICAgfQogICAgY29uc3Qgc2lnbmF0dXJlID0gYXdhaXQgY29ubi5zZW5kUmF3VHJhbnNhY3Rpb24odHguc2VyaWFsaXplKCksIHsgc2tpcFByZWZsaWdodDogZmFsc2UsIG1heFJldHJpZXM6IDMgfSk7CiAgICBjb25zdCBsYXRlc3QgPSBhd2FpdCBjb25uLmdldExhdGVzdEJsb2NraGFzaCgnY29uZmlybWVkJyk7CiAgICBhd2FpdCBjb25uLmNvbmZpcm1UcmFuc2FjdGlvbih7IHNpZ25hdHVyZSwgYmxvY2toYXNoOiBsYXRlc3QuYmxvY2toYXNoLCBsYXN0VmFsaWRCbG9ja0hlaWdodDogbGF0ZXN0Lmxhc3RWYWxpZEJsb2NrSGVpZ2h0IH0sICdjb25maXJtZWQnKTsKCiAgICByZXR1cm4gcmVzLnN0YXR1cygyMDApLmpzb24oewogICAgICBvazogdHJ1ZSwgc2lkZSwgbWludCwgc2lnbmF0dXJlLAogICAgICB3YWxsZXQ6IGtwLnB1YmxpY0tleS50b0Jhc2U1OCgpLAogICAgICBhbW91bnRVc2Q6IHNpZGUgPT09ICdidXknID8gYW1vdW50VXNkIDogbnVsbCwKICAgICAgaW5BbW91bnQ6IGFtb3VudFJhdywgb3V0QW1vdW50OiBxdW90ZVJlcy5vdXRBbW91bnQsCiAgICAgIHNsaXBwYWdlQnBzLCBwcmljZUltcGFjdFBjdDogcXVvdGVSZXMucHJpY2VJbXBhY3RQY3QgIT0gbnVsbCA/IHF1b3RlUmVzLnByaWNlSW1wYWN0UGN0IDogbnVsbCwKICAgICAgYXQ6IG5ldyBEYXRlKCkudG9JU09TdHJpbmcoKSwKICAgIH0pOwogIH0gY2F0Y2ggKGUpIHsKICAgIHJldHVybiByZXMuc3RhdHVzKDUwMikuanNvbih7IGVycm9yOiAnZXhlY3V0b3IgZ2FnYWwgKGZhaWwtY2xvc2VkLCB0aWRhayBhZGEgYnJvYWRjYXN0IHBha3NhKTogJyArIFN0cmluZygoZSAmJiBlLm1lc3NhZ2UpIHx8IGUpIH0pOwogIH0KfQo=" download>⬇ api/trade/execute.js (executor live)</a>
           <a href="data:application/json;base64,eyJkZXBlbmRlbmNpZXMiOnsiQHNvbGFuYS93ZWIzLmpzIjoiXjEuOTUuMyIsImJzNTgiOiJeNi4wLjAifSwibmFtZSI6Imdyb2stYm90IiwicHJpdmF0ZSI6dHJ1ZSwidHlwZSI6Im1vZHVsZSIsInZlcnNpb24iOiIxLjAuMCJ9" download>⬇ package.json (@solana/web3.js)</a>
         </div>
-        <p class="hint"><b>Executor Live:</b> file <code class="k">api/trade/execute.js</code> adalah eksekutor sungguhan di server — Jupiter Quote v6 → Swap → tanda tangan pakai <code class="k">SOLANA_WALLET_SECRET</code> (env server saja) → <b>simulasi</b> → broadcast. Ia menolak semua trade selama <code class="k">TRADING_MODE</code> bukan <code class="k">live</code>, membatasi beli ≤ $1, dan men-clamp slippage ≤ 500 bps. Butuh <code class="k">package.json</code> di atas ter-deploy supaya <code class="k">@solana/web3.js</code> tersedia. <b>Auto Snipe tetap Paper saja</b> — tidak ada jalur snipe live di route ini dari halaman snipe.</p>
-        <p class="hint">Wallet live: <b>Jupiter Wallet</b> · <code class="k">EJrjGUTe…BcyeMY</code> — swap lewat Jupiter API. Cek Solscan 14 Nov 00:52 WIB: format valid, tapi akun belum ada on-chain &amp; SOL 0 (belum didanai) — isi SOL untuk gas + modal $1 dulu sebelum Live; Paper tetap jalan tanpa dana. Live tetap butuh OK eksplisit + ringkasan chain · wallet · jumlah · slippage · TP/SL sebelum trade pertama. Private key / seed phrase tidak pernah diminta di web ini dan jangan pernah dikirim di chat.</p>
+        <p class="hint"><b>Executor Live:</b> file <code class="k">api/trade/execute.js</code> adalah eksekutor sungguhan di server — Jupiter Quote v6 → Swap → tanda tangan pakai <code class="k">SOLANA_WALLET_SECRET</code> (env server saja) → <b>simulasi</b> → broadcast. Ia menolak semua trade selama <code class="k">TRADING_MODE</code> bukan <code class="k">live</code>, membatasi beli ≤ $1, dan men-clamp slippage ≤ 500 bps. Butuh <code class="k">package.json</code> di atas ter-deploy supaya <code class="k">@solana/web3.js</code> tersedia. <b>Auto Snipe live</b> memakai route yang sama — kandidat snipe yang lolos langsung dibeli otomatis $1, tanpa konfirmasi per trade.</p>
+        <p class="hint">Wallet live: <b>Jupiter Wallet</b> · <code class="k">EJrjGUTe…BcyeMY</code> — swap lewat Jupiter API. Saldo wallet dicek live di panel Data Live &amp; Sumber (bukan dari snapshot lama). Trade jalan otomatis begitu kandidat lolos — tanpa konfirmasi per trade. Private key / seed phrase tidak pernah diminta di web ini dan jangan pernah dikirim di chat.</p>
       </section>
 
       <footer>
         <b>Grok Bot</b> · onlinejob.web.id · deploy di Vercel<br />
-        Paper trading dulu — bukan jaminan profit. Meme coin high-risk: kebanyakan rug / turun 90%+. Bot ini menyaring yang paling bersih, sisanya tetap risiko kamu.<br />
+        Live trading — bukan jaminan profit. Setiap trade memakai uang sungguhan. Meme coin high-risk: kebanyakan rug / turun 90%+. Bot ini menyaring yang paling bersih, sisanya tetap risiko kamu.<br />
         Detail Coin, Data Live, Skills, Safety &amp; Deploy ada di <b>menu bawah</b> — halaman utama sengaja ringkas.
       </footer>
     </div>
@@ -835,7 +768,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         <button type="button" data-open-panel="died">💀 Why They Died</button>
         <button type="button" data-open-panel="settings">⚙️ Pengaturan &amp; Modal</button>
         <button type="button" data-open-panel="daily">📅 Pengaturan Harian</button>
-        <button type="button" data-open-panel="snipe">🎯 Auto Snipe · Paper</button>
+        <button type="button" data-open-panel="snipe">🎯 Auto Snipe · Live</button>
         <button type="button" data-open-panel="exec">⚡ Executor Live</button>
       </div>
       <div class="sheet-body" id="sheetBody">
@@ -864,7 +797,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
       move('sec-safety','slot-safety'); move('sec-deploy','slot-deploy'); move('sec-smart','slot-smart');
       move('sec-audit','slot-audit'); move('sec-died','slot-died'); move('pengaturan','slot-settings');
       move('sec-daily','slot-daily'); move('sec-snipe','slot-snipe'); move('sec-exec','slot-exec');
-      var TITLES = { detail:['Detail Coin','Mint address → data asli per faktor + Influencer Buzz'], live:['Data Live & Sumber','Angka hanya dari API asli + sumber + waktu cek (WIB)'], skills:['Skills di Dalam Bot','4 skill profesional yang selalu aktif di bot'], safety:['Safety Rails & Checklist','On-Chain Safety Rails + checklist keamanan'], deploy:['Deploy · Vercel','onlinejob.web.id · cron, env, dan file route'], smart:['Smart Coin Scoring','Skor 7 faktor — hero = jumlah terbobot rincian faktor'], audit:['Audit Rug · 8 Kelas','Satu hard-kill saja = coin dibuang sebelum scoring'], died:['Why They Died','Alasan coin gugur, diringkas dari Logger'], settings:['Pengaturan & Modal','Mode Video $280 · Modal $1 · Modal Kustom — tersimpan di browser ini'], daily:['Pengaturan Harian Trading','Batas rugi / target profit / maks trade / rugi beruntun / jam aktif — money management harian'], snipe:['Auto Snipe · Paper','Coin baru langsung dievaluasi — paper saja, audit + Smart Score tetap wajib'], exec:['Executor Live','Konfirmasi trade live $1 · status server · riwayat trade'] };
+      var TITLES = { detail:['Detail Coin','Mint address → data asli per faktor + Influencer Buzz'], live:['Data Live & Sumber','Angka hanya dari API asli + sumber + waktu cek (WIB)'], skills:['Skills di Dalam Bot','4 skill profesional yang selalu aktif di bot'], safety:['Safety Rails & Checklist','On-Chain Safety Rails + checklist keamanan'], deploy:['Deploy · Vercel','onlinejob.web.id · cron, env, dan file route'], smart:['Smart Coin Scoring','Skor 7 faktor — hero = jumlah terbobot rincian faktor'], audit:['Audit Rug · 8 Kelas','Satu hard-kill saja = coin dibuang sebelum scoring'], died:['Why They Died','Alasan coin gugur, diringkas dari Logger'], settings:['Pengaturan & Modal','Modal $1 · $1/coin — tersimpan di browser ini'], daily:['Pengaturan Harian Trading','Batas rugi / target profit / maks trade / rugi beruntun / jam aktif — money management harian'], snipe:['Auto Snipe · Live','Coin baru langsung dievaluasi — lolos = dibeli otomatis $1, audit + Smart Score tetap wajib'], exec:['Executor Live','Konfirmasi trade live $1 · status server · riwayat trade'] };
       var sheet=document.getElementById('sheet'), bd=document.getElementById('sheetBackdrop'), bodyEl=document.getElementById('sheetBody');
       var current=null;
       function paintNav(){
@@ -910,18 +843,12 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
       /* ---------- helpers ---------- */
       function pad(n){ return (n<10?'0':'')+n; }
       function nowWIB(){ try{ return new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Jakarta',hour:'2-digit',minute:'2-digit'}); }catch(e){ var d=new Date(); return pad(d.getHours())+':'+pad(d.getMinutes()); } }
-      /* simulated night-run clock: starts 23:00 like the video, advances every tick */
-      function fmtClock(){ var m = st ? st.clockMin : 23*60; m = ((m % 1440)+1440)%1440; return pad(Math.floor(m/60))+':'+pad(Math.floor(m%60)); }
+      /* jam WIB asli untuk timestamp log / toast / riwayat */
+      function fmtClock(){ return nowWIB(); }
       function fmt(n){ return n.toLocaleString('en-US'); }
       function money(n){ var s = n<0?'-':''; n=Math.abs(n); return s+'$'+n.toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2}); }
       function rnd(a,b){ return a + Math.random()*(b-a); }
-      function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
       function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-      /* ---------- coin name generator ---------- */
-      var A=['BUN','DREAMS','JEANPHIL','MICRODUCK','SAFEGEM','PUMPKIN','WAGMI','ELONCAT','SHIBX','BABYWIF','APE','DOOD','PCC','CETS','BONKZ','JEETS','PEPE9','SIGMA','MOONCAT','TURBO','KEKIUS','FROG','DUKO','POPCAT','WIFHAT','GIGA','LOFI','RETARD','CHILL','NEIRO','PNUT','GOAT','ACT','LUCE','MOODENG','HIPPO','FWOG','MOTHER','DADDY','TRUMPET','BOME','SLERF','MYRO','WEN','SILLY','PONKE'];
-      function newCoin(){ return '$'+pick(A); }
-      function tickerPrice(){ return rnd(0.0002, 0.09); }
 
       /* ---------- kill reasons ---------- */
       var REASONS = [
@@ -930,7 +857,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         { id:'top10', label:'Top 10 holders >20%',     w:22, text:function(c){ return 'top 10 holders '+Math.floor(rnd(24,58))+'%'; } },
         { id:'vol',   label:'Volume <$50k last hour',  w:19, text:function(c){ return 'volume 1h < $'+Math.round(S.minVol/1000)+'k'; } },
         { id:'dev',   label:'Dev wallet → past rugs',  w:5,  text:function(c){ return 'dev wallet → past rugs'; } },
-        { id:'score', label:'Smart Score di bawah ambang', w:4, text:function(c){ return 'smart score '+rnd(0.18,0.58).toFixed(2)+' < '+(typeof S!=='undefined'?S.minScore:0.72); } }
+        { id:'score', label:'Smart Score di bawah ambang', w:4, text:function(c){ return 'smart score '+rnd(0.18,0.58).toFixed(2)+' < '+(typeof S!=='undefined'?S.minScore:0.55); } }
       ];
       function rollReason(){ var t=0,i,r=Math.random()*100; for(i=0;i<REASONS.length;i++){ t+=REASONS[i].w; if(r<=t) return REASONS[i]; } return REASONS[0]; }
 
@@ -943,7 +870,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         { id:'bonding', t:'5 · Bonding curve', d:'Kurva pump.fun dimanipulasi: dev sniping, bundler >30%, atau migrasi dipaksa = kill.' },
         { id:'authority', t:'6 · Authority Solana', d:'Mint authority & freeze authority WAJIB None. Masih aktif salah satu = kill instan.' },
         { id:'renounce', t:'7 · Fake renounce', d:'Klaim “renounced” tapi authority dipindah ke wallet lain / multisig semu = kill.' },
-        { id:'sandwich', t:'8 · Sandwich / MEV', d:'Likuiditas tipis + tanpa proteksi slippage = mangsa sandwich. Pool < $15k = kill.' }
+        { id:'sandwich', t:'8 · Sandwich / MEV', d:'Likuiditas tipis + tanpa proteksi slippage = mangsa sandwich. Pool di bawah ambang likuiditas = kill.' }
       ];
       /* ---------- PRO: Smart Scoring 7 faktor (bobot transparan, total 100%) ----------
          PENCARIAN 2 JALUR — bot tidak hanya berburu coin baru:
@@ -978,87 +905,14 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
          total SELALU = Σ (nilai faktor × bobot faktor) dari rincian yang
          ditampilkan — tidak ada bonus, penalti, atau penyesuaian apa pun
          yang diterapkan ke total setelah penjumlahan. Pengaruh Buzz bekerja
-         DI DALAM faktor Sosial/Buzz itu sendiri (lihat scoreCandidate),
+         DI DALAM faktor Sosial/Buzz itu sendiri ,
          sehingga angka hero selalu bisa dihitung ulang persis dari tabel. */
       function weightedTotal(detail){
         return detail.reduce(function(s,d){ return s + d.v * d.w/100; }, 0);
       }
-      /* skor satu kandidat: hasilkan rincian per faktor + alasan teks.
-         cat: 'new' | 'old' — kalau tidak diberikan, dipilih dari umur pool
-         simulasi kandidat itu sendiri (bukan koin lemparan terpisah). */
-      function scoreCandidate(sym, grokScore, cat){
-        var ageDays = (cat==='old') ? rnd(OLD_AGE_DAYS+1, 240) : (cat==='new' ? rnd(0.05, OLD_AGE_DAYS) : (Math.random()<0.45 ? rnd(OLD_AGE_DAYS+1, 240) : rnd(0.05, OLD_AGE_DAYS)));
-        cat = ageDays > OLD_AGE_DAYS ? 'old' : 'new';
-        var f = {};
-        f.liq = Math.min(1, rnd(0.35,1)); f.vol = Math.min(1, rnd(0.3,1));
-        f.holder = rnd(0.3,0.98); f.dev = rnd(0.35,0.97); f.age = rnd(0.25,0.95);
-        f.curve = rnd(0.3,0.95); f.social = rnd(0.2,0.95);
-        /* --- bahan khusus Coin Lama Potensial (pola REPLAY; live: dari
-           riwayat DexScreener/RPC yang sama, bukan tebakan) --- */
-        f.liqPersist = Math.min(1, rnd(0.35,1));   /* likuiditas tidak kabur setelah fase awal */
-        f.volConsist = rnd(0.3,0.98);              /* volume stabil antar-window, bukan 1 spike */
-        f.holderGrowth = rnd(0.3,0.98);            /* holder bertumbuh / bertahan, bukan menyusut */
-        /* survival: makin lama bertahan makin terbukti — naik lalu CAP,
-           umur saja tidak pernah cukup kalau faktor lain mati */
-        f.survival = Math.min(1, 0.45 + Math.log10(Math.max(1,ageDays))*0.28 + rnd(-0.06,0.08));
-        /* harga vs ATH: diskon 40–70% dari ATH = zona potensial; dekat ATH =
-           kejar harga; −90%+ dengan volume mati = coin mati, skor rendah */
-        var athDrop = Math.floor(rnd(18,94));
-        f.ath = (athDrop>=40 && athDrop<=70) ? rnd(0.72,0.95) : ((athDrop>70 && athDrop<=85) || (athDrop>=25 && athDrop<40)) ? rnd(0.48,0.7) : (athDrop>85 ? rnd(0.08,0.32) : rnd(0.38,0.58));
-        /* kadang kandidat memang jelek di 1-2 faktor biar realistis */
-        if(Math.random()<0.35){ var weak = pick(cat==='old' ? ['liqPersist','volConsist','holderGrowth','social'] : ['liq','holder','social','age']); f[weak] = rnd(0.1,0.45); }
-        /* --- Influencer Buzz ditentukan DULU (REPLAY pattern; live mode: dari API X/Telegram asli) ---
-           Buzz tidak pernah mengubah total dari luar. Ia masuk sebagai bahan
-           faktor Sosial/Buzz: shill menekan NILAI FAKTOR itu ke sub-skor buzz,
-           organik mencampurnya 30% — keduanya terlihat di tabel faktor. */
-        var buzz, roll = Math.random();
-        if(roll < 0.24){
-          buzz = { mode:'shill', mentions: Math.floor(rnd(1400,5200)), velocityX: rnd(8,22), unique: Math.floor(rnd(4,11)), sentiment: rnd(0.7,0.95),
-            who:'Pola replay: segelintir akun mengulang mention yang sama; mayoritas akun baru <30 hari; 1 akun archetype berriwayat promosi rug',
-            score: rnd(0.05,0.28) };
-        } else if(roll < 0.62){
-          buzz = { mode:'organic', mentions: Math.floor(rnd(60,650)), velocityX: rnd(1.2,3.2), unique: Math.floor(rnd(18,80)), sentiment: rnd(0.5,0.85),
-            who:'Pola replay: banyak akun unik, pertumbuhan mention bertahap, tanpa akun berriwayat rug',
-            score: rnd(0.55,0.92) };
-        } else {
-          buzz = { mode:'quiet', mentions: Math.floor(rnd(0,45)), velocityX: rnd(0.6,1.3), unique: Math.floor(rnd(1,14)), sentiment: rnd(0.35,0.6),
-            who:'Pola replay: sepi — belum ada perhatian influencer berarti', score: rnd(0.3,0.5) };
-        }
-        var factorSet = (cat==='old') ? FACTORS_OLD : FACTORS_NEW;
-        var detail = factorSet.map(function(fc){
-          var v, note = '';
-          if(fc.id==='social'){
-            var base = f.social*0.5 + grokScore*0.5;
-            if(buzz.mode==='shill') v = Math.min(base, buzz.score);
-            else if(buzz.mode==='organic') v = base*0.7 + buzz.score*0.3;
-            else v = base;
-            note = 'Dasar = ½ sinyal sosial '+f.social.toFixed(2)+' + ½ skor Grok '+grokScore.toFixed(2)+' = '+base.toFixed(2)+'. '+(buzz.mode==='shill' ? 'Buzz SHILL: nilai faktor ini ditekan ke sub-skor buzz '+buzz.score.toFixed(2)+' — penekanan terjadi di faktor ini, bukan potongan tersembunyi dari total.' : (buzz.mode==='organic' ? 'Buzz organik: dicampur 30% sub-skor buzz '+buzz.score.toFixed(2)+' di faktor ini.' : 'Buzz sepi: tanpa penyesuaian.'))+' Grok bukan penentu tunggal.';
-          } else {
-            v = f[fc.id];
-          }
-          v = Math.max(0, Math.min(1, v));
-          if(fc.id==='liq') note = v>=0.7 ? 'Likuiditas dalam, slippage aman di slip ≤'+S.slip+'%.' : (v>=0.45 ? 'Likuiditas sedang — ukuran posisi ditahan kecil.' : 'Likuiditas tipis, rawan sandwich & LP drain.');
-          if(fc.id==='vol') note = v>=0.7 ? 'Volume 1 jam kuat dan organik (bukan wash spike).' : (v>=0.45 ? 'Volume cukup, tapi belum konsisten 3 candle.' : 'Volume di bawah ambang $'+Math.round(S.minVol/1000)+'k / jam.');
-          if(fc.id==='holder') note = v>=0.7 ? 'Top 10 holder di bawah 20%, tidak ada dompet bundel dominan.' : (v>=0.45 ? 'Top 10 agak pekat — dipantau Risk tiap tick.' : 'Top 10 terlalu pekat, risiko dump terkoordinasi.');
-          if(fc.id==='dev') note = (v>=0.7 ? 'Dev wallet bersih: tidak ada riwayat rug / deploy serial.' : (v>=0.45 ? (cat==='old' ? 'Dev masih aktif & tidak ada insiden, tapi riwayatnya campuran — skor ditahan.' : 'Dev baru, riwayat pendek — skor ditahan.') : 'Dev terkait wallet rug sebelumnya.'));
-          if(fc.id==='age') note = 'Umur pool (replay): '+ageDays.toFixed(1)+' hari — kategori Coin Baru. '+(v>=0.7 ? 'Sudah lewat fase snipe menit pertama.' : (v>=0.45 ? 'Pool muda — volatilitas awal masih tinggi.' : 'Pool terlalu baru, data belum bisa dipercaya.'));
-          if(fc.id==='curve') note = v>=0.7 ? 'Bonding curve sehat, progres migrasi wajar.' : (v>=0.45 ? 'Kurva di tengah — tunggu konfirmasi migrasi.' : 'Kurva janggal: bundler / snipe terdeteksi.');
-          if(fc.id==='liqPersist') note = 'Umur pool (replay): '+Math.round(ageDays)+' hari. '+(v>=0.7 ? 'Likuiditas BERTAHAN sejak fase awal — bukan pool sekali pump lalu kering.' : (v>=0.45 ? 'Likuiditas masih ada tapi menipis dari puncaknya — dipantau.' : 'Likuiditas sudah banyak kabur — coin lama tanpa pool sehat = skip.'));
-          if(fc.id==='volConsist') note = v>=0.7 ? 'Volume konsisten antar-window (1 jam vs 24 jam vs 7 hari seimbang) — aktivitas asli, bukan satu spike.' : (v>=0.45 ? 'Volume ada tapi tidak rata — sebagian besar dari spike sesaat.' : 'Volume 24 jam / 7 hari mati atau cuma spike lama — bukan potensial, itu coin ditinggalkan.');
-          if(fc.id==='holderGrowth') note = v>=0.7 ? 'Jumlah holder bertumbuh / bertahan stabil — distribusi membaik seiring umur coin.' : (v>=0.45 ? 'Holder datar — belum menyusut, tapi belum ada pertumbuhan baru.' : 'Holder menyusut terus — komunitas pergi, coin lama ini kehilangan alasannya.');
-          if(fc.id==='survival') note = 'Coin ini sudah bertahan '+Math.round(ageDays)+' hari melewati fase di mana mayoritas meme coin mati. Umur di sini adalah BUKTI survival (skor naik lalu dibatasi/cap) — BUKAN hukuman karena tua, dan tidak pernah cukup sendirian kalau volume / holder / likuiditasnya mati.';
-          if(fc.id==='ath') note = 'Harga sekarang (replay) −'+athDrop+'% dari ATH. '+(athDrop>=40 && athDrop<=70 ? 'Zona diskon sehat: jauh dari puncak, tapi coin-nya terbukti masih hidup — ruang pulih ada tanpa harus mengejar ATH.' : (athDrop>85 ? 'Sudah −'+athDrop+'% dari ATH — itu bukan diskon, itu coin yang ditinggalkan; skor rendah kecuali volume & holder hidup lagi.' : (athDrop<25 ? 'Masih dekat ATH — membeli di sini = mengejar puncak, ruang naik tipis.' : 'Diskon sedang dari ATH — dinilai bersama konsistensi volume & holder, bukan dari murahnya saja.')));
-          return { id:fc.id, name:fc.name, w:fc.w, v:v, contrib:v * fc.w/100, note:note };
-        });
-        /* total = jumlah terbobot rincian di atas. Titik. Tidak diubah lagi. */
-        var total = weightedTotal(detail);
-        return { sym:sym, grok:grokScore, total:total, detail:detail, buzz:buzz,
-          cat:cat, catLabel:(cat==='old' ? 'Coin Lama Potensial' : 'Coin Baru'),
-          ageDays:ageDays, athDrop:athDrop };
-      }
       var SKILLS = [
         { bg:'rgba(255,107,107,.14)', ico:'🛡️', t:'meme_coin_audit — Audit Rug 8 Kelas', d:'Hidden mint · honeypot/blacklist · fee manipulation · LP drain · bonding curve · authority Solana (mint/freeze = None) · fake renounce · sandwich. Satu kena = HARD KILL sebelum scoring.' },
-        { bg:'rgba(87,168,255,.14)', ico:'🔍', t:'web3-audit — Keamanan Protokol & Harga', d:'Oracle staleness + confidence interval · TWAP minimal (tidak pakai spot price mentah) · reentrancy pola CEI · access control di semua sibling functions · accounting desync · signature replay (nonce + chainId wajib).' },
+        { bg:'rgba(87,168,255,.14)', ico:'🔍', t:'web3-audit — Keamanan Protokol & Harga', d:'Oracle staleness + confidence interval · TWAP minimal (tidak pakai spot price mentah) · reentrancy pola CEI · access control di semua sibling functions · accounting desync · signature reuse (nonce + chainId wajib).' },
         { bg:'rgba(167,139,250,.14)', ico:'👁️', t:'argus — Keamanan Web & API Bot', d:'CORS allowlist ketat · JWT ditolak kalau alg=none / confusion RS256→HS256 · NoSQL injection disanitasi · rate-limit scan · semua input divalidasi & di-clamp sebelum dipakai.' },
         { bg:'rgba(45,212,191,.14)', ico:'🤖', t:'agentic-app-audit — Keamanan Agent LLM', d:'Prompt-injection & tool-call hijacking pada Analyst Grok: output LLM hanya boleh berupa skor + alasan, tidak pernah bisa memanggil Executor langsung. Memory poisoning dicegah (log tidak jadi instruksi) & excessive agency dibatasi — aksi destruktif selalu butuh konfirmasi manusia + fail-closed.' }
       ];
@@ -1074,22 +928,22 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         ['Semua data eksternal di-escape di UI','Nama token, daftar model & pesan error di-escape (anti-XSS) sebelum dirender.'],
         ['Input divalidasi & rate-limit scan','Semua angka di-clamp ke rentang aman; scan dibatasi batch per tick, log dibatasi antrean.'],
         ['Konfirmasi untuk aksi destruktif','Live pertama, ganti wallet & matikan stop butuh OK eksplisit + ringkasan 1 baris.'],
-        ['Paper-first','Mode paper adalah default. Live hanya aktif setelah OK eksplisit, wallet khusus $1–5.'],
+        ['Live-only — tanpa simulasi','Bot ini hanya trade live $1/coin. Tidak ada mode simulasi; kandidat lolos langsung dibeli otomatis oleh executor.'],
         ['Influencer Buzz = sinyal waspada dua arah','Shill terkoordinasi / akun baru / riwayat rug → nilai faktor Sosial/Buzz ditekan ke sub-skor buzz + tahan beli. Buzz ramai + fundamental kotor = tetap KILL.'],
-        ['Akurasi: sumber + waktu di setiap angka live','Harga/liq/vol/holder/authority/buzz wajib dari DexScreener/Jupiter/Solscan/RPC/TrueSOTA/X. Kosong/basi/error = “Data belum tersedia” + fail-closed. Replay selalu berlabel REPLAY.'],
-        ['Pencarian 4 jalur: DexScreener + GeckoTerminal + pump.fun','Coin baru dari DexScreener, GeckoTerminal & pump.fun (lulus bonding curve) + coin lama potensial. Coin lama (>7 hari) dinilai dari likuiditas bertahan, konsistensi volume, pertumbuhan holder, survival, dan harga vs ATH — tidak dihukum karena tuanya. Audit hard-kill + ambang 0,65 sama untuk keempat jalur.'],
+        ['Akurasi: sumber + waktu di setiap angka live','Harga/liq/vol/holder/authority/buzz wajib dari DexScreener/Jupiter/Solscan/RPC/TrueSOTA/X. Kosong/basi/error = “Data belum tersedia” + fail-closed.'],
+        ['Pencarian 5 jalur: DexScreener + GeckoTerminal + pump.fun','Coin baru dari DexScreener, GeckoTerminal & pump.fun (lulus bonding curve) + coin lama potensial dari trending pools. Coin lama (>7 hari) dinilai dari likuiditas bertahan, konsistensi volume, pertumbuhan holder, survival, dan harga vs ATH — tidak dihukum karena tuanya. Audit hard-kill + ambang 0,55 sama untuk kelima jalur.'],
         ['Batas harian trading (money management)','Batas rugi harian, target profit harian, maks trade/hari, maks rugi beruntun, dan jam trading aktif tersimpan & ditegakkan: satu batas kena = bot berhenti seharian, status “Batas harian tercapai — bot berhenti”, sampai besok atau reset manual.']
       ];
 
       /* ---------- settings ---------- */
       var S = {
-        mode:'std', customEquity:10, equity:280, size:8, stop:30, trail:12, tp1:50, tp2:100,
-        minVol:30000, minScore:0.65, slip:5, minLiq:10000, model:'grok-4.6', domain:'onlinejob.web.id', key:'', wallet:'jupiter',
+        stop:30, tp1:50, tp2:100,
+        minVol:10000, minScore:0.55, slip:5, minLiq:5000, model:'grok-4.6', domain:'onlinejob.web.id', key:'', wallet:'jupiter',
         walletAddress:'EJrjGUTe2qNok3GRHDcQi8kR56tn7Q7ymHgx2eBcyeMY',
         soundOn:true, sndVol:70, lite:false,
-        scanSource:'replay', snipe:false, snipeMaxAge:30,
+        scanSource:'live', snipe:false, snipeMaxAge:30,
         dailyLoss:5, dailyProfit:10, dailyMaxTrades:20, dailyMaxStreak:3, dayStart:'00:00', dayEnd:'23:59',
-        tradeMode:'paper'
+        tradeMode:'live'
       };
 
       /* ---------- BATAS HARIAN TRADING (money management) ----------
@@ -1132,7 +986,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
       function tripDaily(reason){
         if(day.stopped) return;
         day.stopped = true; day.reason = reason; saveDay();
-        if(typeof st!=='undefined' && st && !st.hold){ st.running = false; }
+        if(typeof st!=='undefined' && st){ st.running = false; }
         if(typeof st!=='undefined' && st && typeof paintRunUI==='function') paintRunUI();
         paintDaily();
         if(typeof addLog==='function' && typeof st!=='undefined' && st){ try{ addLog('RISK', '#ffb454', 'BATAS HARIAN · '+reason+' — bot berhenti seharian'); }catch(e){} }
@@ -1189,7 +1043,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
       var lastAutoResumeAt = 0;
       function tryAutoResume(){
         if(!getAutoRun()) return;
-        if(typeof st === 'undefined' || !st || st.running || st.hold) return;
+        if(typeof st === 'undefined' || !st || st.running) return;
         var now = Date.now();
         if(now - lastAutoResumeAt < 3000) return;
         lastAutoResumeAt = now;
@@ -1208,7 +1062,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         pageGone = true;
         audioUnlocked = false;
         if(AC && AC.state === 'running'){ try{ AC.suspend(); }catch(e){} }
-        if(typeof st !== 'undefined' && st && !st.hold && st.running){ st.running = false; }
+        if(typeof st !== 'undefined' && st && st.running){ st.running = false; }
         if(typeof st !== 'undefined' && st && typeof paintRunUI === 'function'){ paintRunUI(); }
       }
       document.addEventListener('visibilitychange', function(){
@@ -1272,6 +1126,17 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
          dan tidak pernah dikirim dari browser. Key lama yang sempat tersimpan
          (keyObf, base64) dihapus saat halaman dimuat. */
       try{ var saved = JSON.parse(localStorage.getItem(LS)||'null'); if(saved){ if(saved.keyObf){ try{ var _o={}; for(var _k in saved){ if(_k!=='keyObf') _o[_k]=saved[_k]; } localStorage.setItem(LS, JSON.stringify(_o)); }catch(e){} } for(var k in S){ if(saved[k]!==undefined && k!=='key') S[k]=saved[k]; } } }catch(e){}
+      /* LIVE-ONLY (14 Nov): paksa mode + sumber scan ke live, dan migrasi
+         ambang lama yang ketat ke ambang baru — nilai tersimpan yang sama
+         dengan ambang lama (liq 15000/10000, vol 50000/30000, skor 0.72/0.65)
+         dipaksa ke nilai baru (liq 5000, vol 10000, skor 0.55) supaya HP
+         langsung memakai ambang baru tanpa ubah manual. Nilai custom lain
+         yang sengaja diubah user tidak disentuh. */
+      S.tradeMode = 'live'; S.scanSource = 'live';
+      if(S.minLiq === 15000 || S.minLiq === 10000) S.minLiq = 5000;
+      if(S.minVol === 50000 || S.minVol === 30000) S.minVol = 10000;
+      if(S.minScore === 0.72 || S.minScore === 0.65) S.minScore = 0.55;
+      saveSettings();
       function saveSettings(){ try{ var o={}; for(var k in S) o[k]=S[k]; delete o.key; localStorage.setItem(LS, JSON.stringify(o)); }catch(e){} }
 
       /* ---------- state ---------- */
@@ -1283,11 +1148,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
       function paintRunUI(){
         if(!st) return;
         var btn = $('btnRun'); if(!btn) return;
-        if(st.hold){
-          btn.textContent = '▶ Lanjut free-run';
-          $('liveTxt').textContent = 'Replay · Selesai';
-          $('liveDot').className = 'dot off';
-        } else if(typeof day !== 'undefined' && day.stopped){
+        if(typeof day !== 'undefined' && day.stopped){
           btn.textContent = '▶ Jalankan';
           $('liveTxt').textContent = 'Batas harian tercapai — bot berhenti';
           $('liveDot').className = 'dot off';
@@ -1297,7 +1158,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           $('liveDot').className = 'dot off';
         } else if(st.running){
           btn.textContent = '⏸ Pause';
-          $('liveTxt').textContent = S.scanSource==='live' ? (S.tradeMode==='live' ? 'Scan Live · Executor LIVE' : 'Scan Live · Paper') : 'Replay · Paper';
+          $('liveTxt').textContent = 'Scan Live · Executor LIVE · otomatis';
           $('liveDot').className = 'dot';
         } else {
           btn.textContent = '▶ Jalankan';
@@ -1308,36 +1169,29 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
       function resetState(){
         dispEq = null;
         st = {
-          running:false, startEquity:S.equity, equity:S.equity, cash:S.equity,
-          scanned:1146, traded:0, killed:1123, scored:42, passed:23,
-          kills:{ mint:296, lp:271, top10:247, vol:214, dev:76, score:19 },
+          running:false, startEquity:1, equity:1, cash:1,
+          scanned:0, traded:0, killed:0, scored:0, passed:0,
+          kills:{ mint:0, lp:0, top10:0, vol:0, dev:0, score:0 },
           wins:0, losses:0, best:null, worst:null, lastStopTxt:'',
-          positions:[], logs:[], logQueue:[], history:seedHistory(S.equity),
-          lastKill:null, lastScore:null, lastBuy:null, lastSmart:null, auditKills:0, rpcBlocks:0, reasons:1123, skipped:0,
+          positions:[], logs:[], logQueue:[], history:seedHistory(1),
+          lastKill:null, lastScore:null, lastBuy:null, lastSmart:null, reasons:0, skipped:0,
           rotState:'scanning', rotPending:null, rotHistory:[], rotRound:1, rotScanTicks:0,
-          snipeStats:{ seen:0, bought:0, rejected:0 }, snipeLog:[], pendingLive:null,
-          clockMin: 23*60, nextMile: 2500,
-          arc: S.mode==='std', tickN: 0, p: 0, plan: buildPlan(),
-          startedAt: '23:00'
+          snipeStats:{ seen:0, bought:0, rejected:0 }, snipeLog:[], buyBusy:false,
+          tickN: 0
         };
         seedLogs();
         syncToast();
-        if($('execConfirm')) $('execConfirm').hidden = true;
         paintRunUI();
         renderAll();
       }
       function seedLogs(){
         var t = fmtClock();
         st.logs = [
-          { t:t, who:'FILTER',  color:'#ff6b6b', msg:'killed $BABYWIF · top 10 holders 41%' },
-          { t:t, who:'FILTER',  color:'#ff6b6b', msg:'killed $ELONCAT · mint not revoked' },
-          { t:t, who:'FILTER',  color:'#ff6b6b', msg:'killed $WAGMI · volume 1h < $50k' },
-          { t:t, who:'FILTER',  color:'#ff6b6b', msg:'killed $SHIBX · LP not locked' },
-          { t:t, who:'FILTER',  color:'#ff6b6b', msg:'killed $PUMPKIN · mint not revoked' }
+          { t:t, who:'SCOUT', color:'#57a8ff', msg:'Bot LIVE siap — scan DexScreener + GeckoTerminal + pump.fun · menunggu kandidat lolos audit + skor' }
         ];
       }
       function addLog(who, color, msg){
-        /* logs stream in one by one, like the video */
+        /* logs stream in one by one */
         st.logQueue.push({ t:fmtClock(), who:who, color:color, msg:msg, fresh:true });
         if(st.logQueue.length>40) st.logQueue.shift();
       }
@@ -1353,7 +1207,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
       }
       function syncToast(){
         $('toastTitle').textContent = fmt(st.scanned)+' pairs scanned · '+st.traded+' traded';
-        $('toastSub').textContent = st.traded ? 'paper mode · '+st.wins+'W / '+st.losses+'L sejauh ini' : (st.passed>0 ? st.passed+' passed the filter · executor has not bought yet' : 'filter killed everything that failed the rules');
+        $('toastSub').textContent = st.traded ? 'live · '+st.wins+'W / '+st.losses+'L sejauh ini' : (st.passed>0 ? st.passed+' passed the filter · executor has not bought yet' : 'filter killed everything that failed the rules');
         $('toastAmt').textContent = '';
         $('toastTime').textContent = fmtClock();
       }
@@ -1368,7 +1222,6 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
 
       /* ---------- ticker ---------- */
       var tickerCoins = [];
-      (function(){ var used={}; for(var i=0;i<10;i++){ var c=newCoin(); if(used[c]) continue; used[c]=1; tickerCoins.push({ sym:c, price:tickerPrice(), chg:rnd(-42,48), hue:Math.floor(rnd(0,360)) }); } })();
       function renderTicker(){
         var html = tickerCoins.map(function(c){
           var up = c.chg>=0;
@@ -1386,21 +1239,21 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="#ffb454"><path d="M3 5h18l-7 8v5l-4 2v-7L3 5z"/></svg>' },
         { id:'analyst',  name:'Analyst',  sub:'scores survivors', color:'#b79cff', bg:'rgba(167,139,250,.16)',
           icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b79cff" stroke-width="2.2"><path d="M12 3l7 3v5c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4" stroke-linecap="round"/></svg>' },
-        { id:'executor', name:'Executor', sub:'8% max size',      color:'#2fe07c', bg:'rgba(47,224,124,.14)',
+        { id:'executor', name:'Executor', sub:'$1 / coin',      color:'#2fe07c', bg:'rgba(47,224,124,.14)',
           icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="#2fe07c"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>' },
-        { id:'risk',     name:'Risk',     sub:'-6% stop · trail', color:'#ff8fc7', bg:'rgba(255,143,199,.14)',
+        { id:'risk',     name:'Risk',     sub:'−30% · TP +50%/+100%', color:'#ff8fc7', bg:'rgba(255,143,199,.14)',
           icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff8fc7" stroke-width="2.4"><path d="M3 17c3-1 4-8 7-8s3 6 6 6 3-3 5-3" stroke-linecap="round"/></svg>' },
         { id:'logger',   name:'Logger',   sub:'reason for all',   color:'#2dd4bf', bg:'rgba(45,212,191,.14)',
           icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.2"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 9h6M9 13h6" stroke-linecap="round"/></svg>' }
       ];
       function renderAgents(){
-        var sizeLbl = S.mode==='one' ? 'size 100% · $1' : (S.mode==='custom' ? 'size '+S.size+'% · $1/coin' : 'size ≤ '+S.size+'%');
+        var sizeLbl = '$1 / coin';
         var filterKills = st.killed - (st.kills.score||0);
         var filterPct = st.scanned ? Math.round(filterKills/st.scanned*100) : 0;
-        var riskPill = S.mode!=='std' ? ('-'+S.stop+'% · TP +'+S.tp1+'%') : ('-'+S.stop+'% · trail +'+S.trail+'%');
+        var riskPill = '−'+S.stop+'% · TP +'+S.tp1+'%/+'+S.tp2+'%';
         var openRisk = st.positions.length ? st.positions.map(function(p){ return '<span class="coin">'+p.sym+'</span> '+(p.pnlPct>=0?'<span class="good">+':'<span class="bad">')+p.pnlPct.toFixed(0)+'%</span>'; }).join(' · ') : 'no open risk';
         var rows = {
-          scout:    { status:'<span class="coin">'+(st.lastScout||'$MICRODUCK')+'</span> 4 jalur · Dex + Gecko + pump.fun…', pill:'<span class="pill blue">'+(st.scanned>=1000?(st.scanned/1000).toFixed(1)+'k':st.scanned)+' pairs</span>' },
+          scout:    { status:'<span class="coin">'+(st.lastScout||'—')+'</span> 5 jalur · Dex + Gecko + pump.fun…', pill:'<span class="pill blue">'+(st.scanned>=1000?(st.scanned/1000).toFixed(1)+'k':st.scanned)+' pairs</span>' },
           filter:   { status: st.lastKill ? '<span class="coin">'+st.lastKill.coin+'</span> <span class="bad">✕ '+st.lastKill.txt+'</span>' : '—', pill:'<span class="pill red">'+fmt(filterKills)+' · '+filterPct+'%</span>' },
           analyst:  { status: st.lastScore ? '<span class="coin">'+st.lastScore.coin+'</span> '+(st.lastScore.score>=S.minScore? '<span class="good">score '+st.lastScore.score.toFixed(2)+' ✓</span>' : '<span class="bad">✕ '+st.lastScore.score.toFixed(2)+' &lt; '+S.minScore+'</span>') : '<span style="color:var(--dim)">belum ada survivor · '+fmt(st.killed)+' killed · '+fmt(st.skipped||0)+' skip · ambang '+S.minScore+'</span>', pill:'<span class="pill purple">'+fmt(st.scored)+' scored</span>' },
           executor: { status: st.lastBuy ? 'bought <span class="coin">'+st.lastBuy.coin+'</span> · '+money(st.lastBuy.amt) : (st.passed>0 ? '<span class="good">'+st.passed+' passed</span> · waiting entry' : 'nothing passed yet'), pill:'<span class="pill green">'+sizeLbl+'</span>' },
@@ -1414,7 +1267,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
             '<div class="a-status">'+r.status+'</div><div>'+r.pill+'</div></div>';
         }).join('');
         AGENTS[1].sub = 'kills '+filterPct+'%';
-        AGENTS[3].sub = S.mode==='one' ? '$1 all-in' : (S.mode==='custom' ? '$1 / coin · modal '+fmtUSD(S.customEquity) : S.size+'% max size');
+        AGENTS[3].sub = '$1 / coin · rotasi 1 posisi';
         AGENTS[5].sub = 'reason for all';
       }
 
@@ -1446,17 +1299,16 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           eqRaf = requestAnimationFrame(step);
         }
         $('eqStart').textContent = '$'+Math.floor(st.startEquity).toLocaleString('en-US');
-        $('eqClock').textContent = st.startedAt;
-        $('eqSizeLbl').textContent = S.mode==='one' ? '$1 all-in · 1 posisi' : (S.mode==='custom' ? '$1 / coin · '+S.size+'% · 1 posisi · modal '+fmtUSD(S.customEquity) : S.size+'% max size');
-        paintCapital();
-        $('eqNote').textContent = st.hold ? 'night run selesai…' : (st.positions.length ? 'risk watching '+st.positions.length+' posisi…' : (st.traded? 'scanning…' : (st.passed>0 ? st.passed+' through the filter…' : 'filter says no…')));
+        $('eqClock').textContent = fmtClock();
+        $('eqSizeLbl').textContent = '$1 / coin · 1 posisi';
+        $('eqNote').textContent = (st.positions.length ? 'risk watching '+st.positions.length+' posisi…' : (st.traded? 'scanning…' : (st.passed>0 ? st.passed+' through the filter…' : 'filter says no…')));
         $('wl').textContent = (st.wins||st.losses) ? (st.wins+'W / '+st.losses+'L') : '';
         var ls = $('lastStop');
         if(st.lastStopTxt){ ls.style.display='inline-block'; ls.textContent = st.lastStopTxt; } else ls.style.display='none';
         $('deskScanned').textContent = fmt(st.scanned)+' scanned';
         $('deskTraded').textContent = st.traded+' traded';
         $('logKilled').textContent = fmt(st.killed)+' killed';
-        $('posMeta').textContent = (st.positions.length && st.positions[0].exec==='live' ? 'LIVE' : 'paper') + ' · '+st.positions.length+' / 1 posisi';
+        $('posMeta').textContent = 'LIVE · '+st.positions.length+' / 1 posisi';
         drawChart();
       }
       function drawChart(){
@@ -1498,16 +1350,16 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         var sm = st.lastSmart;
         var bb = $('buzzBox');
         var sumEl = $('smartSum');
-        if(!sm){ if(bb) bb.innerHTML = '<div class="dcell"><div class="dl2">Influencer Buzz · sub-skor terpisah (replay)</div><div class="dv" style="font-size:15px">Menunggu kandidat…</div><div class="ds">Di mode live, buzz hanya diisi dari data X/Telegram asli; tanpa data = netral-nol.</div></div>'; if(sumEl) sumEl.innerHTML = 'Smart Score = jumlah terbobot faktor di atas — menunggu kandidat…'; el.innerHTML = FACTORS.map(function(fc){ return '<div class="factor"><div class="factor-top"><span class="fname">'+escHtml(fc.name)+' <span style="color:var(--dim);font-weight:600">· bobot '+fc.w+'%</span></span><span class="fscore">—</span></div><div class="fbar"><i style="width:0%"></i></div></div>'; }).join(''); return; }
+        if(!sm){ if(bb) bb.innerHTML = '<div class="dcell"><div class="dl2">Influencer Buzz · sub-skor terpisah</div><div class="dv" style="font-size:15px">Menunggu kandidat…</div><div class="ds">Buzz hanya diisi dari data X/Telegram asli; tanpa data = netral-nol.</div></div>'; if(sumEl) sumEl.innerHTML = 'Smart Score = jumlah terbobot faktor di atas — menunggu kandidat…'; el.innerHTML = FACTORS.map(function(fc){ return '<div class="factor"><div class="factor-top"><span class="fname">'+escHtml(fc.name)+' <span style="color:var(--dim);font-weight:600">· bobot '+fc.w+'%</span></span><span class="fscore">—</span></div><div class="fbar"><i style="width:0%"></i></div></div>'; }).join(''); return; }
         if(bb && sm.buzz){
           var bz = sm.buzz;
           if(bz.mode==='nodata'){
             bb.innerHTML = '<div class="dcell"><div class="dl2">Influencer Buzz · scan live</div><div class="dv" style="font-size:15px">Data belum tersedia</div><div class="ds">X/Telegram belum terhubung — buzz tidak ditebak dan <b>dikeluarkan dari skor live</b>; bobot faktor terukur dinormalisasi ke 100% (lihat baris faktor Sosial di tabel bawah).</div></div>';
           } else {
-          var metrics = 'Mention 1j (replay): <b>'+fmt(bz.mentions)+'</b> · Velocity: <b>×'+bz.velocityX.toFixed(1)+'</b> · Influencer unik: <b>'+bz.unique+'</b> · Sentimen: <b>'+bz.sentiment.toFixed(2)+'</b> · Sub-skor Buzz: <b>'+bz.score.toFixed(2)+'</b><br/><span style="color:var(--dim)">Siapa: '+escHtml(bz.who)+' · Sumber pola: REPLAY — handle asli hanya tampil di Detail Coin dari data live.</span>';
-          if(bz.mode==='shill') bb.innerHTML = '<div class="buzz-warn"><b>🚨 PERINGATAN SHILL / PUMP TERKOORDINASI (replay)</b> — '+metrics+'<br/>Pengaruh buzz ini <b>sudah termasuk di dalam nilai faktor Sosial/Buzz</b> pada tabel di bawah (nilainya ditekan ke sub-skor buzz) — bukan potongan tersembunyi dari total. Coin tetap <b>DITAHAN (tidak dibeli)</b> oleh gerbang anti-shill walau jumlah terbobotnya tinggi. Buzz kotor tidak pernah mengalahkan audit.</div>';
-          else if(bz.mode==='organic') bb.innerHTML = '<div class="buzz-ok"><b>✓ Buzz organik (replay)</b> — '+metrics+'<br/>Pengaruh buzz ini <b>sudah termasuk di dalam nilai faktor Sosial/Buzz</b> pada tabel di bawah — bukan bonus tambahan di luar tabel. Buzz saja tidak cukup untuk membeli.</div>';
-          else bb.innerHTML = '<div class="dcell"><div class="dl2">Influencer Buzz · sepi (replay)</div><div style="font-size:13.5px;line-height:1.6;margin-top:4px">'+metrics+'</div></div>';
+          var metrics = 'Mention 1j: <b>'+fmt(bz.mentions)+'</b> · Velocity: <b>×'+bz.velocityX.toFixed(1)+'</b> · Influencer unik: <b>'+bz.unique+'</b> · Sentimen: <b>'+bz.sentiment.toFixed(2)+'</b> · Sub-skor Buzz: <b>'+bz.score.toFixed(2)+'</b><br/><span style="color:var(--dim)">Siapa: '+escHtml(bz.who)+' · Handle asli hanya tampil di Detail Coin dari data live.</span>';
+          if(bz.mode==='shill') bb.innerHTML = '<div class="buzz-warn"><b>🚨 PERINGATAN SHILL / PUMP TERKOORDINASI</b> — '+metrics+'<br/>Pengaruh buzz ini <b>sudah termasuk di dalam nilai faktor Sosial/Buzz</b> pada tabel di bawah (nilainya ditekan ke sub-skor buzz) — bukan potongan tersembunyi dari total. Coin tetap <b>DITAHAN (tidak dibeli)</b> oleh gerbang anti-shill walau jumlah terbobotnya tinggi. Buzz kotor tidak pernah mengalahkan audit.</div>';
+          else if(bz.mode==='organic') bb.innerHTML = '<div class="buzz-ok"><b>✓ Buzz organik</b> — '+metrics+'<br/>Pengaruh buzz ini <b>sudah termasuk di dalam nilai faktor Sosial/Buzz</b> pada tabel di bawah — bukan bonus tambahan di luar tabel. Buzz saja tidak cukup untuk membeli.</div>';
+          else bb.innerHTML = '<div class="dcell"><div class="dl2">Influencer Buzz · sepi</div><div style="font-size:13.5px;line-height:1.6;margin-top:4px">'+metrics+'</div></div>';
           }
         }
         /* HERO = jumlah terbobot yang dihitung ULANG dari rincian yang tampil
@@ -1520,7 +1372,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         $('smartNum').style.color = pass ? 'var(--green)' : (sum>=S.minScore ? 'var(--red)' : (sum>=0.6 ? 'var(--amber)' : 'var(--red)'));
         $('smartCoin').textContent = sm.sym+' · '+(sm.catLabel||'Coin Baru')+' · umur pool '+(sm.ageDays!=null ? (sm.ageDays<1 ? (sm.ageDays*24).toFixed(1)+' jam' : sm.ageDays.toFixed(sm.ageDays<10?1:0)+' hari') : '—')+' · kandidat terakhir dinilai';
         var scEl = $('smartCat'); if(scEl) scEl.textContent = (sm.cat==='old' ? '🏛️ ' : '🆕 ')+(sm.catLabel||'Coin Baru')+(sm.cat==='old' && sm.athDrop!=null ? ' · −'+sm.athDrop+'% dari ATH' : '');
-        $('smartGrok').textContent = sm.live ? '📡 Scan LIVE · skor dari API asli (tanpa LLM)' : 'Grok '+sm.grok.toFixed(2)+' · bahan faktor Sosial/Buzz';
+        $('smartGrok').textContent = '📡 Scan LIVE · skor dari API asli (tanpa LLM)';
         $('smartVerdict').textContent = pass ? '✓ LOLOS — layak masuk Executor' : (shill && sum>=S.minScore ? '✕ DITAHAN — jumlah terbobot lolos ambang, tapi gerbang anti-shill menahan beli' : (sum>=0.6 ? '◐ WATCHLIST — belum dibeli' : '✕ DIBUANG — skor terlalu rendah'));
         $('smartWhy').textContent = pass ? 'Jumlah terbobot '+sum.toFixed(2)+' ≥ ambang '+S.minScore.toFixed(2)+' dan audit 8 kelas lolos. Angka ini persis jumlah kontribusi faktor-faktor di bawah.' : (shill && sum>=S.minScore ? 'Jumlah terbobotnya '+sum.toFixed(2)+' memang ≥ ambang '+S.minScore.toFixed(2)+', tetapi buzz terdeteksi shill terkoordinasi — gerbang keamanan menahan coin ini. Skornya tidak diubah-ubah untuk memaksakan vonis.' : 'Jumlah terbobot '+sum.toFixed(2)+' belum mencapai ambang '+S.minScore.toFixed(2)+'. Lihat kontribusi faktor di bawah — itulah penjumlahan pastinya, bukan tebakan.');
         el.innerHTML = sm.detail.map(function(d){
@@ -1542,11 +1394,8 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         }).join('');
       }
       /* SL ROTASI — SATU sumber kebenaran (S1): rotSL() = S.stop, dipakai
-         tpSlCheck/movePositions di SEMUA mode; default 30 (aturan rotasi
-         $1/coin), bisa diubah user lewat kolom "Hard stop — SL rotasi".
-         Angka "stop −6%" mode Video HANYA aturan replay video aslinya
-         (arcTick) dan TIDAK memakai S.stop — ia memakai REPLAY_STOP = 6. */
-      var REPLAY_STOP = 6;
+         tpSlCheck di SEMUA jalur; default 30 (aturan rotasi $1/coin),
+         bisa diubah user lewat kolom "Hard stop — SL rotasi". */
       function rotSL(){ return S.stop; }
       function renderRotation(){
         var holdEl = $('rotStepHold'), scanEl = $('rotStepScan'), buyEl = $('rotStepBuy');
@@ -1559,7 +1408,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         scanEl.className = 'rot-step' + (phase==='scanning' ? ' on' : '');
         buyEl.className = 'rot-step' + (phase==='buying' ? ' on' : '');
         var pill = $('rotStatePill'), sym = $('rotSym'), tg = $('rotTargets');
-        $('rotMeta').textContent = 'ronde #'+st.rotRound+' · $1 / coin · '+(S.scanSource==='live' ? 'SCAN LIVE · API asli' : (st.arc ? 'REPLAY' : 'paper'));
+        $('rotMeta').textContent = 'ronde #'+st.rotRound+' · $1 / coin · SCAN LIVE · API asli';
         if(st.positions.length){
           var p = st.positions[0], up = p.pnlPct>=0;
           sym.textContent = p.sym;
@@ -1588,168 +1437,64 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           }).join('');
         }
       }
-      function renderAll(){ if(st.arc && st.tickN - (st.toastTick||-99) > 6) syncToast(); renderEquity(); renderAgents(); renderLog(); renderDied(); renderPositions(); renderRotation(); renderSmart(); paintDaily(); paintSnipe(); }
+      function renderAll(){ renderEquity(); renderAgents(); renderLog(); renderDied(); renderPositions(); renderRotation(); renderSmart(); paintDaily(); paintSnipe(); }
 
-      /* ---------- simulation engine (paper) ---------- */
-      /* ---------- replay engine: night run contoh dari video ----------
-         Mulai persis frame 1 video ($280 · 1.00x · 1,146 scanned) lalu semua
-         angka beranimasi naik ke frame akhir video: 10,214 scanned ·
-         10,176 killed · 204 scored · 38 traded · 26W/12L · $3,412 · 12.19x.
-         Setelah replay selesai, lanjut free-run paper dari $3,412. */
-      var ARC = { scanned:[1146,10214], scored:[42,204],
-        kills:{ mint:[296,2640], lp:[271,2415], top10:[247,2198], vol:[214,1911], dev:[76,846], score:[19,166] } };
-      function lerp(a,b,t){ return a + (b-a)*t; }
-      function buildPlan(){
-        var outcomes = [], i;
-        for(i=0;i<26;i++) outcomes.push(true);
-        for(i=0;i<12;i++) outcomes.push(false);
-        for(i=outcomes.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var tmp=outcomes[i]; outcomes[i]=outcomes[j]; outcomes[j]=tmp; }
-        var plan = outcomes.map(function(win, idx){
-          var openT = Math.round(1 + idx*0.55 + rnd(-0.3,0.3));
-          return { openT:openT, closeT:openT + Math.round(rnd(1,3)), win:win, fixed:null, opened:false, closed:false, pct:0 };
-        });
-        var bigWin=-1, bigOpen=-1, worstLoss=-1, worstOpen=-1;
-        plan.forEach(function(pl, idx){ if(pl.win && pl.openT>bigOpen){ bigOpen=pl.openT; bigWin=idx; } if(!pl.win && pl.openT>worstOpen){ worstOpen=pl.openT; worstLoss=idx; } });
-        if(bigWin>=0) plan[bigWin].fixed = 810;      /* best +$810 seperti video */
-        if(worstLoss>=0) plan[worstLoss].fixed = -37; /* worst -$37 seperti video */
-        return plan;
-      }
-      function arcTick(){
-        st.tickN++;
-        st.p = Math.min(1, st.p + 0.16*(1-st.p) + 0.01);
-        if(st.p > 0.985) st.p = 1;
-        st.clockMin += Math.floor(rnd(9,15));
-        var p = st.p, i, r, delta, totalKilled = 0, logsThisTick = 0;
-        st.scanned = Math.round(lerp(ARC.scanned[0], ARC.scanned[1], p));
-        st.scored = Math.round(lerp(ARC.scored[0], ARC.scored[1], p));
-        for(i=0;i<REASONS.length;i++){
-          r = REASONS[i];
-          var target = Math.round(lerp(ARC.kills[r.id][0], ARC.kills[r.id][1], p));
-          delta = target - (st.kills[r.id]||0);
-          if(delta>0){
-            st.kills[r.id] = target; st.reasons += delta;
-            if(r.id!=='score' && logsThisTick<2 && Math.random()<0.75){
-              var coin = newCoin(); st.lastKill = { coin:coin, txt:r.text(coin) }; st.lastScout = coin;
-              addLog('FILTER', '#ff6b6b', 'killed '+coin+' · '+r.text(coin)); logsThisTick++;
-            }
-          }
-          totalKilled += st.kills[r.id]||0;
-        }
-        st.killed = totalKilled;
-        if(Math.random()<0.5){ var sc2 = rnd(0.2,0.58), c3 = newCoin(); st.lastScore = { coin:c3, score:sc2 }; if(logsThisTick<2 && Math.random()<0.4){ addLog('ANALYST', '#b79cff', 'killed '+c3+' · score '+sc2.toFixed(2)+' < '+S.minScore); } }
-        /* scheduled trades: 38 total, 26W / 12L */
-        st.plan.forEach(function(pl){
-          /* ROTASI: replay pun kini membuka trade berikutnya hanya kalau
-             tidak ada posisi aktif — maksimal 1 posisi dalam satu waktu. */
-          if(!pl.opened && st.tickN>=pl.openT && st.positions.length===0){
-            pl.opened = true;
-            var amt = Math.max(1, st.equity * S.size/100), sym = newCoin();
-            pl.pnl = pl.fixed!==null ? pl.fixed : 0;
-            pl.pct = pl.win ? (pl.fixed!==null ? pl.fixed/amt*100 : rnd(15,95)) : (pl.fixed!==null ? pl.fixed/amt*100 : -REPLAY_STOP);
-            if(pl.fixed===null) pl.pnl = amt * pl.pct/100;
-            var pos = { sym:sym, entry:tickerPrice(), amt:amt, peak:0, pnlPct:0, pnl:0, tp1Done:true, age:0, plan:pl };
-            pos.price = pos.entry;
-            st.positions.push(pos); st.traded++; st.passed++;
-            var gk = rnd(0.62,0.97);
-            st.lastBuy = { coin:sym, amt:amt };
-            /* Executor di replay hanya "membeli" kandidat yang jumlah terbobot
-               faktornya SUNGGUHAN ≥ ambang dan bukan shill — nilai ulang sampai
-               ketemu kandidat seperti itu. Total TIDAK PERNAH diangkat paksa:
-               angka yang tampil = jumlah terbobot faktornya sendiri. */
-            var smArc = scoreCandidate(sym, gk), arcTries = 0;
-            while((smArc.total < S.minScore || (smArc.buzz && smArc.buzz.mode==='shill')) && arcTries < 40){ smArc = scoreCandidate(sym, gk); arcTries++; }
-            st.lastSmart = smArc; st.lastScore = { coin:sym, score:smArc.total };
-            addLog('EXECUTOR', '#2fe07c', 'bought '+sym+' · '+money(amt)+' · '+S.size+'% · smart '+smArc.total.toFixed(2)+' · audit 8/8 lolos');
-            sndBuy();
-          }
-          if(pl.opened && !pl.closed && st.tickN>=pl.closeT){
-            pl.closed = true;
-            var idx = -1;
-            st.positions.forEach(function(pp, ii){ if(pp.plan===pl) idx=ii; });
-            if(idx>=0){
-              var pp2 = st.positions[idx];
-              pp2.pnl = pl.pnl; pp2.pnlPct = pl.pct;
-              if(pl.win){ st.wins++; if(st.best===null||pl.pnl>st.best) st.best=pl.pnl; }
-              else { st.losses++; if(st.worst===null||pl.pnl<st.worst) st.worst=pl.pnl; st.lastStopTxt = '−'+REPLAY_STOP+'% · −$'+Math.abs(pl.pnl).toFixed(0); }
-              st.positions.splice(idx,1);
-              if(pl.win){ addLog('RISK', '#ff8fc7', 'trail · sold '+pp2.sym+' · +$'+pl.pnl.toFixed(2)); sndTP(); if(pl.fixed!==null) toast('Sold '+pp2.sym+' · +$810', 'best trade malam ini · paper mode', '+$810', 'var(--green)'); }
-              else { addLog('RISK', '#ff8fc7', 'stop hit '+pp2.sym+' · −'+REPLAY_STOP+'% · −$'+Math.abs(pl.pnl).toFixed(2)); sndSL(); if(pl.fixed!==null) toast(pp2.sym+' stopped · −'+REPLAY_STOP+'%', 'hard stop · no averaging down', '−$37', 'var(--red)'); }
-            }
-          }
-        });
-        /* animate open plan positions toward their planned outcome */
-        st.positions.forEach(function(pp){
-          if(!pp.plan) return;
-          var pl2 = pp.plan, span = Math.max(1, pl2.closeT-pl2.openT), frac = Math.min(1, (st.tickN-pl2.openT+1)/span);
-          pp.pnlPct = pl2.pct * frac + rnd(-1.5,1.5);
-          if(pp.pnlPct>pp.peak) pp.peak = pp.pnlPct;
-          pp.pnl = pp.amt * pp.pnlPct/100;
-          pp.price = pp.entry * (1+pp.pnlPct/100);
-        });
-        var pe = Math.max(0, (p-0.02)/0.98);
-        st.equity = (p>=1) ? 3412 : 280 * Math.pow(3412/280, Math.pow(pe,1.1));
-        st.history.push(st.equity); if(st.history.length>90) st.history.shift();
-        if(p>=1){
-          /* force-complete every plan trade so the run lands exactly on
-             38 traded · 26W / 12L like the video */
-          st.plan.forEach(function(pl){
-            if(!pl.opened){ pl.opened = true; st.traded++; st.passed++; }
-            if(!pl.closed){
-              pl.closed = true;
-              if(pl.win){ st.wins++; if(st.best===null||(pl.pnl||0)>st.best) st.best=pl.pnl||0; }
-              else { st.losses++; if(st.worst===null||(pl.pnl||0)<st.worst) st.worst=pl.pnl||0; }
-            }
-          });
-          st.arc = false; st.hold = true; st.running = false; st.cash = st.equity; st.nextMile = st.scanned + 2500;
-          st.positions = st.positions.filter(function(pp){ return !pp.plan; });
-          paintRunUI();
-          toast('Night run selesai · $3,412.00', '10,214 scanned · 38 traded · 26W / 12L · 12.19× · lanjut free-run paper', '+$3,132', 'var(--green)');
-        }
-        renderAll();
-      }
       function tick(){
-        if(!st.running || st.hold) return;
-        if(S.scanSource==='live'){ liveTickDriver(); return; }
-        if(st.arc) arcTick(); else { st.clockMin += Math.floor(rnd(3,8)); scanTick(); }
+        if(!st.running) return;
+        liveTickDriver();
+        st.history.push(st.equity); if(st.history.length>90) st.history.shift();
       }
 
-      /* ---------- EKSEKUSI PEMBELIAN ROTASI (replay + live + snipe) ---------- */
+      /* ---------- EKSEKUSI PEMBELIAN ROTASI — LIVE OTOMATIS (tanpa konfirmasi) ----------
+         Kandidat lolos (scan live / snipe) langsung dibeli $1 oleh executor server,
+         atas perintah eksplisit user (09:15 WIB): TIDAK ADA konfirmasi per trade.
+         Gerbang yang tetap berlaku: audit hard-kill + Smart Score ≥ ambang +
+         batas harian + jam trading + rotasi kosong. Server tetap simulasi dulu
+         sebelum broadcast; token executor wajib ada, kalau tidak ada = DITAHAN
+         (fail-closed, tidak ada posisi fiktif). */
+      function autoBuyLive(pb){
+        if(st.buyBusy) return;
+        if(!getExecToken()){
+          st.rotPending = null; st.rotState = 'scanning';
+          addLog('RISK', '#ffb454', 'AUTO-BUY DITAHAN · '+pb.sym+': Token Executor belum diisi di Pengaturan & Modal — tidak ada posisi yang dibuka');
+          toast('Token Executor belum diisi', 'Tempel token EXECUTOR_TOKEN di Pengaturan & Modal dulu — tanpa token yang cocok server menolak trade live.', '', 'var(--red)');
+          renderAll(); return;
+        }
+        st.buyBusy = true;
+        st.rotPending = null;
+        fetch('/api/trade/execute', { method:'POST', headers:{ 'Content-Type':'application/json', 'x-grokbot-confirm':'live-confirmed', 'x-grokbot-token':getExecToken() },
+          body: JSON.stringify({ side:'buy', mint:pb.mint, amountUsd:1, slippageBps:Math.round(S.slip*100) }) })
+        .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error || ('HTTP '+r.status)); return j; }); })
+        .then(function(j){
+          st.cash -= 1; st.traded++; noteTradeOpen();
+          var npos = { sym:pb.sym, entry:pb.price, amt:1, peak:0, pnlPct:0, pnl:0, tp1Done:false, age:0, cat:pb.smart.catLabel || '', mint:pb.mint, exec:'live', snipe:!!pb.snipe, txBuy:j.signature };
+          npos.price = pb.price;
+          st.positions.push(npos);
+          st.lastBuy = { coin:pb.sym, amt:1 };
+          st.rotState = 'holding';
+          liveTrades.unshift({ t:wibNow(), side:'buy', sym:pb.sym, mint:pb.mint, amt:1, slip:S.slip, sig:j.signature });
+          saveLiveTrades(); renderLiveTrades();
+          addLog('EXECUTOR', '#2fe07c', 'AUTO-BUY LIVE · '+(pb.snipe ? 'SNIPE · ' : '')+'bought '+pb.sym+' · $1 · tx '+String(j.signature || '').slice(0,12)+'… · smart '+pb.smart.total.toFixed(2)+' · DATA LIVE · audit lolos · slip ≤'+S.slip+'% · trade harian #'+day.trades+' · menunggu TP/SL');
+          if(pb.snipe){ st.snipeStats.bought++; snipeNote(pb.sym, 'DIBELI OTOMATIS $1 · smart '+pb.smart.total.toFixed(2), 'green'); paintSnipe(); }
+          toast('🔴 AUTO-BUY LIVE · '+pb.sym, 'beli $1 · signature tercatat di Riwayat Trade Live', '', 'var(--red)');
+          sndBuy(); renderAll();
+        })
+        .catch(function(e){
+          addLog('RISK', '#ffb454', 'FAIL-CLOSED · auto-buy live '+pb.sym+' DITOLAK server: '+(e.message || 'error')+' — tidak ada posisi yang dibuka');
+          toast('Auto-buy live ditolak server', (e.message || 'error'), '', 'var(--red)');
+          renderAll();
+        })
+        .then(function(){ st.buyBusy = false; });
+      }
       function executePendingBuy(){
         if(!st.rotPending || st.positions.length) return;
         var pb = st.rotPending;
-        if(pb.mint && S.tradeMode==='live' && !pb.snipe){
-          /* LIVE: tidak ada beli diam-diam — wajib konfirmasi eksplisit user */
-          st.rotPending = null; st.pendingLive = pb; st.rotState = 'scanning';
-          paintExecConfirm();
-          addLog('EXECUTOR', '#ffb454', 'LIVE · kandidat '+pb.sym+' menunggu KONFIRMASI kamu di kartu Executor Live — belum ada trade yang terjadi');
-          toast('🔴 Trade live menunggu konfirmasi', pb.sym+' · $1 · buka kartu Executor Live untuk konfirmasi / batal', '', 'var(--red)');
-          renderAll();
-          return;
-        }
-        if(!pb.mint && S.tradeMode==='live'){
+        if(!pb.mint){
           st.rotPending = null; st.rotState = 'scanning';
-          addLog('RISK', '#ffb454', 'FAIL-CLOSED · MODE LIVE aktif tapi kandidat '+pb.sym+' berasal dari REPLAY (tidak ada mint asli) — tidak bisa dieksekusi live. Pakai Sumber Scan = Live.');
+          addLog('RISK', '#ffb454', 'FAIL-CLOSED · kandidat '+pb.sym+' tanpa mint asli — tidak bisa dieksekusi live.');
           return;
         }
-        st.rotPending = null;
-        var amt = Math.min(1, st.cash);
-        if(amt < 0.10){
-          st.rotState = 'scanning';
-          addLog('RISK', '#ffb454', 'FAIL-CLOSED · kas rotasi < $0.10 — tidak ada pembelian, isi modal dulu');
-          return;
-        }
-        st.cash -= amt; st.traded++;
-        noteTradeOpen(); /* buy ini dihitung ke trade harian */
-        var npos = { sym:pb.sym, entry:(pb.price || tickerPrice()), amt:amt, peak:0, pnlPct:0, pnl:0, tp1Done:false, age:0, cat:(pb.smart && pb.smart.catLabel) || '', mint:pb.mint || null, exec:'paper', snipe:!!pb.snipe };
-        npos.price = npos.entry;
-        st.positions.push(npos);
-        st.lastBuy = { coin:pb.sym, amt:amt };
-        st.rotState = 'holding';
-        var buzzTxt = (pb.smart.buzz && pb.smart.buzz.mode!=='nodata') ? ' · buzz '+pb.smart.buzz.score.toFixed(2) : ' · buzz n/a (belum tersedia)';
-        addLog('EXECUTOR', '#2fe07c', (pb.snipe ? 'SNIPE · ' : 'ROTASI · ')+'bought '+pb.sym+' · '+(pb.smart.catLabel||'Coin Baru')+' · '+money(amt)+(pb.mint ? ' · DATA LIVE' : ' · REPLAY')+' · smart '+pb.smart.total.toFixed(2)+buzzTxt+' · audit lolos · slip ≤'+S.slip+'% · trade harian #'+day.trades+' · sekarang menunggu TP/SL');
-        if(pb.snipe){ st.snipeStats.bought++; snipeNote(pb.sym, 'DIBELI $1 · smart '+pb.smart.total.toFixed(2), 'green'); paintSnipe(); }
-        toast((pb.snipe ? '🎯 Snipe beli ' : 'Beli coin baru ')+pb.sym+' · '+money(amt), 'rotasi ronde #'+st.rotRound+' · smart '+pb.smart.total.toFixed(2)+' · menunggu TP/SL', '', 'var(--green)');
-        sndBuy();
+        autoBuyLive(pb);
       }
 
       /* ================= SCAN LIVE — DATA API ASLI =================
@@ -1761,7 +1506,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
          kandidat di-SKIP ("Data belum tersedia", fail-closed). Buzz
          X/Telegram belum terhubung -> faktor Sosial dikeluarkan dari skor
          live dan bobot faktor terukur dinormalisasi ke 100% (tertera di
-         tabel faktor). Replay tetap ada sebagai mode terpisah berlabel. */
+         tabel faktor). */
       var liveBusy = false, liveNextScanAt = 0, livePriceAt = 0, livePriceFailAt = 0, liveSeen = {}, liveScanCycle = 0;
       function fetchJson(url, opts){
         return fetch(url, opts).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); });
@@ -1886,7 +1631,8 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           paintSnipe();
           return;
         }
-        if(!st.positions.length && !st.rotPending && !st.pendingLive){
+        st.passed++;
+        if(!st.positions.length && !st.rotPending && !st.buyBusy){
           st.rotPending = { sym:res.sym, smart:sm, mint:res.mint, price:res.price, snipe:!!S.snipe };
           st.rotState = 'buying';
           addLog('SCOUT', '#57a8ff', (S.snipe ? 'SNIPE' : 'SCAN LIVE')+' · kandidat '+res.sym+' · '+sm.catLabel+' · umur pair '+(res.ageMin<60 ? Math.round(res.ageMin)+' mnt' : res.ageDays.toFixed(1)+' hari')+' · harga $'+res.price+' · liq '+money(res.liq)+' · smart '+sm.total.toFixed(2)+' ≥ '+S.minScore+' → beli $1 · '+wibNow());
@@ -1905,12 +1651,13 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
       function liveScanBatch(){
         liveBusy = true;
         autoLiveCheck();
-        /* 4 jalur penemuan SEKALIGUS tiap siklus: token baru DexScreener
+        /* 5 jalur penemuan SEKALIGUS tiap siklus: token baru DexScreener
            (token-profiles/latest/v1) + coin lama potensial (token-boosts/
-           top/v1) + pool terbaru GeckoTerminal (new_pools) + coin pump.fun
+           top/v1) + pool terbaru & trending GeckoTerminal (new_pools +
+           trending_pools) + coin pump.fun
            yang sudah lulus bonding curve (frontend-api.pump.fun, hanya
            complete=true). Dulu bergantian tiap siklus (baru ketemu tiap
-           40 detik) dan sering kosong; sekarang keempatnya tiap siklus.
+           40 detik) dan sering kosong; sekarang kelimanya tiap siklus.
            Kandidat dievaluasi PARALEL (maks 4) — dulu berurutan, satu
            siklus bisa 9 detik; sekarang ~3 detik. Audit & ambang TIDAK
            berubah. */
@@ -1925,6 +1672,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           fetchJson('https://api.dexscreener.com/token-profiles/latest/v1').catch(function(){ return []; }),
           fetchJson('https://api.dexscreener.com/token-boosts/top/v1').catch(function(){ return []; }),
           fetchJson('https://api.geckoterminal.com/api/v2/networks/solana/new_pools?page=1').catch(function(){ return null; }),
+          fetchJson('https://api.geckoterminal.com/api/v2/networks/solana/trending_pools').catch(function(){ return null; }),
           fetchJson('https://frontend-api.pump.fun/coins?offset=0&limit=50&sort=created_timestamp&order=DESC&includeNsfw=false').catch(function(){ return null; })
         ])
         .then(function(results){
@@ -1946,10 +1694,11 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
               });
               return;
             }
-            if(idx === 2){
-              /* GeckoTerminal: data[].relationships.base_token.data.id =
-                 "solana_<mint>" — jadikan tokenAddress agar jalur evaluasi
-                 yang sama (DexScreener pair + RPC) bisa dipakai. */
+            if(idx === 2 || idx === 4){
+              /* GeckoTerminal new_pools (idx 2) & trending_pools (idx 4):
+                 data[].relationships.base_token.data.id = "solana_<mint>" —
+                 jadikan tokenAddress agar jalur evaluasi yang sama
+                 (DexScreener pair + RPC) bisa dipakai. */
               var pools = (j && Array.isArray(j.data)) ? j.data : [];
               pools.forEach(function(pl){
                 var id = pl && pl.relationships && pl.relationships.base_token && pl.relationships.base_token.data && pl.relationships.base_token.data.id;
@@ -1965,11 +1714,11 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           var fresh = list.filter(function(p){ return !liveSeen[p.tokenAddress]; }).slice(0, 12);
           fresh.forEach(function(p){ liveSeen[p.tokenAddress] = Date.now(); });
           var keys = Object.keys(liveSeen); if(keys.length > 400){ keys.slice(0, 200).forEach(function(k){ delete liveSeen[k]; }); }
-          if(!fresh.length){ addLog('SCOUT', '#57a8ff', 'SCAN LIVE · tidak ada coin baru dari DexScreener + GeckoTerminal + pump.fun siklus ini · '+wibNow()); return null; }
+          if(!fresh.length){ addLog('SCOUT', '#57a8ff', 'SCAN LIVE · tidak ada coin baru dari DexScreener + GeckoTerminal + trending pools + pump.fun siklus ini · '+wibNow()); return null; }
           var batch = fresh.slice(0, 4);
           batch.forEach(function(p){ st.scanned++; });
           return Promise.all(batch.map(function(p){
-            if(st.positions.length || st.rotPending || st.pendingLive) return null;
+            if(st.positions.length || st.rotPending || st.buyBusy) return null;
             return evaluateLiveCandidate(p.tokenAddress).then(function(res){ handleLiveCandidate(res); return res; });
           }));
         })
@@ -2021,14 +1770,13 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         }
         executePendingBuy();
         if(st.positions.length){ liveMonitorPosition(); renderAll(); return; }
-        if(st.pendingLive){ renderAll(); return; }
         var now = Date.now();
         if(liveBusy || now < liveNextScanAt){ renderAll(); return; }
         liveNextScanAt = now + (S.lite ? 45000 : 15000);
         liveScanBatch();
       }
 
-      /* ---------- AUTO SNIPE (PAPER) ---------- */
+      /* ---------- AUTO SNIPE (LIVE) ---------- */
       function snipeNote(sym, txt, color){
         if(!st) return;
         st.snipeLog.unshift({ sym:sym, txt:txt, t:fmtClock(), color:color || '' });
@@ -2037,8 +1785,8 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
       function paintSnipe(){
         if(!st) return;
         var on = !!S.snipe;
-        var pill = $('snipeStatusPill'); if(pill){ pill.textContent = on ? '🎯 SNIPE ON · PAPER' : '🎯 SNIPE OFF'; pill.className = 'pill ' + (on ? 'green' : 'dark'); }
-        var meta = $('snipeMeta'); if(meta) meta.textContent = (on ? 'ON' : 'OFF') + ' · paper only · target pair ≤ '+S.snipeMaxAge+' mnt';
+        var pill = $('snipeStatusPill'); if(pill){ pill.textContent = on ? '🎯 SNIPE ON · LIVE' : '🎯 SNIPE OFF'; pill.className = 'pill ' + (on ? 'green' : 'dark'); }
+        var meta = $('snipeMeta'); if(meta) meta.textContent = (on ? 'ON' : 'OFF') + ' · live · target pair ≤ '+S.snipeMaxAge+' mnt';
         var bOn = $('snipeOn'), bOff = $('snipeOff');
         if(bOn) bOn.className = on ? 'on' : '';
         if(bOff) bOff.className = on ? '' : 'on';
@@ -2047,7 +1795,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           var lastBuy = null;
           st.snipeLog.forEach(function(x){ if(!lastBuy && x.txt.indexOf('DIBELI')===0) lastBuy = x; });
           ss.innerHTML = on
-            ? 'Snipe <b>AKTIF (Paper)</b> · sumber scan: <b>'+(S.scanSource==='live' ? 'Live' : 'Replay — snipe TIDAK jalan di Replay; pindahkan Sumber Scan ke Live')+'</b> · terdeteksi <b>'+st.snipeStats.seen+'</b> · dibeli <b>'+st.snipeStats.bought+'</b> · ditolak/skip <b>'+st.snipeStats.rejected+'</b>'+(lastBuy ? '<br/>Snipe terakhir: <b>'+escHtml(lastBuy.sym)+'</b> · '+escHtml(lastBuy.txt)+' · '+escHtml(lastBuy.t)+' WIB' : '')
+            ? 'Snipe <b>AKTIF (Live)</b> · sumber scan: <b>Live</b> · terdeteksi <b>'+st.snipeStats.seen+'</b> · dibeli <b>'+st.snipeStats.bought+'</b> · ditolak/skip <b>'+st.snipeStats.rejected+'</b>'+(lastBuy ? '<br/>Snipe terakhir: <b>'+escHtml(lastBuy.sym)+'</b> · '+escHtml(lastBuy.txt)+' · '+escHtml(lastBuy.t)+' WIB' : '')
             : 'Snipe OFF — tidak ada coin yang di-snipe. Statistik sesi: terdeteksi '+st.snipeStats.seen+' · dibeli '+st.snipeStats.bought+' · ditolak/skip '+st.snipeStats.rejected+'.';
         }
         var el = $('snipeLog');
@@ -2058,45 +1806,9 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         }
       }
       function setSnipe(on){
-        if(on && S.tradeMode==='live'){
-          toast('🎯 Snipe ditolak — Mode Live aktif', 'Live snipe belum diimplementasikan; snipe hanya Paper. Pindah ke Mode Paper dulu untuk memakai snipe.', '', 'var(--red)');
-          paintSnipe(); return;
-        }
         S.snipe = !!on; saveSettings();
-        if(on && S.scanSource!=='live') setScanSource('live');
-        if(on) addLog('SCOUT', '#57a8ff', 'AUTO SNIPE ON · PAPER · target pair ≤ '+S.snipeMaxAge+' mnt · gerbang penuh: audit hard-kill + Smart Score ≥ '+S.minScore+' + batas harian · $1/coin · rotasi 1 posisi · TP +'+S.tp1+'%/+'+S.tp2+'% · SL −'+rotSL()+'%');
+        if(on) addLog('SCOUT', '#57a8ff', 'AUTO SNIPE ON · LIVE · target pair ≤ '+S.snipeMaxAge+' mnt · gerbang penuh: audit hard-kill + Smart Score ≥ '+S.minScore+' + batas harian · $1/coin · rotasi 1 posisi · TP +'+S.tp1+'%/+'+S.tp2+'% · SL −'+rotSL()+'% · kandidat lolos langsung dibeli otomatis, tanpa konfirmasi');
         paintSnipe(); renderAll();
-      }
-
-      /* ---------- SUMBER SCAN: REPLAY vs LIVE ---------- */
-      function paintScanUI(){
-        var br = $('scanReplay'), bl = $('scanLive'), msg = $('scanSrcMsg');
-        var live = S.scanSource==='live';
-        if(br) br.className = live ? '' : 'on';
-        if(bl) bl.className = live ? 'on scan-live-on' : '';
-        if(msg){
-          msg.innerHTML = live
-            ? '📡 <b>SCAN LIVE</b> aktif — kandidat, harga, likuiditas, volume, holder, umur pair &amp; Smart Score dari <b>DexScreener + Solana RPC asli</b> (sumber + waktu cek di tiap log &amp; faktor). Data gagal/kosong/basi = coin di-skip, <b>fail-closed</b>. Replay video tidak jalan di mode ini.'
-            : '🎬 <b>REPLAY</b> aktif — animasi contoh video, semua angka simulasi &amp; berlabel REPLAY. Pindah ke <b>Live</b> untuk scan dari DexScreener + Jupiter + Solana RPC asli.';
-        }
-      }
-      function setScanSource(src){
-        if(src===S.scanSource){ paintScanUI(); return; }
-        S.scanSource = src; saveSettings();
-        st.rotPending = null; st.pendingLive = null; paintExecConfirm();
-        if(src==='live'){
-          st.arc = false; st.hold = false; st.running = false;
-          st.scanned = 0; st.killed = 0; st.scored = 0; st.reasons = 0; st.passed = 0; st.skipped = 0;
-          st.kills = { mint:0, lp:0, top10:0, vol:0, dev:0, score:0 };
-          st.lastSmart = null; st.lastScore = null; st.lastKill = null;
-          liveNextScanAt = 0;
-          addLog('SCOUT', '#57a8ff', 'SUMBER SCAN → LIVE · counter replay dibersihkan; semua kandidat berikutnya dari API asli (DexScreener + Solana RPC)');
-          toast('📡 Scan LIVE aktif · bot tetap dijeda', 'tekan ▶ Jalankan untuk mulai scan data asli', '', 'var(--green)');
-        } else {
-          resetState();
-          toast('🎬 Sumber scan → REPLAY', 'sesi di-reset ke replay contoh video', '', 'var(--green)');
-        }
-        paintScanUI(); paintRunUI(); renderAll();
       }
 
       /* ---------- EXECUTOR LIVE: client -> route server /api/trade/execute ---------- */
@@ -2112,15 +1824,6 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
             (t.sig ? '<a href="https://solscan.io/tx/'+encodeURIComponent(t.sig)+'" target="_blank" rel="noopener">tx '+escHtml(String(t.sig).slice(0,8))+'… ↗</a>' : '<span class="pill red">GAGAL</span>')+'</div>';
         }).join('');
       }
-      function paintExecConfirm(){
-        var cf = $('execConfirm'); if(!cf) return;
-        var pb = st ? st.pendingLive : null;
-        if(!pb){ cf.hidden = true; return; }
-        var addr = (S.walletAddress || '').trim();
-        $('execSummary').innerHTML = '<b>chain</b> Solana · <b>wallet</b> '+escHtml(addr ? addr.slice(0,6)+'…'+addr.slice(-4) : '(alamat di Pengaturan)')+' — signing dilakukan server oleh wallet executor env · <b>coin</b> '+escHtml(pb.sym)+' · <b>mint</b> '+escHtml(pb.mint.slice(0,8))+'… · <b>jumlah</b> $1 · rotasi 1 posisi · <b>slippage</b> maks '+S.slip+'% · <b>TP</b> +'+S.tp1+'% / +'+S.tp2+'% · <b>SL</b> −'+rotSL()+'% · Smart Score live '+pb.smart.total.toFixed(2)+' · harga acuan $'+pb.price;
-        cf.hidden = false;
-        cf.scrollIntoView({ behavior:'smooth', block:'center' });
-      }
       function getExecToken(){ try{ return (localStorage.getItem('grokbot-exec-token-v1') || '').trim(); }catch(e){ return ''; } }
       function execStatus(){
         var m = $('execMode'), md = $('execModeDs'), b = $('execBal'), bd = $('execBalDs'), meta = $('execMeta');
@@ -2128,8 +1831,8 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         fetch('/api/trade/execute?action=status').then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
         .then(function(j){
           if(meta) meta.textContent = 'server · dicek '+wibNow();
-          if(m){ m.textContent = j.liveEnabled ? '🔴 TRADING_MODE = live' : '📄 TRADING_MODE = '+(j.tradingMode || 'paper'); m.style.color = j.liveEnabled ? 'var(--red)' : 'var(--green)'; }
-          if(md) md.textContent = j.liveEnabled ? 'Server MENGIZINKAN eksekusi live — tetap wajib konfirmasi per trade di UI + gerbang wallet/Data Live.' : 'Server MENOLAK semua trade live — bot tetap Paper, apa pun mode yang dipilih di UI.';
+          if(m){ m.textContent = j.liveEnabled ? '🔴 TRADING_MODE = live' : 'TRADING_MODE = '+(j.tradingMode || '—'); m.style.color = j.liveEnabled ? 'var(--red)' : 'var(--amber)'; }
+          if(md) md.textContent = j.liveEnabled ? 'Server MENGIZINKAN eksekusi live — kandidat lolos langsung dibeli otomatis $1.' : 'Server MENOLAK semua trade live — set TRADING_MODE=live di Vercel dulu.';
           if(b) b.textContent = (j.solBalance===null || j.solBalance===undefined) ? 'Data belum tersedia' : Number(j.solBalance).toFixed(6)+' SOL';
           if(bd) bd.textContent = 'Wallet executor: '+(j.wallet ? j.wallet.slice(0,6)+'…'+j.wallet.slice(-4) : '—')+(j.secretConfigured ? ' · secret server terkonfigurasi ✓ (nilainya tidak pernah ditampilkan)' : ' · SOLANA_WALLET_SECRET belum terisi di server');
         })
@@ -2140,35 +1843,6 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           if(b) b.textContent = 'Data belum tersedia';
           if(bd) bd.textContent = 'Saldo hanya bisa dibaca server lewat route executor.';
         });
-      }
-      function confirmLiveBuy(){
-        var pb = st.pendingLive; if(!pb) return;
-        if(!getExecToken()){ toast('Token Executor belum diisi', 'Tempel token EXECUTOR_TOKEN di Pengaturan & Modal dulu — tanpa token yang cocok server menolak trade live.', '', 'var(--red)'); return; }
-        var btn = $('btnExecYes'); if(btn){ btn.disabled = true; btn.textContent = 'Menghubungi server…'; }
-        fetch('/api/trade/execute', { method:'POST', headers:{ 'Content-Type':'application/json', 'x-grokbot-confirm':'live-confirmed', 'x-grokbot-token':getExecToken() },
-          body: JSON.stringify({ side:'buy', mint:pb.mint, amountUsd:1, slippageBps:Math.round(S.slip*100) }) })
-        .then(function(r){ return r.json().then(function(j){ if(!r.ok) throw new Error(j.error || ('HTTP '+r.status)); return j; }); })
-        .then(function(j){
-          st.pendingLive = null; paintExecConfirm();
-          st.cash -= 1; st.traded++; noteTradeOpen();
-          var npos = { sym:pb.sym, entry:pb.price, amt:1, peak:0, pnlPct:0, pnl:0, tp1Done:false, age:0, cat:pb.smart.catLabel || '', mint:pb.mint, exec:'live', txBuy:j.signature };
-          npos.price = pb.price;
-          st.positions.push(npos);
-          st.lastBuy = { coin:pb.sym, amt:1 };
-          st.rotState = 'holding';
-          liveTrades.unshift({ t:wibNow(), side:'buy', sym:pb.sym, mint:pb.mint, amt:1, slip:S.slip, sig:j.signature });
-          saveLiveTrades(); renderLiveTrades();
-          addLog('EXECUTOR', '#2fe07c', 'LIVE · bought '+pb.sym+' · $1 · tx '+String(j.signature || '').slice(0,12)+'… · smart '+pb.smart.total.toFixed(2)+' · menunggu TP/SL (jual otomatis via server sesuai konfirmasi)');
-          toast('🔴 LIVE terbroadcast · '+pb.sym, 'beli $1 · signature tercatat di Riwayat Trade Live', '', 'var(--red)');
-          sndBuy(); renderAll();
-        })
-        .catch(function(e){
-          st.pendingLive = null; paintExecConfirm();
-          addLog('RISK', '#ffb454', 'FAIL-CLOSED · eksekusi live '+pb.sym+' DITOLAK server: '+(e.message || 'error')+' — tidak ada posisi live yang dibuka');
-          toast('Eksekusi live ditolak server', (e.message || 'error'), '', 'var(--red)');
-          renderAll();
-        })
-        .then(function(){ var b2 = $('btnExecYes'); if(b2){ b2.disabled = false; b2.textContent = 'Eksekusi Live Sekarang'; } });
       }
       function attemptLiveSell(p, hit){
         if(p.sellBusy) return;
@@ -2190,90 +1864,6 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           addLog('RISK', '#ffb454', 'Jual live '+p.sym+' ('+hit.exit+') GAGAL: '+(e.message || 'error')+' — posisi DITAHAN dan jual dicoba lagi siklus berikutnya (tidak ditutup fiktif)');
         });
       }
-      function scanTick(){
-        /* ---------- GERBANG BATAS HARIAN (sebelum aktivitas apa pun) ---------- */
-        rollDayIfNeeded();
-        if(day.stopped){ st.running = false; paintRunUI(); renderAll(); return; }
-        if(!inTradingHours()){
-          if(st.positions.length){
-            /* posisi terbuka tetap dipantau Risk sampai TP/SL — tanpa buy baru */
-            movePositions();
-            st.history.push(st.equity); if(st.history.length>90) st.history.shift();
-            renderAll(); return;
-          }
-          st.hourBlock = true; st.running = false; paintRunUI(); renderAll(); return;
-        }
-        st.hourBlock = false;
-        if(!st.positions.length && day.trades >= S.dailyMaxTrades){
-          tripDaily('Maks jumlah trade harian tercapai ('+day.trades+'/'+S.dailyMaxTrades+' trade)');
-          renderAll(); return;
-        }
-        /* ROTASI langkah 3: eksekusi pembelian pending dari scan sebelumnya */
-        executePendingBuy();
-        /* bunyi scan berkala selama fase scan (tiap ±6 tick) */
-        if(!st.positions.length && st.rotState==='scanning'){
-          st.rotScanTicks++;
-          if(st.rotScanTicks % 6 === 0) sndScan();
-        }
-        var batch = Math.floor(rnd(40, 110));
-        var i, coin, r;
-        for(i=0;i<batch;i++){
-          coin = newCoin(); st.scanned++;
-          r = rollReason();
-          if(r.id==='score'){
-            st.scored++;
-            var sc = rnd(0.18,0.58);
-            st.lastScore = { coin:coin, score:sc };
-            st.killed++; st.kills.score++; st.reasons++;
-            st.lastKill = { coin:coin, txt:'score '+sc.toFixed(2)+' < '+S.minScore };
-            if(Math.random()<0.10) addLog('ANALYST', '#b79cff', 'killed '+coin+' · score '+sc.toFixed(2)+' < '+S.minScore);
-          } else {
-            st.killed++; st.kills[r.id]++; st.reasons++;
-            st.lastKill = { coin:coin, txt:r.text(coin) };
-            if(Math.random()<0.16) addLog('FILTER', '#ff6b6b', 'killed '+coin+' · '+r.text(coin));
-          }
-        }
-        st.lastScout = coin;
-        /* PRO: sesekali tampilkan hard-kill audit 8 kelas di Logger */
-        if(Math.random() < 0.22){
-          var ak = pick(AUDIT8), ac = newCoin(); st.auditKills++;
-          addLog('AUDIT', '#ff6b6b', 'HARD KILL '+ac+' · '+ak.t+' — dibuang sebelum scoring');
-          st.lastKill = { coin:ac, txt:'audit: '+ak.t };
-        }
-        /* survivor? — sekarang wajib: audit lolos + Smart Score >= ambang + bukan shill + RPC sehat */
-        if(Math.random() < 0.34){
-          var c2 = newCoin(), grok = rnd(0.3, 0.97);
-          var smart = scoreCandidate(c2, grok);
-          st.scored++; st.lastScore = { coin:c2, score:smart.total }; st.lastSmart = smart;
-          if(smart.buzz && smart.buzz.mode==='shill'){
-            addLog('ANALYST', '#ff6b6b', 'TAHAN '+c2+' · shill terkoordinasi (velocity ×'+smart.buzz.velocityX.toFixed(1)+', influencer unik '+smart.buzz.unique+') · buzz '+smart.buzz.score.toFixed(2)+' · faktor Sosial/Buzz ditekan · smart '+smart.total.toFixed(2));
-          } else if(smart.total < S.minScore){
-            if(Math.random()<0.5) addLog('ANALYST', '#b79cff', 'skip '+c2+' · smart '+smart.total.toFixed(2)+' < '+S.minScore+' (watchlist saja)');
-          } else if(Math.random() < 0.06){
-            /* FAIL-CLOSED: error RPC/tool menghentikan eksekusi tick ini — tanpa tebakan */
-            st.rpcBlocks++;
-            addLog('RISK', '#ffb454', 'FAIL-CLOSED · RPC error saat simulasi '+c2+' — trade dibatalkan, tunggu data segar');
-          } else {
-            st.passed++;
-            /* ROTASI: kandidat lolos TIDAK langsung dibeli berbarengan.
-               Ia jadi kandidat pending — Executor membeli $1 di tick
-               berikutnya, dan hanya kalau belum ada posisi aktif. */
-            if(!st.positions.length && !st.rotPending && st.rotState==='scanning'){
-              st.rotPending = { sym:c2, smart:smart };
-              st.rotState = 'buying';
-              addLog('SCOUT', '#57a8ff', 'ROTASI · kandidat '+c2+' · '+smart.catLabel+' · lolos semua filter · smart '+smart.total.toFixed(2)+' · buzz '+smart.buzz.score.toFixed(2)+' → beli $1');
-              sndScan(); /* scan selesai: kandidat ditemukan */
-            }
-          }
-        }
-        movePositions();
-        st.history.push(st.equity); if(st.history.length>90) st.history.shift();
-        if(st.scanned >= st.nextMile){
-          toast(fmt(st.scanned)+' pairs scanned · '+st.traded+' traded', st.lastKill ? 'filter killed '+st.lastKill.coin+' · '+st.lastKill.txt : 'night run · paper mode', '', 'var(--green)');
-          st.nextMile += 2500;
-        }
-        renderAll();
-      }
       function closePosition(p, why){
         var proceeds = p.amt + p.pnl;
         st.cash += proceeds;
@@ -2282,7 +1872,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         else { st.losses++; if(st.worst===null||p.pnl<st.worst) st.worst=p.pnl; }
         st.positions.splice(st.positions.indexOf(p),1);
       }
-      /* Keluar posisi (dipakai semua jalur: replay, scan live, snipe).
+      /* Keluar posisi (dipakai scan live + snipe).
          Menutup penuh, mencatat P&L harian + Riwayat Rotasi, log + toast + suara. */
       function exitPosition(p, exit, isTp){
         var pnlAtExit = p.pnl, pctAtExit = p.pnlPct;
@@ -2309,38 +1899,12 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         if(p.pnlPct <= -rotSL()) return { exit:'SL −'+rotSL()+'%', isTp:false };
         return null;
       }
-      function movePositions(){
-        /* ROTASI: posisi aktif (maksimal 1) hanya keluar lewat TP atau SL.
-           TP = +tp1% / +tp2% · SL = −rotSL()%. Kena salah satu → tutup PENUH,
-           catat ke Riwayat Rotasi, lalu status kembali ke scanning.
-           Posisi dari scan live (punya mint) TIDAK di-drift acak di sini —
-           harganya diperbarui dari DexScreener asli oleh mesin scan live. */
-        var snapshot = st.positions.slice();
-        snapshot.forEach(function(p){
-          if(p.mint) return;
-          p.age++;
-          var drift = rnd(-0.11, 0.125) + (p.age<3? 0.01:0);
-          p.price = Math.max(p.entry*0.05, p.price*(1+drift));
-          p.pnlPct = (p.price/p.entry - 1)*100;
-          if(p.pnlPct > p.peak) p.peak = p.pnlPct;
-          p.pnl = p.amt * p.pnlPct/100;
-          var hit = tpSlCheck(p);
-          if(hit) exitPosition(p, hit.exit, hit.isTp);
-        });
-        var openPnl = st.positions.reduce(function(s,p){ return s+p.pnl; },0);
-        st.equity = st.cash + st.positions.reduce(function(s,p){ return s+p.amt; },0) + openPnl;
-      }
-
-      /* ticker drift — timer dikelola Mode Lite (dimatikan saat Lite) */
-      var tickerTimer = null;
-      function tickerDrift(){ tickerCoins.forEach(function(c){ c.chg += rnd(-3,3); c.price = Math.max(0.0001, c.price*(1+rnd(-0.04,0.045))); }); renderTicker(); }
-
       /* ---------- PDF report (generated client-side) ---------- */
       function makePdf(){
         var lines = [];
-        lines.push('GROK BOT - LAPORAN PAPER TRADING');
+        lines.push('GROK BOT - LAPORAN LIVE TRADING');
         lines.push('Domain: http://'+S.domain+'/   Platform: Vercel   Model: '+S.model);
-        lines.push('Waktu: '+nowWIB()+' WIB   Mode: '+(S.mode==='one'?'Modal $1 (all-in)':(S.mode==='custom'?'Modal Kustom '+fmtUSD(S.customEquity)+' ($1/coin, '+S.size+'%)':'Mode Video $280 - '+S.size+'%')));
+        lines.push('Waktu: '+nowWIB()+' WIB   Mode: LIVE · Modal $1 (all-in) · $1/coin · rotasi 1 posisi');
         lines.push('');
         lines.push('Equity awal : $'+st.startEquity.toFixed(2));
         lines.push('Equity kini : $'+st.equity.toFixed(2)+'  ('+(st.startEquity?((st.equity/st.startEquity).toFixed(2)):'1.00')+'x)');
@@ -2356,30 +1920,30 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         REASONS.forEach(function(r){ lines.push('- '+r.label+': '+fmt(st.kills[r.id]||0)); });
         lines.push('');
         lines.push('ATURAN RISIKO');
-        lines.push('SL rotasi (Hard stop): -'+S.stop+'%   stop replay video: -'+REPLAY_STOP+'%   Trailing: +'+S.trail+'%   TP1: +'+S.tp1+'%   TP2: +'+S.tp2+'%');
-        lines.push('Mode trade  : '+(S.tradeMode==='live'?'LIVE (sungguhan)':'PAPER (simulasi)'));
+        lines.push('SL rotasi (Hard stop): -'+S.stop+'%   TP1: +'+S.tp1+'%   TP2: +'+S.tp2+'%');
+        lines.push('Mode trade  : LIVE (sungguhan — executor otomatis, tanpa konfirmasi per trade)');
         lines.push('Batas harian: rugi -$'+Math.abs(S.dailyLoss).toFixed(2)+'   target +$'+Math.abs(S.dailyProfit).toFixed(2)+'   maks '+S.dailyMaxTrades+' trade   streak '+S.dailyMaxStreak+'x   jam '+S.dayStart+'-'+S.dayEnd+' WIB');
         lines.push('Progres ini : P&L '+money(day.pnl)+'   trade '+day.trades+'   streak '+day.streak+'x'+(day.stopped?'   STATUS: BATAS HARIAN TERCAPAI - BOT BERHENTI':''));
         lines.push('Min volume 1j: $'+fmt(S.minVol)+'   Skor analis min: '+S.minScore);
         lines.push('LLM: TrueSOTA https://true-sota.com/v1 (model: '+S.model+')');
         lines.push('Wallet live: '+(S.wallet==='jupiter'?'Jupiter Wallet':S.wallet)+' (swap via Jupiter API, wallet khusus $1-5)');
         lines.push('Wallet addr : '+(S.walletAddress||DEFAULT_WALLET_ADDR));
-        lines.push('Status addr : Solscan 14 Nov 00:52 WIB - format valid, belum ada on-chain, SOL 0');
+        lines.push('Status addr : saldo dicek live di panel Data Live & Sumber');
         lines.push('');
         lines.push('SKILLS & AKURASI');
         lines.push('Audit 8 kelas rug (hard kill) + web3-audit + argus + agentic-app-audit');
         lines.push('Smart Score 7 faktor, ambang '+S.minScore+', slip maks '+S.slip+'%, liq min $'+fmt(S.minLiq));
         if(st.lastSmart){
-          lines.push('Kandidat terakhir: '+st.lastSmart.sym+' smart '+weightedTotal(st.lastSmart.detail).toFixed(2)+' buzz '+st.lastSmart.buzz.score.toFixed(2)+' ('+st.lastSmart.buzz.mode+') [REPLAY]');
+          lines.push('Kandidat terakhir: '+st.lastSmart.sym+' smart '+weightedTotal(st.lastSmart.detail).toFixed(2)+' buzz '+st.lastSmart.buzz.score.toFixed(2)+' ('+st.lastSmart.buzz.mode+') [LIVE]');
           lines.push('Rincian faktor (nilai x bobot = kontribusi):');
           st.lastSmart.detail.forEach(function(d){ lines.push('- '+d.name+': '+d.v.toFixed(2)+' x '+d.w+'% = '+(d.v*d.w/100).toFixed(3)); });
           lines.push('Jumlah terbobot faktor = '+weightedTotal(st.lastSmart.detail).toFixed(2)+' (sama persis dengan Smart Score hero; vonis memakai angka ini, ambang '+S.minScore+')');
         }
-        lines.push('Angka sesi ini = REPLAY contoh video, BUKAN hasil live.');
+        lines.push('Angka sesi ini = hasil LIVE (DexScreener + Solana RPC + Jupiter).');
         lines.push('Data live hanya dari DexScreener/Jupiter/Solscan/RPC/TrueSOTA/X + waktu cek.');
         lines.push('Data kosong/basi/error = Data belum tersedia + fail-closed.');
         lines.push('');
-        lines.push('Catatan: paper trading. Bukan jaminan profit.');
+        lines.push('Catatan: live trading dengan uang sungguhan. Bukan jaminan profit.');
         function esc(s){ return s.replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)'); }
         var content = 'BT /F1 16 Tf 40 812 Td ';
         lines.forEach(function(l,i){ content += (i? '0 -19 Td ':'') + '('+esc(l)+') Tj '; });
@@ -2414,28 +1978,8 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         var link = document.querySelector('a[href*="solscan.io/account/"]');
         if(link && isSolanaAddress(a)) link.href = 'https://solscan.io/account/'+encodeURIComponent(a);
       }
-      /* ---------- MODAL KUSTOM ---------- */
-      function clampCustom(v){ v = parseFloat(v); if(!isFinite(v)||v<=0) return 10; return Math.min(1000000, Math.max(1, v)); }
-      function customSizeFor(eq){ return Math.min(100, Math.round((100/clampCustom(eq))*100)/100); }
-      function fmtUSD(v){ return '$'+Number(v).toLocaleString('en-US',{minimumFractionDigits:(v%1?2:0), maximumFractionDigits:2}); }
-      function capitalLabel(){
-        /* SATU label SL per konteks (S1): SL rotasi = rotSL() = S.stop di semua
-           mode; "stop −6%" mode Video hanya aturan replay video aslinya. */
-        if(S.mode==='one') return ['Modal $1 · all-in', '$1 all-in (100%) · TP +'+S.tp1+'%/+'+S.tp2+'% · SL rotasi −'+rotSL()+'%'];
-        if(S.mode==='custom') return ['Modal Kustom · '+fmtUSD(S.customEquity), fmtUSD(Math.min(1,S.customEquity))+' per coin rotasi ('+S.size+'% dari modal) · TP +'+S.tp1+'%/+'+S.tp2+'% · SL rotasi −'+rotSL()+'%'];
-        return ['Mode Video · $280', S.size+'% per posisi · stop −'+REPLAY_STOP+'% (replay) · SL rotasi −'+rotSL()+'% · trailing +'+S.trail+'%'];
-      }
-      function paintCapital(){
-        var info = capitalLabel();
-        var a=$('activeCapital'); if(a) a.textContent = info[0];
-        var n=$('activeCapitalNote'); if(n) n.textContent = info[1]+' · ganti lewat menu bawah → tab Pengaturan & Modal di dalam panel';
-        var cp=$('customPreview');
-        if(cp){ var eq=clampCustom($('inCustomEquity') ? $('inCustomEquity').value : S.customEquity); cp.innerHTML = 'Modal <b>'+fmtUSD(eq)+'</b> → ukuran posisi <b>'+fmtUSD(Math.min(1,eq))+' per coin</b> ('+customSizeFor(eq)+'% dari modal) · TP +50%/+100% · SL −30%. Kalau Max size kamu ubah sendiri, ukuran mengikuti angka ubahanmu itu.'; }
-        document.querySelectorAll('[data-custom-amt]').forEach(function(ch){ ch.classList.toggle('on', S.mode==='custom' && Math.abs(parseFloat(ch.getAttribute('data-custom-amt'))-S.customEquity)<0.001); });
-      }
       function applySettingsToForm(){
-        $('inEquity').value = S.equity; $('inSize').value = S.size; $('inStop').value = S.stop;
-        $('inTrail').value = S.trail; $('inTp1').value = S.tp1; $('inTp2').value = S.tp2;
+        $('inStop').value = S.stop; $('inTp1').value = S.tp1; $('inTp2').value = S.tp2;
         $('inMinVol').value = S.minVol; $('inMinScore').value = S.minScore;
         if($('inSlip')) $('inSlip').value = S.slip; if($('inMinLiq')) $('inMinLiq').value = S.minLiq;
         $('inDomain').value = S.domain; $('inKey').value = S.key;
@@ -2444,9 +1988,6 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         if($('inWallet')) $('inWallet').value = S.wallet || 'jupiter';
         if($('inWalletAddr')) $('inWalletAddr').value = S.walletAddress || DEFAULT_WALLET_ADDR;
         paintWalletStatus();
-        $('modeStd').className = S.mode==='std' ? 'on':''; $('modeOne').className = S.mode==='one' ? 'on':'';
-        if($('modeCustom')) $('modeCustom').className = S.mode==='custom' ? 'on':'';
-        if($('inCustomEquity')) $('inCustomEquity').value = S.customEquity;
         if($('inDailyLoss')) $('inDailyLoss').value = S.dailyLoss;
         if($('inDailyProfit')) $('inDailyProfit').value = S.dailyProfit;
         if($('inDailyMaxTrades')) $('inDailyMaxTrades').value = S.dailyMaxTrades;
@@ -2454,14 +1995,11 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         if($('inDayStart')) $('inDayStart').value = S.dayStart;
         if($('inDayEnd')) $('inDayEnd').value = S.dayEnd;
         if($('inSnipeAge')) $('inSnipeAge').value = S.snipeMaxAge;
-        paintSoundUI(); paintCapital(); paintDaily();
+        paintSoundUI(); paintDaily();
       }
       function readForm(){
         /* HARDENING: semua input angka divalidasi & di-clamp ke rentang aman */
-        S.equity = Math.min(1000000, Math.max(1, parseFloat($('inEquity').value)||280));
-        S.size = Math.min(100, Math.max(1, parseFloat($('inSize').value)||8));
         S.stop = Math.min(90, Math.max(1, parseFloat($('inStop').value)||30));
-        S.trail = Math.min(500, Math.max(1, parseFloat($('inTrail').value)||12));
         S.tp1 = Math.min(1000, Math.max(1, parseFloat($('inTp1').value)||50));
         S.tp2 = Math.min(2000, Math.max(1, parseFloat($('inTp2').value)||100));
         S.minVol = Math.min(10000000, Math.max(0, parseFloat($('inMinVol').value)||30000));
@@ -2484,8 +2022,6 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           else { $('inWalletAddr').value = S.walletAddress || DEFAULT_WALLET_ADDR; toast('Alamat wallet tidak valid', 'Format harus Base58 32–44 karakter — alamat live sebelumnya dipertahankan, tidak disimpan yang salah.', '', 'var(--red)'); }
           paintWalletStatus();
         }
-        if($('inCustomEquity')) S.customEquity = clampCustom($('inCustomEquity').value);
-        if(S.mode==='custom'){ S.equity = S.customEquity; }
         /* batas harian: clamp ke rentang aman; jam harus format HH:MM */
         if($('inDailyLoss')) S.dailyLoss = Math.min(100000, Math.max(0.5, parseFloat($('inDailyLoss').value)||5));
         if($('inDailyProfit')) S.dailyProfit = Math.min(100000, Math.max(0.5, parseFloat($('inDailyProfit').value)||10));
@@ -2493,34 +2029,16 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         if($('inDailyMaxStreak')) S.dailyMaxStreak = Math.min(20, Math.max(1, parseInt($('inDailyMaxStreak').value,10)||3));
         if($('inDayStart') && /^\d{2}:\d{2}$/.test($('inDayStart').value)) S.dayStart = $('inDayStart').value;
         if($('inDayEnd') && /^\d{2}:\d{2}$/.test($('inDayEnd').value)) S.dayEnd = $('inDayEnd').value;
-        paintCapital(); paintDaily();
+        paintDaily();
       }
-      function setMode(m, customAmt){
-        if(m==='custom'){
-          S.customEquity = clampCustom(customAmt!==undefined ? customAmt : ($('inCustomEquity') ? $('inCustomEquity').value : S.customEquity));
-          S.mode = 'custom'; S.equity = S.customEquity; S.size = customSizeFor(S.customEquity); S.stop=30; S.trail=12; S.tp1=50; S.tp2=100;
-        } else if(m==='one'){ S.mode='one'; S.equity=1; S.size=100; S.stop=30; S.trail=12; S.tp1=50; S.tp2=100; }
-        else { S.mode='std'; S.equity=280; S.size=8; S.stop=30; S.trail=12; S.tp1=50; S.tp2=100; }
-        applySettingsToForm(); saveSettings(); resetState();
-        if(S.mode==='custom') toast('Modal Kustom '+fmtUSD(S.customEquity)+' aktif', 'equity '+fmtUSD(S.customEquity)+' · $1 per coin rotasi ('+S.size+'%) · TP +50%/+100% · SL −30%', '', 'var(--green)');
-        else toast(S.mode==='one' ? 'Mode Modal $1 aktif' : 'Mode Video aktif', S.mode==='one' ? 'equity $1.00 · 1 posisi all-in · TP +50%/+100% · SL rotasi −30%' : 'equity $280 · max size 8% · stop −6% (replay) · SL rotasi −30% · trail +12%', '', 'var(--green)');
-      }
-      $('modeStd').addEventListener('click', function(){ setMode('std'); });
-      $('modeOne').addEventListener('click', function(){ setMode('one'); });
-      if($('modeCustom')) $('modeCustom').addEventListener('click', function(){ setMode('custom'); });
-      if($('btnUseCustom')) $('btnUseCustom').addEventListener('click', function(){ setMode('custom'); });
-      document.querySelectorAll('[data-custom-amt]').forEach(function(ch){ ch.addEventListener('click', function(){ if($('inCustomEquity')) $('inCustomEquity').value = ch.getAttribute('data-custom-amt'); setMode('custom', ch.getAttribute('data-custom-amt')); }); });
-      if($('inCustomEquity')) $('inCustomEquity').addEventListener('input', function(){ paintCapital(); });
-      $('btnApply').addEventListener('click', function(){ readForm(); saveSettings(); resetState(); toast('Pengaturan diterapkan', 'sesi paper di-reset dengan aturan baru', '', 'var(--green)'); });
+      $('btnApply').addEventListener('click', function(){ readForm(); saveSettings(); resetState(); toast('Pengaturan diterapkan', 'pengaturan diterapkan · sesi live di-reset dengan aturan baru', '', 'var(--green)'); });
       $('btnReset').addEventListener('click', function(){ resetState(); });
       $('btnPdf').addEventListener('click', makePdf);
       $('toastClose').addEventListener('click', function(){ $('toast').style.display='none'; });
-      /* ---------- SAKLAR MODE LIVE / PAPER ----------
-         Paper = default & aman. Live TIDAK pernah aktif diam-diam:
-         gerbangnya (liveBlockReason) memeriksa alamat wallet, saldo SOL
-         hasil cek live asli, dan kesegaran Data Live (≤5 menit). Lolos
-         gerbang pun masih wajib konfirmasi eksplisit dengan ringkasan
-         chain · wallet · jumlah · slippage · TP/SL (panel #liveConfirm). */
+      /* ---------- GERBANG LIVE (dipakai tombol Jalankan) ----------
+         Bot ini live-only — tidak ada lagi saklar mode. Gerbang
+         liveBlockReason() memeriksa alamat wallet, saldo SOL hasil cek
+         live asli, dan kesegaran Data Live (≤5 menit) sebelum bot jalan. */
       function liveBlockReason(){
         var reasons = [];
         var addr = (S.walletAddress||'').trim();
@@ -2532,50 +2050,6 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         else if(!liveCheckedAt || Date.now() - liveCheckedAt > 5*60*1000) reasons.push('Data Live sudah basi (> 5 menit) — bot me-refresh otomatis tiap siklus; tekan Jalankan lagi sebentar lagi');
         return reasons.length ? reasons.join(' · ') : null;
       }
-      function paintModeUI(){
-        var isLive = S.tradeMode === 'live';
-        var bp = $('modePaper'), bl = $('modeLive'), big = $('modeBig');
-        if(bp) bp.className = isLive ? '' : 'on';
-        if(bl) bl.className = isLive ? 'on live-on' : '';
-        if(big){
-          big.className = 'mode-big' + (isLive ? ' live' : '');
-          big.innerHTML = isLive ? 'MODE LIVE<small>Trade SUNGGUHAN dengan uang asli di wallet trading — bot jalan sendiri kalau sebelumnya sedang jalan: tutup Chrome lalu buka lagi, dia langsung lanjut tanpa tekan ▶ Jalankan.</small>' : 'MODE PAPER<small>Simulasi — aman, tanpa uang sungguhan. Ini mode default.</small>';
-        }
-      }
-      function setPaperMode(silent){
-        S.tradeMode = 'paper'; saveSettings(); paintModeUI();
-        var c = $('liveConfirm'); if(c) c.hidden = true;
-        if(!silent) toast('Mode PAPER aktif', 'simulasi aman — tidak ada uang sungguhan yang bergerak', '', 'var(--green)');
-      }
-      function requestLiveMode(){
-        readForm(); saveSettings();
-        var gm = $('liveGateMsg');
-        var why = liveBlockReason();
-        if(why){
-          /* DITOLAK dengan alasan jelas — mode TIDAK berubah */
-          S.tradeMode = 'paper'; paintModeUI();
-          if(gm){ gm.className = 'gate-msg err'; gm.innerHTML = '🔴 <b>Live DITOLAK — tetap di Paper.</b> Alasan: '+escHtml(why)+'.'; }
-          toast('🔴 Live ditolak — tetap Paper', why, '', 'var(--red)');
-          return;
-        }
-        var addr = (S.walletAddress||'').trim();
-        $('liveSummary').innerHTML = '<b>chain</b> Solana · <b>wallet</b> '+escHtml(addr.slice(0,6)+'…'+addr.slice(-4))+' ('+escHtml(S.wallet==='jupiter'?'Jupiter Wallet':S.wallet)+') · <b>jumlah</b> $1 per coin · rotasi 1 posisi · <b>slippage</b> maks '+S.slip+'% · <b>TP</b> +'+S.tp1+'% / +'+S.tp2+'% · <b>SL</b> −'+rotSL()+'% · saldo tercek: '+liveSolBalance.toFixed(4)+' SOL'+(liveSolPrice ? ' ≈ $'+(liveSolBalance*liveSolPrice).toFixed(2) : '')+' · Data Live segar ✓';
-        var cf = $('liveConfirm'); if(cf) cf.hidden = false;
-        if(gm){ gm.className = 'gate-msg ok'; gm.textContent = '✓ Syarat Live terpenuhi (wallet terdanai + Data Live segar). Baca ringkasan di bawah, lalu konfirmasi — belum ada yang berubah sampai kamu menekan “Ya, Aktifkan Live”.'; }
-        if(cf) cf.scrollIntoView({ behavior:'smooth', block:'center' });
-      }
-      if($('modePaper')) $('modePaper').addEventListener('click', function(){ setPaperMode(false); var gm=$('liveGateMsg'); if(gm){ gm.className='gate-msg'; gm.textContent='Paper aktif. Live hanya bisa aktif kalau: wallet terdanai SOL + modal · Data Live segar (≤ 5 menit) · kamu konfirmasi ringkasan trade-nya dulu.'; } });
-      if($('modeLive')) $('modeLive').addEventListener('click', requestLiveMode);
-      if($('btnLiveNo')) $('btnLiveNo').addEventListener('click', function(){ $('liveConfirm').hidden = true; var gm=$('liveGateMsg'); if(gm){ gm.className='gate-msg'; gm.textContent='Dibatalkan — tetap di Mode Paper.'; } });
-      if($('btnLiveYes')) $('btnLiveYes').addEventListener('click', function(){
-        var why = liveBlockReason(); /* cek ulang tepat sebelum mengaktifkan */
-        if(why){ $('liveConfirm').hidden = true; requestLiveMode(); return; }
-        S.tradeMode = 'live'; saveSettings(); paintModeUI();
-        if(S.snipe){ S.snipe = false; saveSettings(); paintSnipe(); addLog('SCOUT', '#57a8ff', 'AUTO SNIPE dimatikan otomatis — Live snipe belum diimplementasikan (snipe hanya Paper)'); }
-        $('liveConfirm').hidden = true;
-        var gm = $('liveGateMsg'); if(gm){ gm.className = 'gate-msg err'; gm.innerHTML = '🔴 <b>MODE LIVE AKTIF</b> — trade berikutnya (setelah kamu tekan ▶ Jalankan) adalah trade sungguhan. Bot tetap dijeda sekarang; tidak ada trade yang jalan sendiri.'; }
-        toast('🔴 MODE LIVE AKTIF', 'bot tetap dijeda — tekan ▶ Jalankan sendiri untuk mulai · Jalankan akan memeriksa ulang saldo & kesegaran data', '', 'var(--red)');
-      });
       if($('btnDailyApply')) $('btnDailyApply').addEventListener('click', function(){ readForm(); saveSettings(); applySettingsToForm(); paintDaily(); toast('Batas Harian diterapkan & tersimpan', 'rugi −$'+Math.abs(S.dailyLoss).toFixed(2)+' · target +$'+Math.abs(S.dailyProfit).toFixed(2)+' · maks '+S.dailyMaxTrades+' trade · rugi beruntun '+S.dailyMaxStreak+'× · jam '+S.dayStart+'–'+S.dayEnd+' WIB', '', 'var(--green)'); });
       if($('btnDailyReset')) $('btnDailyReset').addEventListener('click', function(){ resetDailyManual(); toast('Batas Harian di-reset manual', 'progres hari ini di-nol-kan & kunci dibuka · bot tetap dijeda — tekan ▶ Jalankan untuk mulai lagi', '', 'var(--green)'); });
       $('btnRun').addEventListener('click', function(){
@@ -2589,7 +2063,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           toast('Di luar jam trading aktif — bot berhenti', 'Jam aktif '+S.dayStart+'–'+S.dayEnd+' WIB · ubah di panel Pengaturan Harian', '', 'var(--red)');
           return;
         }
-        if(!st.running && S.tradeMode === 'live'){
+        if(!st.running){
           var lWhy = liveBlockReason();
           if(lWhy){
             /* Gerbang gagal karena data/saldo belum dicek = bisa diperbaiki
@@ -2605,26 +2079,17 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
                 st._liveAutoRetried = false;
                 if(st.running) return;
                 var why2 = liveBlockReason();
-                if(why2){ toast('🔴 Live tidak bisa jalan — tetap dijeda', why2+' · Mode tetap Live, tapi tidak ada trade sebelum syarat ini beres (atau pindah ke Paper).', '', 'var(--red)'); return; }
+                if(why2){ toast('🔴 Live tidak bisa jalan — tetap dijeda', why2+' · Tidak ada trade sebelum syarat ini beres.', '', 'var(--red)'); return; }
                 st.running = true; setAutoRun(true); pageGone = false; audioUnlocked = true; ensureAudio(); paintRunUI();
                 toast('▶ Bot jalan — Live', 'Data Live segar ✓ · saldo tercek ✓ · kandidat pertama yang lolos audit + skor akan minta konfirmasi kamu', '', 'var(--green)');
               }, 6000);
               return;
             }
-            toast('🔴 Live tidak bisa jalan — tetap dijeda', lWhy+' · Mode tetap Live, tapi tidak ada trade sebelum syarat ini beres (atau pindah ke Paper).', '', 'var(--red)');
+            toast('🔴 Live tidak bisa jalan — tetap dijeda', lWhy+' · Tidak ada trade sebelum syarat ini beres.', '', 'var(--red)');
             return;
           }
         }
         st.hourBlock = false;
-        if(st.hold){
-          /* Lanjut free-run hanya karena user menekannya manual di sini */
-          st.hold = false;
-          st.running = true; setAutoRun(true);
-          pageGone = false; audioUnlocked = true; ensureAudio();
-          paintRunUI();
-          toast('Free-run paper lanjut', 'dari equity $3,412 · aturan yang sama', '', 'var(--green)');
-          return;
-        }
         st.running = !st.running;
         setAutoRun(st.running);
         if(st.running){
@@ -2659,8 +2124,6 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
       });
 
       /* ---------- wiring: sumber scan, snipe, executor live ---------- */
-      if($('scanReplay')) $('scanReplay').addEventListener('click', function(){ setScanSource('replay'); });
-      if($('scanLive')) $('scanLive').addEventListener('click', function(){ setScanSource('live'); });
       if($('snipeOn')) $('snipeOn').addEventListener('click', function(){ setSnipe(true); });
       if($('snipeOff')) $('snipeOff').addEventListener('click', function(){ setSnipe(false); });
       if($('inSnipeAge')) $('inSnipeAge').addEventListener('change', function(){
@@ -2668,11 +2131,6 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         $('inSnipeAge').value = S.snipeMaxAge; saveSettings(); paintSnipe();
       });
       if($('btnExecCheck')) $('btnExecCheck').addEventListener('click', execStatus);
-      if($('btnExecYes')) $('btnExecYes').addEventListener('click', confirmLiveBuy);
-      if($('btnExecNo')) $('btnExecNo').addEventListener('click', function(){
-        if(st.pendingLive) addLog('EXECUTOR', '#ffb454', 'LIVE · konfirmasi '+st.pendingLive.sym+' DIBATALKAN user — tidak ada trade');
-        st.pendingLive = null; paintExecConfirm(); renderAll();
-      });
 
       /* ---------- DATA LIVE: hanya angka dari respons API asli ---------- */
       function wibNow(){ try{ return new Date().toLocaleString('id-ID',{timeZone:'Asia/Jakarta',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',second:'2-digit'}).replace(/\./g,':')+' WIB'; }catch(e){ return new Date().toLocaleString()+' (waktu perangkat)'; } }
@@ -2698,7 +2156,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         $('liveMeta').textContent = 'cek terakhir: '+wibNow();
         $('liveVerdict').innerHTML = all
           ? 'Status: <b style="color:var(--green)">Sumber inti segar</b> — DexScreener + Jupiter + Solana RPC merespons. Live trading tetap butuh: wallet terdanai + OK eksplisit kamu. Data berumur &gt; 5 menit di-refresh otomatis tiap siklus selagi bot jalan.'
-          : 'Status: <b>FAIL-CLOSED untuk live trading</b> — satu atau lebih sumber inti gagal/belum segar. Bot tidak menebak angka dan tidak trade dari data basi. Replay &amp; paper tetap jalan sebagai simulasi berlabel.';
+          : 'Status: <b>FAIL-CLOSED untuk live trading</b> — satu atau lebih sumber inti gagal/belum segar. Bot tidak menebak angka dan tidak trade dari data basi.';
       }
       function checkLive(){
         srcSet('dex','wait','Mengecek DexScreener…'); srcSet('jup','wait','Mengecek Jupiter…'); srcSet('rpc','wait','Mengecek Solana RPC (saldo wallet)…');
@@ -2735,7 +2193,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           var v = document.querySelector('[data-d="verdict"]');
           if(got.authKill){ dSet('verdict','KILL — AUTHORITY AKTIF','Audit kelas 6: mint/freeze authority belum None. Buzz sebesar apa pun tidak mengubah ini. · '+wibNow()); if(v) v.style.color='var(--red)'; }
           else if(got.top10!==null && got.top10>20){ dSet('verdict','KILL — TOP 10 > 20%','Distribusi holder tidak sehat menurut data RPC asli. · '+wibNow()); if(v) v.style.color='var(--red)'; }
-          else { var catTxt = got.cat==='old' ? ' Kategori: COIN LAMA POTENSIAL — umur pool bukan hukuman; nilai lanjutannya dari konsistensi volume'+(got.volRatio ? ' (volume 1j×24 vs 24j = '+got.volRatio.toFixed(2)+'; mendekati 1 = stabil, jauh di atas 1 = spike sesaat)' : '')+', likuiditas yang bertahan & distribusi holder di atas. Harga vs ATH dan pertumbuhan holder historis tidak tersedia dari sumber snapshot ini, jadi dua faktor itu TIDAK ditebak — di scoring bot keduanya wajib terisi sebelum beli.' : (got.cat==='new' ? ' Kategori: COIN BARU (≤7 hari) — bonding curve & fase awal wajib lolos audit penuh.' : ''); dSet('verdict','DATA LENGKAP — NILAI PER FAKTOR','Semua faktor inti berhasil ditarik segar.'+catTxt+' Keputusan beli tetap: Smart Score + audit penuh + OK eksplisit (paper dulu). · '+wibNow()); if(v) v.style.color='var(--green)'; }
+          else { var catTxt = got.cat==='old' ? ' Kategori: COIN LAMA POTENSIAL — umur pool bukan hukuman; nilai lanjutannya dari konsistensi volume'+(got.volRatio ? ' (volume 1j×24 vs 24j = '+got.volRatio.toFixed(2)+'; mendekati 1 = stabil, jauh di atas 1 = spike sesaat)' : '')+', likuiditas yang bertahan & distribusi holder di atas. Harga vs ATH dan pertumbuhan holder historis tidak tersedia dari sumber snapshot ini, jadi dua faktor itu TIDAK ditebak — di scoring bot keduanya wajib terisi sebelum beli.' : (got.cat==='new' ? ' Kategori: COIN BARU (≤7 hari) — bonding curve & fase awal wajib lolos audit penuh.' : ''); dSet('verdict','DATA LENGKAP — NILAI PER FAKTOR','Semua faktor inti berhasil ditarik segar.'+catTxt+' Keputusan beli tetap: Smart Score + audit penuh — kandidat lolos dibeli otomatis $1 oleh executor. · '+wibNow()); if(v) v.style.color='var(--green)'; }
         }
         fetch('https://api.dexscreener.com/latest/dex/tokens/'+encodeURIComponent(mint)).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
           .then(function(j){
@@ -2806,23 +2264,20 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
       });
 
       /* ---------- MODE LITE / HEMAT DATA ----------
-         Full: tick 800ms · log 480ms · ticker 4s · animasi + suara + grafik jalan.
-         Lite: tick 45s (rentang 30–60s) · log 5s · ticker MATI · chart MATI ·
-               replay otomatis DIJEDA · suara MATI · detail coin lazy-load.
+         Full: tick 800ms · log 480ms · animasi + suara + grafik jalan.
+         Lite: tick 45s (rentang 30–60s) · log 5s · chart MATI ·
+               animasi DIJEDA · suara MATI · detail coin lazy-load.
          Tidak ada fitur yang dihapus — Muat Penuh mengembalikan semuanya. */
       var tickTimer = null, flushTimer = null, liteWasRunning = false, detailLoaded = false;
       function startTimers(){
         if(tickTimer) clearInterval(tickTimer);
         if(flushTimer) clearInterval(flushTimer);
-        if(tickerTimer) clearInterval(tickerTimer);
         if(S.lite){
           tickTimer = setInterval(tick, 45000);
           flushTimer = setInterval(flushLog, 5000);
-          tickerTimer = null;
         } else {
           tickTimer = setInterval(tick, 800);
           flushTimer = setInterval(flushLog, 480);
-          tickerTimer = setInterval(tickerDrift, 4000);
         }
       }
       function paintLiteUI(){
@@ -2844,7 +2299,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         /* Pindah Lite ↔ Muat Penuh TIDAK PERNAH menjalankan bot.
            Bot selalu berakhir dijeda di kedua arah — hanya tombol
            Jalankan yang boleh menjalankannya lagi, secara manual. */
-        if(st && !st.hold){ st.running = false; }
+        if(st){ st.running = false; }
         if(st) paintRunUI();
         if(S.lite){
           if(AC && AC.state === 'running'){ try{ AC.suspend(); }catch(e){} }
@@ -2865,7 +2320,6 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
 
       /* ---------- boot ---------- */
       applySettingsToForm();
-      if(S.mode==='one'){ /* keep saved $1 mode values */ }
       /* Deteksi otomatis koneksi/HP lambat HANYA bila user belum pernah memilih:
          Save-Data aktif, 2G/3G, atau RAM perangkat kecil → mulai di Lite agar
          halaman pertama muncul cepat. User tetap bebas tekan Muat Penuh. */
@@ -2877,17 +2331,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
       }catch(e){}
       if(autoLite) S.lite = true;
       resetState(); /* selalu mulai DIJEDA — tidak ada auto trade saat load / refresh */
-      /* Sumber scan tersimpan = Live: matikan arc replay & nol-kan counter
-         replay supaya tidak ada angka simulasi yang menyamar jadi live. */
-      if(S.scanSource==='live'){
-        st.arc = false; st.hold = false;
-        st.scanned = 0; st.killed = 0; st.scored = 0; st.reasons = 0; st.passed = 0; st.skipped = 0;
-        st.kills = { mint:0, lp:0, top10:0, vol:0, dev:0, score:0 };
-        renderAll();
-      }
-      paintScanUI();
       renderLiveTrades();
-      paintModeUI(); /* mode Live/Paper tersimpan tampil besar di hero; bot tetap dijeda */
       paintDaily();
       renderTicker();
       if(S.lite){ setLite(true); } else { startTimers(); }
