@@ -450,7 +450,7 @@
         <span class="pro-badge"><b>Safety Rails</b> · simulasi + slip ≤5%</span>
         <span class="pro-badge warn" id="proFailClosed">FAIL-CLOSED · ON</span>
         <span class="pro-badge ok">↻ ROTASI 1 POSISI · $1 / COIN</span>
-        <span class="pro-badge"><b>Pencarian 2 jalur</b> · Coin Baru + Coin Lama Potensial</span>
+        <span class="pro-badge"><b>Pencarian 4 jalur</b> · DexScreener + GeckoTerminal + pump.fun</span>
       </div>
 
       <!-- desk -->
@@ -1071,7 +1071,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         ['Paper-first','Mode paper adalah default. Live hanya aktif setelah OK eksplisit, wallet khusus $1–5.'],
         ['Influencer Buzz = sinyal waspada dua arah','Shill terkoordinasi / akun baru / riwayat rug → nilai faktor Sosial/Buzz ditekan ke sub-skor buzz + tahan beli. Buzz ramai + fundamental kotor = tetap KILL.'],
         ['Akurasi: sumber + waktu di setiap angka live','Harga/liq/vol/holder/authority/buzz wajib dari DexScreener/Jupiter/Solscan/RPC/TrueSOTA/X. Kosong/basi/error = “Data belum tersedia” + fail-closed. Replay selalu berlabel REPLAY.'],
-        ['Pencarian 2 jalur: Coin Baru + Coin Lama Potensial','Coin lama (>7 hari) dinilai dari likuiditas bertahan, konsistensi volume, pertumbuhan holder, survival, dan harga vs ATH — tidak dihukum karena tuanya. Audit hard-kill + ambang 0,65 sama untuk kedua jalur.'],
+        ['Pencarian 4 jalur: DexScreener + GeckoTerminal + pump.fun','Coin baru dari DexScreener, GeckoTerminal & pump.fun (lulus bonding curve) + coin lama potensial. Coin lama (>7 hari) dinilai dari likuiditas bertahan, konsistensi volume, pertumbuhan holder, survival, dan harga vs ATH — tidak dihukum karena tuanya. Audit hard-kill + ambang 0,65 sama untuk keempat jalur.'],
         ['Batas harian trading (money management)','Batas rugi harian, target profit harian, maks trade/hari, maks rugi beruntun, dan jam trading aktif tersimpan & ditegakkan: satu batas kena = bot berhenti seharian, status “Batas harian tercapai — bot berhenti”, sampai besok atau reset manual.']
       ];
 
@@ -1284,7 +1284,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           kills:{ mint:296, lp:271, top10:247, vol:214, dev:76, score:19 },
           wins:0, losses:0, best:null, worst:null, lastStopTxt:'',
           positions:[], logs:[], logQueue:[], history:seedHistory(S.equity),
-          lastKill:null, lastScore:null, lastBuy:null, lastSmart:null, auditKills:0, rpcBlocks:0, reasons:1123,
+          lastKill:null, lastScore:null, lastBuy:null, lastSmart:null, auditKills:0, rpcBlocks:0, reasons:1123, skipped:0,
           rotState:'scanning', rotPending:null, rotHistory:[], rotRound:1, rotScanTicks:0,
           snipeStats:{ seen:0, bought:0, rejected:0 }, snipeLog:[], pendingLive:null,
           clockMin: 23*60, nextMile: 2500,
@@ -1371,9 +1371,9 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         var riskPill = S.mode!=='std' ? ('-'+S.stop+'% · TP +'+S.tp1+'%') : ('-'+S.stop+'% · trail +'+S.trail+'%');
         var openRisk = st.positions.length ? st.positions.map(function(p){ return '<span class="coin">'+p.sym+'</span> '+(p.pnlPct>=0?'<span class="good">+':'<span class="bad">')+p.pnlPct.toFixed(0)+'%</span>'; }).join(' · ') : 'no open risk';
         var rows = {
-          scout:    { status:'<span class="coin">'+(st.lastScout||'$MICRODUCK')+'</span> 2 jalur · pair baru + coin lama potensial…', pill:'<span class="pill blue">'+(st.scanned>=1000?(st.scanned/1000).toFixed(1)+'k':st.scanned)+' pairs</span>' },
+          scout:    { status:'<span class="coin">'+(st.lastScout||'$MICRODUCK')+'</span> 4 jalur · Dex + Gecko + pump.fun…', pill:'<span class="pill blue">'+(st.scanned>=1000?(st.scanned/1000).toFixed(1)+'k':st.scanned)+' pairs</span>' },
           filter:   { status: st.lastKill ? '<span class="coin">'+st.lastKill.coin+'</span> <span class="bad">✕ '+st.lastKill.txt+'</span>' : '—', pill:'<span class="pill red">'+fmt(filterKills)+' · '+filterPct+'%</span>' },
-          analyst:  { status: st.lastScore ? '<span class="coin">'+st.lastScore.coin+'</span> '+(st.lastScore.score>=S.minScore? '<span class="good">score '+st.lastScore.score.toFixed(2)+' ✓</span>' : '<span class="bad">✕ '+st.lastScore.score.toFixed(2)+' &lt; '+S.minScore+'</span>') : '<span class="coin">$SIGMA</span> <span class="bad">✕ 0.41 &lt; 0.6</span>', pill:'<span class="pill purple">'+fmt(st.scored)+' scored</span>' },
+          analyst:  { status: st.lastScore ? '<span class="coin">'+st.lastScore.coin+'</span> '+(st.lastScore.score>=S.minScore? '<span class="good">score '+st.lastScore.score.toFixed(2)+' ✓</span>' : '<span class="bad">✕ '+st.lastScore.score.toFixed(2)+' &lt; '+S.minScore+'</span>') : '<span style="color:var(--dim)">belum ada survivor · '+fmt(st.killed)+' killed · '+fmt(st.skipped||0)+' skip · ambang '+S.minScore+'</span>', pill:'<span class="pill purple">'+fmt(st.scored)+' scored</span>' },
           executor: { status: st.lastBuy ? 'bought <span class="coin">'+st.lastBuy.coin+'</span> · '+money(st.lastBuy.amt) : (st.passed>0 ? '<span class="good">'+st.passed+' passed</span> · waiting entry' : 'nothing passed yet'), pill:'<span class="pill green">'+sizeLbl+'</span>' },
           risk:     { status: openRisk, pill:'<span class="pill dark">'+riskPill+'</span>' },
           logger:   { status: st.lastKill ? 'filter killed <span class="coin">'+st.lastKill.coin+'</span>' : 'filter killed $BABYWIF', pill:'<span class="pill dark" style="background:rgba(45,212,191,.15);color:#2dd4bf">'+fmt(st.reasons)+' reasons</span>' }
@@ -1835,6 +1835,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
           return;
         }
         if(res.skip){
+          st.skipped = (st.skipped||0) + 1;
           addLog('SCOUT', '#57a8ff', 'SKIP '+(res.sym || '')+' · '+res.skip);
           if(S.snipe && res.sym){ st.snipeStats.rejected++; snipeNote(res.sym, 'SKIP · '+res.skip, 'red'); paintSnipe(); }
           return;
@@ -2056,7 +2057,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
         st.rotPending = null; st.pendingLive = null; paintExecConfirm();
         if(src==='live'){
           st.arc = false; st.hold = false; st.running = false;
-          st.scanned = 0; st.killed = 0; st.scored = 0; st.reasons = 0; st.passed = 0;
+          st.scanned = 0; st.killed = 0; st.scored = 0; st.reasons = 0; st.passed = 0; st.skipped = 0;
           st.kills = { mint:0, lp:0, top10:0, vol:0, dev:0, score:0 };
           st.lastSmart = null; st.lastScore = null; st.lastKill = null;
           liveNextScanAt = 0;
@@ -2850,7 +2851,7 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
          replay supaya tidak ada angka simulasi yang menyamar jadi live. */
       if(S.scanSource==='live'){
         st.arc = false; st.hold = false;
-        st.scanned = 0; st.killed = 0; st.scored = 0; st.reasons = 0; st.passed = 0;
+        st.scanned = 0; st.killed = 0; st.scored = 0; st.reasons = 0; st.passed = 0; st.skipped = 0;
         st.kills = { mint:0, lp:0, top10:0, vol:0, dev:0, score:0 };
         renderAll();
       }
