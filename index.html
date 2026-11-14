@@ -1173,10 +1173,12 @@ SOLANA_RPC_URL     = (opsional — RPC provider sendiri; default https://api.mai
          (setAutoRun). Kalau Chrome ditutup / tab disembunyikan, bot memang
          berhenti (halaman web tidak bisa jalan tanpa Chrome) — tapi saat
          user buka lagi web-nya, tryAutoResume() menjalankannya sendiri
-         tanpa tekan Jalankan. Hanya jeda manual (tekan Jalankan saat jalan)
-         yang mematikan autorun. Batas harian / jam trading / gerbang Live
-         tetap dicek lewat jalur klik Jalankan yang sama. */
-      function getAutoRun(){ try{ return localStorage.getItem('grokbot-autorun-v1') === '1'; }catch(e){ return false; } }
+         tanpa tekan Jalankan. Default-nya JALAN: belum pernah dijeda =
+         dianggap jalan, supaya buka pertama setelah update langsung jalan
+         tanpa tekan apa pun. Hanya jeda manual (tekan Jalankan saat jalan)
+         yang mematikan autorun (disimpan '0'). Batas harian / jam trading /
+         gerbang Live tetap dicek lewat jalur klik Jalankan yang sama. */
+      function getAutoRun(){ try{ return localStorage.getItem('grokbot-autorun-v1') !== '0'; }catch(e){ return true; } }
       function setAutoRun(v){ try{ localStorage.setItem('grokbot-autorun-v1', v ? '1' : '0'); }catch(e){} }
       var lastAutoResumeAt = 0;
       function tryAutoResume(){
